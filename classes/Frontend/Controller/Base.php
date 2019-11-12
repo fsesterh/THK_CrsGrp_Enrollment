@@ -69,6 +69,9 @@ abstract class Base
      */
     protected function init() : void
     {
+        if (!$this->getCoreController()->getPluginObject()->isActive()) {
+            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
+        }
     }
 
     /**

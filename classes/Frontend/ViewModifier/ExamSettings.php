@@ -34,10 +34,6 @@ class ExamSettings extends Base
         if ('sub_tabs' !== $part) {
             return false;
         }
-        
-        if (!$this->isBaseClass('ilObjTestGUI')) {
-            return false;
-        }
 
         if (
             !$this->isCommandClass('ilobjtestsettingsgeneralgui') &&
@@ -46,6 +42,10 @@ class ExamSettings extends Base
             !(
                 $this->isCommandClass('ilobjtestgui') &&
                 in_array($this->ctrl->getCmd(), ['defaults', 'addDefaults', 'deleteDefaults', 'applyDefaults'])
+            ) &&
+            !(
+                $this->isCommandClass(get_class($this->getCoreController())) &&
+                strpos($this->ctrl->getCmd(), $this->getClassName()) !== false
             )
         ) {
             return false;
@@ -70,6 +70,7 @@ class ExamSettings extends Base
         /** @var \ilTabsGUI $tabs */
         $tabs = $parameters['tabs'];
 
+        $this->ctrl->setParameterByClass(get_class($this->getCoreController()), 'ref_id', $this->getRefId());
         $tabs->addSubTabTarget(
             $this->getCoreController()->getPluginObject()->getPrefix() . '_exam_tab_proctorio',
             $this->ctrl->getLinkTargetByClass(

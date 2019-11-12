@@ -83,4 +83,13 @@ abstract class Base implements ViewModifier
     {
         return $this->dic;
     }
+
+    /**
+     * @return string
+     * @throws \ReflectionException
+     */
+    final public function getClassName() : string
+    {
+        return (new \ReflectionClass($this))->getShortName();
+    }
 }
