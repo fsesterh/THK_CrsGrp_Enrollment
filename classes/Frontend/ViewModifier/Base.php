@@ -1,18 +1,21 @@
 <?php
 /* Copyright (c) 1998-2019 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-namespace ILIAS\Plugin\Proctorio\Frontend\Controller;
+namespace ILIAS\Plugin\Proctorio\Frontend\ViewModifier;
 
-use \ILIAS\DI\Container;
+use ILIAS\DI\Container;
 use ILIAS\Plugin\Proctorio\Frontend\HttpContext;
-use \ILIAS\UI\Factory;
-use \ILIAS\UI\Renderer;
-use \Psr\Http\Message\ServerRequestInterface;
+use ILIAS\Plugin\Proctorio\Frontend\ViewModifier;
+use ILIAS\UI\Factory;
+use ILIAS\UI\Renderer;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
+ * Class ViewModifier
+ * @package ILIAS\Plugin\Proctorio\Frontend\ViewModifier
  * @author Michael Jansen <mjansen@databay.de>
  */
-abstract class Base
+abstract class Base implements ViewModifier
 {
     use HttpContext;
 
@@ -38,6 +41,8 @@ abstract class Base
     protected $lng;
     /** @var \ilProctorioUIHookGUI */
     public $coreController;
+    /** @var \ilTemplate */
+    protected $mainTemplate;
 
     /**
      * Base constructor.
@@ -52,6 +57,7 @@ abstract class Base
         $this->httpRequest = $dic->http()->request();
         $this->objectCache = $dic['ilObjDataCache'];
 
+        $this->mainTemplate = $dic->ui()->mainTemplate();
         $this->ctrl = $dic->ctrl();
         $this->lng = $dic->language();
         $this->tpl = $dic->ui()->mainTemplate();
@@ -60,31 +66,7 @@ abstract class Base
         $this->uiFactory = $dic->ui()->factory();
         $this->coreAccessHandler = $dic->access();
         $this->errorHandler = $dic['ilErr'];
-
-        $this->init();
     }
-
-    /**
-     *
-     */
-    protected function init() : void
-    {
-    }
-
-    /**
-     * @param string $name
-     * @param array $arguments
-     * @return mixed
-     */
-    final public function __call(string $name, array $arguments)
-    {
-        return call_user_func_array([$this, $this->getDefaultCommand()], []);
-    }
-
-    /**
-     * @return string
-     */
-    abstract public function getDefaultCommand() : string;
 
     /**
      * @return \ilProctorioUIHookGUI
@@ -100,14 +82,5 @@ abstract class Base
     public function getDic() : Container
     {
         return $this->dic;
-    }
-
-    /**
-     * @return string
-     * @throws \ReflectionException
-     */
-    final public function getControllerName() : string
-    {
-        return (new \ReflectionClass($this))->getShortName();
     }
 }

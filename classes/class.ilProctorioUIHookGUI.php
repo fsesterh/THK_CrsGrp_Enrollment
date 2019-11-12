@@ -4,6 +4,7 @@
 use ILIAS\DI\Container;
 use ILIAS\Plugin\Proctorio\Frontend;
 use ILIAS\Plugin\Proctorio\Frontend\ViewModifier;
+use ILIAS\Plugin\Proctorio\Frontend\ViewModifier\ExamSettings;
 
 /**
  * @author            Michael Jansen <mjansen@databay.de>
@@ -51,30 +52,50 @@ class ilProctorioUIHookGUI extends ilUIHookPluginGUI
     }
 
     /**
+     *
+     */
+    private function initModifiers() : void
+    {
+        if (!isset($this->dic['tpl'])) {
+            return;
+        }
+
+        if (null !== self::$modifiers) {
+            return;
+        }
+
+        $phpSelf = (string) ($_SERVER['PHP_SELF'] ?? '');
+        $urlParts = parse_url($phpSelf);
+        $script = basename($phpSelf);
+
+        $isLiveVotinRequest = (
+            strlen($phpSelf) > 0 &&
+            is_array($urlParts) &&
+            isset($urlParts['path']) &&
+            strpos($urlParts['path'], '/LiveVoting/') !== false
+        );
+        if ($isLiveVotinRequest) {
+            return;
+        }
+
+        $isBootsrappedRequest = in_array($script, ['login.php', 'goto.php', 'ilias.php']);
+        if (!$isBootsrappedRequest) {
+            return;
+        }
+
+        self::$modifiers = [
+            new ExamSettings($this, $this->dic)
+        ];
+    }
+
+    /**
      * @inheritDoc
      */
     public function getHTML($a_comp, $a_part, $a_par = [])
     {
         $unmodified = ['mode' => ilUIHookPluginGUI::KEEP, 'html' => ''];
 
-        $phpSelf = (string) ($_SERVER['PHP_SELF'] ?? '');
-        $urlParts = parse_url($phpSelf);
-        $script = basename($phpSelf);
-
-        if (
-            null === self::$modifiers &&
-            in_array($script, ['login.php', 'goto.php', 'ilias.php']) &&
-            (
-                0 === strlen($phpSelf) ||
-                !is_array($urlParts) ||
-                !isset($urlParts['path']) ||
-                strpos($urlParts['path'], '/LiveVoting/') === false
-            )
-        ) {
-            self::$modifiers = [
-                // TODO: Define them modifiers
-            ];
-        }
+        $this->initModifiers();
 
         if (is_array(self::$modifiers)) {
             foreach (self::$modifiers as $modifier) {
@@ -85,5 +106,23 @@ class ilProctorioUIHookGUI extends ilUIHookPluginGUI
         }
 
         return $unmodified;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function modifyGUI($a_comp, $a_part, $a_par = [])
+    {
+        parent::modifyGUI($a_comp, $a_part, $a_par);
+
+        $this->initModifiers();
+
+        if (is_array(self::$modifiers)) {
+            foreach (self::$modifiers as $modifier) {
+                if ($modifier->shouldModifyGUI($a_comp, $a_part, $a_par)) {
+                    $modifier->modifyGUI($a_comp, $a_part, $a_par);
+                }
+            }
+        }
     }
 }
