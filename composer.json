@@ -1,0 +1,10 @@
+{
+  "require": {
+    "guzzlehttp/guzzle": "^6.4"
+  },
+  "autoload": {
+    "psr-4" : { "ILIAS\\Plugin\\Proctorio\\" : "./classes" },
+    "classmap": ["./classes"],
+    "exclude-from-classmap": []
+  }
+}
