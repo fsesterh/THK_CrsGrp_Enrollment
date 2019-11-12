@@ -7,6 +7,8 @@ namespace Composer\Autoload;
 class ComposerStaticInite1ae8bcb242e25c6de07f94f0328d793
 {
     public static $files = array (
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
@@ -14,9 +16,19 @@ class ComposerStaticInite1ae8bcb242e25c6de07f94f0328d793
     );
 
     public static $prefixLengthsPsr4 = array (
+        'S' => 
+        array (
+            'Symfony\\Polyfill\\Php73\\' => 23,
+            'Symfony\\Polyfill\\Mbstring\\' => 26,
+            'Symfony\\Contracts\\Service\\' => 26,
+            'Symfony\\Component\\Console\\' => 26,
+            'SebastianFeldmann\\Git\\' => 22,
+            'SebastianFeldmann\\Cli\\' => 22,
+        ),
         'P' => 
         array (
             'Psr\\Http\\Message\\' => 17,
+            'Psr\\Container\\' => 14,
         ),
         'I' => 
         array (
@@ -28,12 +40,45 @@ class ComposerStaticInite1ae8bcb242e25c6de07f94f0328d793
             'GuzzleHttp\\Promise\\' => 19,
             'GuzzleHttp\\' => 11,
         ),
+        'C' => 
+        array (
+            'CaptainHook\\Plugin\\Composer\\' => 28,
+            'CaptainHook\\App\\' => 16,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'Symfony\\Polyfill\\Php73\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php73',
+        ),
+        'Symfony\\Polyfill\\Mbstring\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
+        ),
+        'Symfony\\Contracts\\Service\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/service-contracts',
+        ),
+        'Symfony\\Component\\Console\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/console',
+        ),
+        'SebastianFeldmann\\Git\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/sebastianfeldmann/git/src',
+        ),
+        'SebastianFeldmann\\Cli\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/sebastianfeldmann/cli/src',
+        ),
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
+        'Psr\\Container\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/container/src',
         ),
         'ILIAS\\Plugin\\Proctorio\\' => 
         array (
@@ -51,6 +96,14 @@ class ComposerStaticInite1ae8bcb242e25c6de07f94f0328d793
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
         ),
+        'CaptainHook\\Plugin\\Composer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/captainhook/plugin-composer/src',
+        ),
+        'CaptainHook\\App\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/captainhook/captainhook/src',
+        ),
     );
 
     public static $classMap = array (
@@ -62,6 +115,7 @@ class ComposerStaticInite1ae8bcb242e25c6de07f94f0328d793
         'ILIAS\\Plugin\\Proctorio\\Frontend\\Dispatcher' => __DIR__ . '/../..' . '/classes/Frontend/Dispatcher.php',
         'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier' => __DIR__ . '/../..' . '/classes/Frontend/ViewModifier.php',
         'ILIAS\\Plugin\\Proctorio\\UI\\Form\\Bindable' => __DIR__ . '/../..' . '/classes/UI/Form/Bindable.php',
+        'JsonException' => __DIR__ . '/..' . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
         'ilProctorioConfigGUI' => __DIR__ . '/../..' . '/classes/class.ilProctorioConfigGUI.php',
         'ilProctorioPlugin' => __DIR__ . '/../..' . '/classes/class.ilProctorioPlugin.php',
         'ilProctorioUIHookGUI' => __DIR__ . '/../..' . '/classes/class.ilProctorioUIHookGUI.php',

@@ -6,5 +6,8 @@
     "psr-4" : { "ILIAS\\Plugin\\Proctorio\\" : "./classes" },
     "classmap": ["./classes"],
     "exclude-from-classmap": []
+  },
+  "require-dev": {
+    "captainhook/plugin-composer": "^4.0"
   }
 }

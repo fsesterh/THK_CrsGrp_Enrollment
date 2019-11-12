@@ -14,6 +14,7 @@ return array(
     'ILIAS\\Plugin\\Proctorio\\Frontend\\Dispatcher' => $baseDir . '/classes/Frontend/Dispatcher.php',
     'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier' => $baseDir . '/classes/Frontend/ViewModifier.php',
     'ILIAS\\Plugin\\Proctorio\\UI\\Form\\Bindable' => $baseDir . '/classes/UI/Form/Bindable.php',
+    'JsonException' => $vendorDir . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
     'ilProctorioConfigGUI' => $baseDir . '/classes/class.ilProctorioConfigGUI.php',
     'ilProctorioPlugin' => $baseDir . '/classes/class.ilProctorioPlugin.php',
     'ilProctorioUIHookGUI' => $baseDir . '/classes/class.ilProctorioUIHookGUI.php',

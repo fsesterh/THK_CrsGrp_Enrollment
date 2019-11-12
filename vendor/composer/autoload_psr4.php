@@ -6,9 +6,18 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Symfony\\Polyfill\\Php73\\' => array($vendorDir . '/symfony/polyfill-php73'),
+    'Symfony\\Polyfill\\Mbstring\\' => array($vendorDir . '/symfony/polyfill-mbstring'),
+    'Symfony\\Contracts\\Service\\' => array($vendorDir . '/symfony/service-contracts'),
+    'Symfony\\Component\\Console\\' => array($vendorDir . '/symfony/console'),
+    'SebastianFeldmann\\Git\\' => array($vendorDir . '/sebastianfeldmann/git/src'),
+    'SebastianFeldmann\\Cli\\' => array($vendorDir . '/sebastianfeldmann/cli/src'),
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
+    'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
     'ILIAS\\Plugin\\Proctorio\\' => array($baseDir . '/classes'),
     'GuzzleHttp\\Psr7\\' => array($vendorDir . '/guzzlehttp/psr7/src'),
     'GuzzleHttp\\Promise\\' => array($vendorDir . '/guzzlehttp/promises/src'),
     'GuzzleHttp\\' => array($vendorDir . '/guzzlehttp/guzzle/src'),
+    'CaptainHook\\Plugin\\Composer\\' => array($vendorDir . '/captainhook/plugin-composer/src'),
+    'CaptainHook\\App\\' => array($vendorDir . '/captainhook/captainhook/src'),
 );
