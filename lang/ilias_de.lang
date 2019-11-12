@@ -1,1 +1,12 @@
 controller_not_found#:#Die von Ihnen angeforderte Seite kann nicht ausgeliefert werden.
+api_key#:#API-Schlüssel
+api_key_info#:#Bitte tragen Sie hier den von `Proctorio` bereitgestellten API-Authentifizierungs-Schlüssel ein.
+api_secret#:#API-Geheimnis
+api_secret_info#:#Bitte tragen Sie hier das von `Proctorio` bereitgestellte API-Geheimis ein.
+api_region#:#API-Account-Region
+api_region_info#:#Bitte tragen Sie das von `Proctorio` bereitgestellte Regionskürzel (z.B. <strong>us1</strong>) ein.
+api_base_url#:#API-Basis-URL
+api_base_url_info#:#Bitte tragen Sie hier die von `Proctorio` bereitgestellte Basis-URL für die API-Kommunikation ein. Der Platzhalter <strong>[ACCOUNT_REGION]</strong> <strong>muss</strong> enthalten sein und wird zur Laufzeit entsprechend ersetzt.
+api_endpoint_launch#:#API-Endpunkt
+api_endpoint_launch_info#:#Tragen Sie hier den Ressourcenpfad für Test-Start und Nachprüfung ein, z.B.: /6521ca945bd84cfc85d2767da06aa7c8 . 
+api_err_account_region_missing#:#Der Platzhalter "[ACCOUNT_REGION]" fehlt.

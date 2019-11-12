@@ -1,1 +1,12 @@
 controller_not_found#:#Could not respond with the requested page.
+api_key#:#API Key
+api_key_info#:#Please enter the API key provided by `Proctorio`.
+api_secret#:#API Secret
+api_secret_info#:#Please enter the API secret provided by `Proctorio`.
+api_region#:#API Account Region
+api_region_info#:#Please enter the account region code provided `Proctorio` (e.g. <strong>us1</strong>).
+api_base_url#:#API Base URL
+api_base_url_info#:#Please enter the base API url provided by `Proctorio`. The entered value <strong>must</strong> container a placeholder <strong>[ACCOUNT_REGION]</strong>, which will be replaced during runtime.
+api_endpoint_launch#:#API Endpoint
+api_endpoint_launch_info#:#Please enter the resource path for launching and reviewing purposes provided by provided by `Proctorio`, e.g.: /6521ca945bd84cfc85d2767da06aa7c8 . 
+api_err_account_region_missing#:#The "[ACCOUNT_REGION]" placeholder is missing.
