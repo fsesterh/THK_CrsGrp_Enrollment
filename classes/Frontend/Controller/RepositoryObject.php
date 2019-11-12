@@ -26,7 +26,8 @@ abstract class RepositoryObject extends Base
         $reflectionMethod = new \ReflectionMethod($class, 'setTitleAndDescription');
         $reflectionMethod->setAccessible(true);
         $reflectionMethod->invoke($object);
-        
+
+        $this->dic['ilLocator']->addRepositoryItems($this->getRefId());
         $this->tpl->setLocator();
     }
 }
