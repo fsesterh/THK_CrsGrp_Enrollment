@@ -246,7 +246,7 @@ class ExamLaunch extends RepositoryObject
 
         $takeRegex = '(.*?([\?&]';
         $takeRegex .= '(' . implode('|', $parameterNames) .')=('  . implode('|', $parameterValues) . ')';
-        $takeRegex .= ')){3}((.*?)#)+';
+        $takeRegex .= ')){3}';
 
         $endRegex = sprintf(
             '(.*?)(([\?&]cmdClass=iltestevaluationgui(.*?)&ref_id=%s)|([\?&]ref_id=%s(.*?)&cmdClass=iltestevaluationgui))',
@@ -363,7 +363,8 @@ class ExamLaunch extends RepositoryObject
 
         $debugMessage = implode('<br><br>', $messages);
         $debugMessage = str_replace(["{", "}"], ["&#123;", "&#125;"], $debugMessage);
-        
+        echo $debugMessage;
+        exit();
         $this->ctrl->redirectToURL($responseArray[0]);
     }
 }
