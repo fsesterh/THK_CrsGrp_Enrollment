@@ -3,8 +3,6 @@
 
 namespace ILIAS\Plugin\Proctorio\Frontend\Controller;
 
-use ILIAS\DI\Container;
-
 /**
  * Class ExamSettings
  * @package ILIAS\Plugin\Proctorio\Frontend\Controller
@@ -20,7 +18,7 @@ class ExamSettings extends RepositoryObject
      */
     public function getDefaultCommand() : string
     {
-        return 'showForm';
+        return 'showFormCmd';
     }
 
     /**
@@ -50,8 +48,8 @@ class ExamSettings extends RepositoryObject
     /**
      * 
      */
-    public function showForm() : string
+    public function showFormCmd() : string
     {
-        return 'Hello World';
+        return 'TODO: Show Proctorio Exam Settings Form';
     }
 }
