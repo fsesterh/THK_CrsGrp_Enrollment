@@ -20,6 +20,10 @@ class ExamLaunchAndReview extends RepositoryObject
     protected $test;
     /** @var string|null */
     private $sessionLockString;
+    /** @var \ilTestSession */
+    private $testSession;
+    /** @var string */
+    private $testCommand = '';
 
     /**
      * @inheritdoc
@@ -35,91 +39,6 @@ class ExamLaunchAndReview extends RepositoryObject
     public function getObjectGuiClass() : string
     {
         return \ilObjTestGUI::class;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function init() : void
-    {
-        parent::init();
-
-        if (0 === $this->getRefId() || !$this->coreAccessHandler->checkAccess('read', '', $this->getRefId())) {
-            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
-        }
-
-        $this->test = \ilObjectFactory::getInstanceByRefId($this->getRefId());
-
-        $this->drawHeader();
-    }
-
-    /**
-     * @return string
-     */
-    public function launchCmd() : string 
-    {
-        if (!$this->test->isRandomTest() && !$this->test->isFixedTest()) {
-            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
-        }
-        
-        $testQuestionSetConfigFactory = new \ilTestQuestionSetConfigFactory(
-            $this->dic->repositoryTree(),
-            $this->dic->database(),
-            $this->dic['ilPluginAdmin'],
-            $this->test
-        );
-        $testSessionFactory = new \ilTestSessionFactory($this->test);
-        $testQuestionSetConfig = $testQuestionSetConfigFactory->getQuestionSetConfig();
-        $testSession = $testSessionFactory->getSession();
-
-        $this->ensureInitialisedSessionLockString();
-
-        $onlineAccess = false;
-        if ($this->test->getFixedParticipants()) {
-            $onlineAccessResult = \ilObjTestAccess::_lookupOnlineTestAccess(
-                $this->test->getId(),
-                $testSession->getUserId()
-            );
-            if (true === $onlineAccessResult) {
-                $onlineAccess = true;
-            }
-        }
-
-        if ($this->test->getOfflineStatus()) {
-            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
-        }
-
-        if (!$this->test->isComplete($testQuestionSetConfig)) {
-            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
-        }
-
-        $executable = $this->test->isExecutable(
-            $testSession, $testSession->getUserId(), true
-        );
-        
-        if ($this->test->getFixedParticipants() && !$onlineAccess) {
-            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
-        }
-
-        if (!$executable['executable']) {
-            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
-        }
-
-        $command = 'startPlayer';
-        if ($testSession->getActiveId() > 0) {
-            $testPassesSelector = new \ilTestPassesSelector($this->dic->database(), $this->test);
-            $testPassesSelector->setActiveId($testSession->getActiveId());
-            $testPassesSelector->setLastFinishedPass($testSession->getLastFinishedPass());
-
-            $closedPasses = $testPassesSelector->getClosedPasses();
-            $existingPasses = $testPassesSelector->getExistingPasses();
-
-            if ($existingPasses > $closedPasses) {
-                $command = 'resumePlayer';
-            }
-        }
-
-        return $this->launchApi($testSession, $command);
     }
 
     private function ensureInitialisedSessionLockString() : void
@@ -140,7 +59,7 @@ class ExamLaunchAndReview extends RepositoryObject
     /**
      * @return string
      */
-    private function getSessionLockString() : ?string 
+    private function getSessionLockString() : ?string
     {
         return $this->sessionLockString;
     }
@@ -154,35 +73,156 @@ class ExamLaunchAndReview extends RepositoryObject
     }
 
     /**
-     * @param \ilTestSession $testSession
-     * @param string $command
-     * @return string
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @inheritdoc
      */
-    private function launchApi(\ilTestSession $testSession, string $command) : string
+    protected function init() : void
+    {
+        parent::init();
+
+        if (0 === $this->getRefId() || !$this->coreAccessHandler->checkAccess('read', '', $this->getRefId())) {
+            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
+        }
+
+        $this->test = \ilObjectFactory::getInstanceByRefId($this->getRefId());
+
+        if (!$this->test->isRandomTest() && !$this->test->isFixedTest()) {
+            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
+        }
+
+        $this->drawHeader();
+
+        $testQuestionSetConfigFactory = new \ilTestQuestionSetConfigFactory(
+            $this->dic->repositoryTree(),
+            $this->dic->database(),
+            $this->dic['ilPluginAdmin'],
+            $this->test
+        );
+        $testSessionFactory = new \ilTestSessionFactory($this->test);
+        $testQuestionSetConfig = $testQuestionSetConfigFactory->getQuestionSetConfig();
+        $this->testSession = $testSessionFactory->getSession();
+
+        $this->ensureInitialisedSessionLockString();
+
+        $onlineAccess = false;
+        if ($this->test->getFixedParticipants()) {
+            $onlineAccessResult = \ilObjTestAccess::_lookupOnlineTestAccess(
+                $this->test->getId(),
+                $this->testSession->getUserId()
+            );
+            if (true === $onlineAccessResult) {
+                $onlineAccess = true;
+            }
+        }
+
+        if ($this->test->getOfflineStatus()) {
+            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
+        }
+
+        if (!$this->test->isComplete($testQuestionSetConfig)) {
+            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
+        }
+
+        $executable = $this->test->isExecutable(
+            $this->testSession, $this->testSession->getUserId(), true
+        );
+
+        if ($this->test->getFixedParticipants() && !$onlineAccess) {
+            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
+        }
+
+        if (!$executable['executable']) {
+            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
+        }
+
+        $this->testCommand = 'startPlayer';
+        if ($this->testSession->getActiveId() > 0) {
+            $testPassesSelector = new \ilTestPassesSelector($this->dic->database(), $this->test);
+            $testPassesSelector->setActiveId($this->testSession->getActiveId());
+            $testPassesSelector->setLastFinishedPass($this->testSession->getLastFinishedPass());
+
+            $closedPasses = $testPassesSelector->getClosedPasses();
+            $existingPasses = $testPassesSelector->getExistingPasses();
+
+            if ($existingPasses > $closedPasses) {
+                $this->testCommand = 'resumePlayer';
+            }
+        }
+    }
+
+    /**
+     * @return URI
+     */
+    private function getLaunchUrl() : URI 
     {
         $testPlayerFactory = new \ilTestPlayerFactory($this->test);
         $playerGui = $testPlayerFactory->getPlayerGUI();
-
-        $testUrl =  new URI(\ilLink::_getStaticLink($this->test->getRefId(), 'tst'));
-
         $this->ctrl->setParameterByClass(get_class($playerGui), 'lock', $this->getSessionLockString());
-        $this->ctrl->setParameterByClass(get_class($playerGui), 'sequence', $testSession->getLastSequence());
+        $this->ctrl->setParameterByClass(get_class($playerGui), 'sequence', $this->testSession->getLastSequence());
         $this->ctrl->setParameterByClass(get_class($playerGui), 'ref_id', $this->test->getRefId());
-        $testLaunchUrl = new URI(ILIAS_HTTP_PATH . '/' . $this->ctrl->getLinkTargetByClass(
+        return new URI(ILIAS_HTTP_PATH . '/' . $this->ctrl->getLinkTargetByClass(
             ['ilRepositoryGUI', 'ilObjTestGUI', get_class($playerGui)],
-            $command,
+            $this->testCommand,
             '',
             false,
             false
         ));
+    }
 
+    /**
+     * @return URI
+     */
+    private function getTestUrl() : URI
+    {
+        return new URI(\ilLink::_getStaticLink($this->test->getRefId(), 'tst'));
+    }
+
+    /**
+     * @return string
+     */
+    public function reviewCmd() : string 
+    {
+        if (
+            !$this->coreAccessHandler->checkAccess('write', '', $this->getRefId()) &&
+            !$this->coreAccessHandler->checkAccess('tst_results', '', $this->getRefId()) &&
+            !$this->coreAccessHandler->checkPositionAccess(\ilOrgUnitOperation::OP_MANAGE_PARTICIPANTS, $this->getRefId()) &&
+            !$this->coreAccessHandler->checkPositionAccess(\ilOrgUnitOperation::OP_ACCESS_RESULTS, $this->getRefId())
+        ) {
+            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
+        }
+
+        try {
+            $this->ctrl->redirectToURL((new UriToString())->transform($this->proctorioApi->getReviewUrl(
+                $this->test,
+                $this->getLaunchUrl(),
+                $this->getTestUrl()
+            )));
+        } catch (GuzzleException | Exception $e) {
+            return $this->uiRenderer->render([
+                $this->uiFactory->messageBox()->failure(
+                    $this->getCoreController()->getPluginObject()->txt('api_call_generic')
+                )
+            ]);
+        } catch (QualifiedResponseError $e) {
+            return $this->uiRenderer->render([
+                $this->uiFactory->messageBox()->failure(sprintf(
+                    $this->getCoreController()->getPluginObject()->txt('api_call_unexcpected_response_with_code'),
+                    $e->getCode()
+                ))
+            ]);
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function launchCmd() : string 
+    {
         try {
             $this->ctrl->redirectToURL((new UriToString())->transform($this->proctorioApi->getLaunchUrl(
                 $this->test,
-                $testLaunchUrl,
-                $testUrl)
-            ));
+                $this->getLaunchUrl(),
+                $this->getTestUrl()
+            )));
         } catch (GuzzleException | Exception $e) {
             return $this->uiRenderer->render([
                 $this->uiFactory->messageBox()->failure(

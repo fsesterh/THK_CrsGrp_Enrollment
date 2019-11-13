@@ -129,30 +129,90 @@ class ExamLaunch extends Base
         }
         $doc->encoding = 'UTF-8';
 
+        $this->manipulateLaunchButton($doc);
+        $this->addReviewButton($doc);
+
+        $processedHtml = $doc->saveHTML($doc->getElementsByTagName('body')->item(0));
+        if (0 === strlen($processedHtml)) {
+            return $unmodified;
+        }
+
+        return ['mode' => \ilUIHookPluginGUI::REPLACE, 'html' => $processedHtml];
+    }
+
+    /**
+     * @param \DOMDocument $doc
+     */
+    private function addReviewButton(\DOMDocument $doc) : void 
+    {
+        if (
+            !$this->coreAccessHandler->checkAccess('write', '', $this->getRefId()) &&
+            !$this->coreAccessHandler->checkAccess('tst_results', '', $this->getRefId()) &&
+            !$this->coreAccessHandler->checkPositionAccess(\ilOrgUnitOperation::OP_MANAGE_PARTICIPANTS, $this->getRefId()) &&
+            !$this->coreAccessHandler->checkPositionAccess(\ilOrgUnitOperation::OP_ACCESS_RESULTS, $this->getRefId())
+        ) {
+            return;
+        }
+        
+        $xpath = new \DomXPath($doc);
+        $toolbarButtons = $xpath->query("(//form[@id='ilToolbar'])[1]//input[last()]");
+
+        if ($toolbarButtons->length > 0) {
+            $referenceButton = $toolbarButtons->item(0);
+
+            $this->ctrl->setParameterByClass(
+                get_class($this->getCoreController()),
+                'ref_id',
+                $this->getTestRefId()
+            );
+            $url = $this->ctrl->getLinkTargetByClass(
+                ['ilUIPluginRouterGUI', get_class($this->getCoreController())],
+                'ExamLaunchAndReview.review',
+                '',
+                false,
+                false
+            );
+
+            $btn = \ilLinkButton::getInstance();
+            $btn->setCaption($this->getCoreController()->getPluginObject()->txt('btn_label_proctorio_review'), false);
+            $btn->setUrl($url);
+            $btn->setPrimary(true);
+            
+            $btn = $doc->createElement('a');
+            $btn->setAttribute('class', 'btn btn-default btn-primary');
+            $btn->setAttribute('style', 'margin-left: 5px;');
+            $btn->setAttribute('href', $url);
+
+            $btnText = $doc->createTextNode($this->getCoreController()->getPluginObject()->txt('btn_label_proctorio_review'));
+            $btn->appendChild($btnText);
+
+            $referenceButton->parentNode->insertBefore($btn, $referenceButton->nextSibling);
+        }
+    }
+
+    /**
+     * @param \DOMDocument $doc
+     */
+    private function manipulateLaunchButton(\DOMDocument $doc) : void
+    {
         $xpath = new \DomXPath($doc);
         $startPlayerCommandButton = $xpath->query("//input[contains(@name, 'startPlayer')]");
         $resumePlayerCommandButton = $xpath->query("//input[contains(@name, 'resumePlayer')]");
 
-        // TODO: Maybe add Proctorio review button here
-
         if (1 === $startPlayerCommandButton->length xor 1 === $resumePlayerCommandButton->length) {
             if (1 === $startPlayerCommandButton->length) {
-                return $this->manipulateLaunchElement($doc, $startPlayerCommandButton->item(0), $unmodified);
+                $this->manipulateLaunchElement($doc, $startPlayerCommandButton->item(0));
             } elseif (1 === $resumePlayerCommandButton->length) {
-                return $this->manipulateLaunchElement($doc, $resumePlayerCommandButton->item(0), $unmodified);
+                $this->manipulateLaunchElement($doc, $resumePlayerCommandButton->item(0));
             }
         }
-
-        return $unmodified;
     }
 
     /**
      * @param \DOMDocument $doc
      * @param \DOMElement $elm
-     * @param array $unmodified
-     * @return array
      */
-    private function manipulateLaunchElement(\DOMDocument $doc, \DOMElement $elm, array $unmodified) : array
+    private function manipulateLaunchElement(\DOMDocument $doc, \DOMElement $elm) : void
     {
         $this->ctrl->setParameterByClass(
             get_class($this->getCoreController()),
@@ -167,14 +227,7 @@ class ExamLaunch extends Base
             false
         );
         $elm->setAttribute('onclick', 'window.location.href = "' . $url . '"; return false;');
-        $elm->setAttribute('name', 'cmd[]');
-
-        $processedHtml = $doc->saveHTML($doc->getElementsByTagName('body')->item(0));
-        if (strlen($processedHtml) === 0) {
-            return $unmodified;
-        }
-
-        return ['mode' => \ilUIHookPluginGUI::REPLACE, 'html' => $processedHtml];
+        $elm->removeAttribute('name');
     }
 
     /**
