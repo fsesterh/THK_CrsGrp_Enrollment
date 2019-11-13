@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 /* Copyright (c) 1998-2019 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 use ILIAS\DI\Container;
 use ILIAS\Plugin\Proctorio\Administration\GeneralSettings\Settings;
+use ILIAS\Plugin\Proctorio\Webservice\Rest\Impl;
 
 /**
  * Class ilProctorioPlugin
@@ -12,25 +13,18 @@ class ilProctorioPlugin extends ilUserInterfaceHookPlugin
 {
     /** @var string */
     const CTYPE = 'Services';
-
     /** @var string */
     const CNAME = 'UIComponent';
-
     /** @var string */
     const SLOT_ID = 'uihk';
-
     /** @var string */
     const PNAME = 'Proctorio';
-
     /** @var self */
     private static $instance = null;
-
     /** @var bool */
     protected static $initialized = false;
-
     /** @var bool[] */
     protected static $activePluginsCheckCache = [];
-
     /** @var ilPlugin[] */
     protected static $activePluginsCache = [];
 
@@ -53,11 +47,17 @@ class ilProctorioPlugin extends ilUserInterfaceHookPlugin
         if (!self::$initialized) {
             self::$initialized = true;
 
-            require_once 'Services/Authentication/classes/class.ilAuthUtils.php';
-
             $GLOBALS['DIC']['plugin.proctorio.settings'] = function (Container $c) {
                 return new Settings(
                     new \ilSetting($this->getId())
+                );
+            };
+
+            $GLOBALS['DIC']['plugin.proctorio.api'] = function (Container $c) {
+                return new Impl(
+                    $c->user(),
+                    $c['plugin.proctorio.settings'],
+                    $c->logger()->root()
                 );
             };
         }

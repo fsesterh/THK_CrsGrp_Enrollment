@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /* Copyright (c) 1998-2019 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 namespace ILIAS\Plugin\Proctorio\Administration\GeneralSettings;
@@ -14,19 +14,14 @@ class Settings implements Bindable
 {
     /** @var \ilSetting */
     private $settings;
-
     /** @var string */
     private $apiKey = '';
-
     /** @var string */
     private $apiSecret = '';
-
     /** @var string */
     private $apiRegion = '';
-
     /** @var string */
     private $apiBaseUrl = '';
-
     /** @var string */
     private $apiLaunchAndReviewEndpoint = '';
 

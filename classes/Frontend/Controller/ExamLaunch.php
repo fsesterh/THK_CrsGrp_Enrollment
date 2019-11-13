@@ -1,11 +1,12 @@
-<?php
+<?php declare(strict_types=1);
 /* Copyright (c) 1998-2019 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 namespace ILIAS\Plugin\Proctorio\Frontend\Controller;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Middleware;
+use GuzzleHttp\Exception\GuzzleException;
+use ILIAS\Data\URI;
+use ILIAS\Plugin\Proctorio\Refinery\Transformation\UriToString;
+use ILIAS\Plugin\Proctorio\Webservice\Exception;
 
 /**
  * Class ExamLaunch
@@ -16,7 +17,7 @@ class ExamLaunch extends RepositoryObject
 {
     /** @var \ilObjTest */
     protected $test;
-    /** @var string */
+    /** @var string|null */
     private $sessionLockString;
 
     /**
@@ -120,16 +121,17 @@ class ExamLaunch extends RepositoryObject
         return $this->launchApi($testSession, $command);
     }
 
-
-
-    private function ensureInitialisedSessionLockString()
+    private function ensureInitialisedSessionLockString() : void
     {
-        if (!strlen($this->getSessionLockString())) {
+        if (!is_string($this->getSessionLockString()) || !strlen($this->getSessionLockString())) {
             $this->setSessionLockString($this->buildSessionLockString());
         }
     }
 
-    private function buildSessionLockString()
+    /**
+     * @return string
+     */
+    private function buildSessionLockString() : string
     {
         return md5($_COOKIE[session_name()] . time());
     }
@@ -137,7 +139,7 @@ class ExamLaunch extends RepositoryObject
     /**
      * @return string
      */
-    private function getSessionLockString()
+    private function getSessionLockString() : ?string 
     {
         return $this->sessionLockString;
     }
@@ -145,7 +147,7 @@ class ExamLaunch extends RepositoryObject
     /**
      * @param string $sessionLockString
      */
-    private function setSessionLockString($sessionLockString)
+    private function setSessionLockString(string $sessionLockString) : void
     {
         $this->sessionLockString = $sessionLockString;
     }
@@ -158,213 +160,40 @@ class ExamLaunch extends RepositoryObject
      */
     private function launchApi(\ilTestSession $testSession, string $command) : string
     {
-        global $DIC;
-
         $testPlayerFactory = new \ilTestPlayerFactory($this->test);
         $playerGui = $testPlayerFactory->getPlayerGUI();
 
-        $testUrl =  \ilLink::_getStaticLink($this->test->getRefId(), 'tst');
-
-        $urlParts = parse_url($testUrl);
-        $baseUrlWithScript = $urlParts['scheme'] . '://' . $urlParts['host'];
-        $regexQuotedBaseUrlWithScript = preg_quote($baseUrlWithScript, '/');
-
-        $refId = $this->test->getRefId();
-
-        $startRegex = sprintf(
-            '(.*?)(([\?&]target=tst_%s)|(([\?&]cmd=infoScreen(.*?)&ref_id=%s)|([\?&]ref_id=%s(.*?)&cmd=infoScreen)))',
-            $refId, $refId, $refId
-        );
-
-        $parameterValues = [
-            \ilTestPlayerCommands::START_TEST,
-            \ilTestPlayerCommands::INIT_TEST,
-            \ilTestPlayerCommands::START_PLAYER,
-            \ilTestPlayerCommands::RESUME_PLAYER,
-            //\ilTestPlayerCommands::DISPLAY_ACCESS_CODE,
-            //\ilTestPlayerCommands::ACCESS_CODE_CONFIRMED,
-            \ilTestPlayerCommands::SHOW_QUESTION,
-            \ilTestPlayerCommands::PREVIOUS_QUESTION,
-            \ilTestPlayerCommands::NEXT_QUESTION,
-            \ilTestPlayerCommands::EDIT_SOLUTION,
-            //ilTestPlayerCommands::MARK_QUESTION,
-            //ilTestPlayerCommands::MARK_QUESTION_SAVE,
-            //ilTestPlayerCommands::UNMARK_QUESTION,
-            //ilTestPlayerCommands::UNMARK_QUESTION_SAVE,
-            \ilTestPlayerCommands::SUBMIT_INTERMEDIATE_SOLUTION,
-            \ilTestPlayerCommands::SUBMIT_SOLUTION,
-            \ilTestPlayerCommands::SUBMIT_SOLUTION_AND_NEXT,
-            \ilTestPlayerCommands::REVERT_CHANGES,
-            //\ilTestPlayerCommands::DETECT_CHANGES,
-            //\ilTestPlayerCommands::DISCARD_SOLUTION,
-            //\ilTestPlayerCommands::SKIP_QUESTION,
-            //\ilTestPlayerCommands::SHOW_INSTANT_RESPONSE,
-            //\ilTestPlayerCommands::CONFIRM_HINT_REQUEST,
-            //\ilTestPlayerCommands::SHOW_REQUESTED_HINTS_LIST,
-            \ilTestPlayerCommands::QUESTION_SUMMARY,
-            //\ilTestPlayerCommands::QUESTION_SUMMARY_INC_OBLIGATIONS,
-            //\ilTestPlayerCommands::QUESTION_SUMMARY_OBLIGATIONS_ONLY,
-            //\ilTestPlayerCommands::TOGGLE_SIDE_LIST,
-            \ilTestPlayerCommands::SHOW_QUESTION_SELECTION,
-            //\ilTestPlayerCommands::UNFREEZE_ANSWERS,
-            //\ilTestPlayerCommands::AUTO_SAVE,
-            //\ilTestPlayerCommands::REDIRECT_ON_TIME_LIMIT,
-            \ilTestPlayerCommands::SUSPEND_TEST,
-            \ilTestPlayerCommands::FINISH_TEST,
-            \ilTestPlayerCommands::AFTER_TEST_PASS_FINISHED,
-            \ilTestPlayerCommands::SHOW_FINAL_STATMENT,
-            \ilTestPlayerCommands::BACK_TO_INFO_SCREEN,
-            \ilTestPlayerCommands::BACK_FROM_FINISHING,
-            'show',
-            $this->test->getRefId(),
-        ];
-
-        $parameterValues[] = 'iltestsubmissionreviewgui';
-        if ($this->test->isRandomTest()) {
-            $parameterValues[] = 'iltestplayerrandomquestionsetgui';
-        } elseif ($this->test->isFixedTest()) {
-            $parameterValues[] = 'iltestplayerfixedquestionsetgui';
-        }
-
-        $parameterNames = [
-            'cmd',
-            'fallbackCmd',
-            'ref_id',
-            'cmdClass',
-        ];
+        $testUrl =  new URI(\ilLink::_getStaticLink($this->test->getRefId(), 'tst'));
 
         $this->ctrl->setParameterByClass(get_class($playerGui), 'lock', $this->getSessionLockString());
         $this->ctrl->setParameterByClass(get_class($playerGui), 'sequence', $testSession->getLastSequence());
         $this->ctrl->setParameterByClass(get_class($playerGui), 'ref_id', $this->test->getRefId());
-        $launchUrl = $this->ctrl->getLinkTargetByClass(
+        $testLaunchUrl = new URI(ILIAS_HTTP_PATH . '/' . $this->ctrl->getLinkTargetByClass(
             ['ilRepositoryGUI', 'ilObjTestGUI', get_class($playerGui)],
             $command,
             '',
             false,
             false
-        );
-
-        $takeRegex = '(.*?([\?&]';
-        $takeRegex .= '(' . implode('|', $parameterNames) .')=('  . implode('|', $parameterValues) . ')';
-        $takeRegex .= ')){3}';
-
-        $endRegex = sprintf(
-            '(.*?)(([\?&]cmdClass=iltestevaluationgui(.*?)&ref_id=%s)|([\?&]ref_id=%s(.*?)&cmdClass=iltestevaluationgui))',
-            $refId, $refId
-        );
-
-        $DIC->logger()->root()->info(sprintf(
-            "Parameter lengths: Start Exam: %s / Take Exam: %s / End Exam: %s",
-            strlen($regexQuotedBaseUrlWithScript . $startRegex),
-            strlen($regexQuotedBaseUrlWithScript . $takeRegex),
-            strlen($regexQuotedBaseUrlWithScript . $endRegex)
         ));
 
-        $finalLaunchUrl = ILIAS_HTTP_PATH . '/' . ltrim($launchUrl, '/');
-
-        $DIC->logger()->root()->info(sprintf("Launch URL: %s", $finalLaunchUrl));
-
-        $parameters = [
-            'launch_url' => $finalLaunchUrl,
-            'user_id' => $DIC->user()->getId(),
-            'oauth_consumer_key' => $this->globalProctorioSettings->getApiKey(),
-            'exam_start' => $regexQuotedBaseUrlWithScript . $startRegex,
-            'exam_take' => $regexQuotedBaseUrlWithScript . $takeRegex,
-            'exam_end' => $regexQuotedBaseUrlWithScript . $endRegex,
-            'exam_settings' => implode(',', [
-                'recordaudio', // TODO: Read from config
-                'recordvideo',
-            ]),
-            'fullname' => $DIC->user()->getFullname(),
-            'exam_tag' => $this->test->getId(),
-            'oauth_signature_method' => 'HMAC-SHA1',
-            'oauth_version' => '1.0',
-            'oauth_timestamp' => time(),
-            'oauth_nonce' => md5(uniqid(rand(), true)),
-        ];
-        $consumerSecret = $this->globalProctorioSettings->getApiSecret();
-
-        $region = $this->globalProctorioSettings->getApiRegion();
-        $url = str_replace('[ACCOUNT_REGION]', $region, $this->globalProctorioSettings->getApiBaseUrl());
-        $urlPath = ltrim($this->globalProctorioSettings->getApiLaunchAndReviewEndpoint(), '/');
-
-        $DIC->logger()->root()->info(print_r($parameters,1));
-
-        // https://csharp.hotexamples.com/de/site/file?hash=0xee75c4aef1fe45609c1c1cfc2677509faae0583c603d230fce0c1559b16dddb8&fullName=LtiLibrary.Core/OAuthUtility.cs&project=andyfmiller/LtiLibrary
-        // https://github.com/andyfmiller/LtiLibrary/blob/master/src/LtiLibrary.NetCore/Extensions/NameValueCollectionExtensions.cs#L20
-        // https://github.com/andyfmiller/LtiLibrary/blob/master/src/LtiLibrary.NetCore/Extensions/StringExtensions.cs
-        $signature_data = '';
-        foreach ($parameters as $key => $value) {
-            $signature_data .= '&' . rawurlencode($key) . '=' . rawurlencode($value);
+        try {
+            $this->ctrl->redirectToURL((new UriToString())->transform($this->proctorioApi->getLaunchUrl(
+                $this->test,
+                $testLaunchUrl,
+                $testUrl)
+            ));
+        } catch (GuzzleException $e) {
+            return $this->uiRenderer->render([
+                $this->uiFactory->messageBox()->failure(
+                    $this->getCoreController()->getPluginObject()->txt('')
+                )
+            ]);
+        } catch (Exception $e) {
+            return $this->uiRenderer->render([
+                $this->uiFactory->messageBox()->failure(
+                    $this->getCoreController()->getPluginObject()->txt('')
+                )
+            ]);
         }
-        $signature_data = ltrim($signature_data, '&');
-
-        $signature_base_string = 'POST&' . rawurlencode($url . '/' . $urlPath) . '&' . rawurlencode($signature_data);
-
-        $DIC->logger()->root()->info("ignature_base_string: " . $signature_base_string);
-        $signature = hash_hmac('sha1', $signature_base_string, $consumerSecret, true);
-        $DIC->logger()->root()->info("signature: " . $signature);
-        $base64_encoded_data = base64_encode($signature);
-        $DIC->logger()->root()->info("oauth_signature: " . $base64_encoded_data);
-
-        $parameters['oauth_signature'] = $base64_encoded_data;
-
-        $container = [];
-        $history = Middleware::history($container);
-        $stack = HandlerStack::create();
-        $stack->push($history);
-
-        $client = new Client([
-            'handler' => $stack,
-            'base_uri' => $url
-        ]);
-
-        $formParams = [];
-        foreach ($parameters as $key => $value) {
-            $formParams[$key] = $value;
-        }
-
-        $response = $client->request('POST', $urlPath, [
-            'form_params' => $formParams
-        ]);
-
-        foreach ($container as $transaction) {
-            $httpHeaderArray = $transaction['request']->getHeaders();
-            $requestBody = (string) $transaction['request']->getBody();
-        }
-
-        $body = $response->getBody();
-        $DIC->logger()->root()->info("Response Status: " . $response->getStatusCode() . ' ' . $response->getReasonPhrase());
-        $DIC->logger()->root()->info("Response Body: " . $body);
-
-        $responseArray = json_decode($body, true);
-
-        $isLaunchApiSuccess = is_array($responseArray) && isset($responseArray[0]) && is_string($responseArray[0]) && strlen($responseArray[0]) > 0;
-        if ($isLaunchApiSuccess) {
-            $responseArray[0];
-        }
-
-        /*$isEvalApiSuccess = is_array($responseArray) && isset($responseArray[1]) && is_string($responseArray[1]) && strlen($responseArray[1]) > 0;
-        if ($isEvalApiSuccess) {
-            $btn = ilLinkButton::getInstance();
-            $btn->setCaption('Proctorio Evaluation', false);
-            $btn->setUrl($responseArray[1]);
-            $btn->setPrimary(true);
-            $this->addButtonInstance($btn);
-        }*/
-
-        $messages = [];
-        $messages[] = ('Launch URL: ' . $finalLaunchUrl);
-        $messages[] = ('Start Regex: ' . $regexQuotedBaseUrlWithScript . $startRegex);
-        $messages[] = ('Take Regex: ' . $regexQuotedBaseUrlWithScript . $takeRegex);
-        $messages[] = ('End Regex: ' . $regexQuotedBaseUrlWithScript . $endRegex);
-        $messages[] = ('API Launch Request Success: ' . ($isLaunchApiSuccess ? 'Yes' : 'No'));
-        //$messages[] = ('API Evaluation Request Success: ' . ($isEvalApiSuccess ? 'Yes' : 'No'));
-
-        $debugMessage = implode('<br><br>', $messages);
-        $debugMessage = str_replace(["{", "}"], ["&#123;", "&#125;"], $debugMessage);
-        echo $debugMessage;
-        exit();
-        $this->ctrl->redirectToURL($responseArray[0]);
     }
 }

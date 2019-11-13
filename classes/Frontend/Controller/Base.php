@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /* Copyright (c) 1998-2019 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 namespace ILIAS\Plugin\Proctorio\Frontend\Controller;
@@ -6,6 +6,7 @@ namespace ILIAS\Plugin\Proctorio\Frontend\Controller;
 use \ILIAS\DI\Container;
 use ILIAS\Plugin\Proctorio\Administration\GeneralSettings\Settings;
 use ILIAS\Plugin\Proctorio\Frontend\HttpContext;
+use ILIAS\Plugin\Proctorio\Webservice\Rest\Impl;
 use \ILIAS\UI\Factory;
 use \ILIAS\UI\Renderer;
 use \Psr\Http\Message\ServerRequestInterface;
@@ -41,6 +42,8 @@ abstract class Base
     public $coreController;
     /** @var Settings */
     protected $globalProctorioSettings;
+    /** @var Impl */
+    protected $proctorioApi;
 
     /**
      * Base constructor.
@@ -64,6 +67,7 @@ abstract class Base
         $this->coreAccessHandler = $dic->access();
         $this->errorHandler = $dic['ilErr'];
         $this->globalProctorioSettings = $dic['plugin.proctorio.settings'];
+        $this->proctorioApi = $dic['plugin.proctorio.api'];
 
         $this->init();
     }
