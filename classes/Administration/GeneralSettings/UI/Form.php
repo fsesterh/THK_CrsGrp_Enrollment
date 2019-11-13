@@ -82,6 +82,7 @@ class Form extends \ilPropertyFormGUI
         );
         $apiLaunchReviewEndpoint->setInfo($this->plugin->txt('api_launch_review_endpoint_info'));
         $apiLaunchReviewEndpoint->setRequired(true);
+        $apiLaunchReviewEndpoint->setValidationRegexp('/^(\/([\.A-Za-z0-9_-]+|\[[A-Za-z0-9_-]+\]))+$/');
         $this->addItem($apiLaunchReviewEndpoint);
 
         $this->setValuesByArray($this->generalSettings->toArray());
@@ -97,7 +98,35 @@ class Form extends \ilPropertyFormGUI
             return $bool;
         }
 
-        return true;
+        $requirePlaceholdersDefinition = [
+            'api_base_url' => [
+                'ACCOUNT_REGION',
+            ],
+        ];
+
+        $valid = true;
+        foreach ($requirePlaceholdersDefinition as $formFieldId => $placeholders) {
+            $errors = [];
+
+            foreach ($placeholders as $placeholder) {
+                $position = stripos($this->getInput($formFieldId), '[' . strtoupper($placeholder) . ']');
+                if (false === $position) {
+                    $valid = false;
+                    $errors[] = $this->lng->txt('api_err_' . strtolower($placeholder) . '_missing');
+                }
+            }
+
+            $formElement = $this->getItemByPostVar($formFieldId);
+            if (count($errors) > 0 && $formElement instanceof \ilFormPropertyGUI) {
+                $formElement->setAlert(implode(' ', $errors));
+            }
+        }
+
+        if (!$valid) {
+            \ilUtil::sendFailure($this->lng->txt('form_input_not_valid'));
+        }
+
+        return $valid;
     }
 
     /**
