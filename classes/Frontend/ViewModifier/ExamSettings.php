@@ -15,7 +15,7 @@ class ExamSettings extends Base
      */
     public function shouldModifyHtml(string $component, string $part, array $parameters) : bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -70,13 +70,25 @@ class ExamSettings extends Base
         /** @var \ilTabsGUI $tabs */
         $tabs = $parameters['tabs'];
 
-        $this->ctrl->setParameterByClass(get_class($this->getCoreController()), 'ref_id', $this->getRefId());
-        $tabs->addSubTabTarget(
-            $this->getCoreController()->getPluginObject()->getPrefix() . '_exam_tab_proctorio',
-            $this->ctrl->getLinkTargetByClass(
-                ['ilUIPluginRouterGUI', get_class($this->getCoreController())], 
-                'ExamSettings.showForm'
-            )
-        );
+        if (
+            $this->isCommandClass(get_class($this->getCoreController())) &&
+            strpos($this->ctrl->getCmd(), $this->getClassName()) !== false
+        ) {
+            $this->ctrl->setParameterByClass('ilObjTestSettingsGeneralGUI', 'ref_id', $this->getRefId());
+            $tstSettingsUrl = $this->ctrl->getLinkTargetByClass(
+                ['ilRepositoryGUI', 'ilObjTestGUI', 'ilObjTestSettingsGeneralGUI'],
+                '', '', false, false
+            );
+            $tabs->setBackTarget($this->lng->txt('back'), $tstSettingsUrl);
+        } else {
+            $this->ctrl->setParameterByClass(get_class($this->getCoreController()), 'ref_id', $this->getRefId());
+            $tabs->addSubTabTarget(
+                $this->getCoreController()->getPluginObject()->getPrefix() . '_exam_tab_proctorio',
+                $this->ctrl->getLinkTargetByClass(
+                    ['ilUIPluginRouterGUI', get_class($this->getCoreController())],
+                    'ExamSettings.showForm'
+                )
+            );
+        }
     }
 }

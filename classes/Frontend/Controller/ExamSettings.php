@@ -3,6 +3,8 @@
 
 namespace ILIAS\Plugin\Proctorio\Frontend\Controller;
 
+use ILIAS\DI\Container;
+
 /**
  * Class ExamSettings
  * @package ILIAS\Plugin\Proctorio\Frontend\Controller
@@ -10,6 +12,9 @@ namespace ILIAS\Plugin\Proctorio\Frontend\Controller;
  */
 class ExamSettings extends RepositoryObject
 {
+    /** @var \ilObjTest */
+    protected $test;
+
     /**
      * @inheritdoc
      */
@@ -37,9 +42,10 @@ class ExamSettings extends RepositoryObject
             $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
         }
 
+        $this->test = \ilObjectFactory::getInstanceByRefId($this->getRefId());
+
         $this->drawHeader();
     }
-
 
     /**
      * 

@@ -4,6 +4,7 @@
 use ILIAS\DI\Container;
 use ILIAS\Plugin\Proctorio\Frontend;
 use ILIAS\Plugin\Proctorio\Frontend\ViewModifier;
+use ILIAS\Plugin\Proctorio\Frontend\ViewModifier\ExamLaunch;
 use ILIAS\Plugin\Proctorio\Frontend\ViewModifier\ExamSettings;
 
 /**
@@ -84,7 +85,8 @@ class ilProctorioUIHookGUI extends ilUIHookPluginGUI
         }
 
         self::$modifiers = [
-            new ExamSettings($this, $this->dic)
+            new ExamSettings($this, $this->dic),
+            new ExamLaunch($this, $this->dic),
         ];
     }
 
