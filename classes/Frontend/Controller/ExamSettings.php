@@ -46,7 +46,7 @@ class ExamSettings extends RepositoryObject
     }
 
     /**
-     * 
+     * @return string
      */
     public function showFormCmd() : string
     {

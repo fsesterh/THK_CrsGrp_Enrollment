@@ -4,6 +4,7 @@
 namespace ILIAS\Plugin\Proctorio\Frontend\Controller;
 
 use \ILIAS\DI\Container;
+use ILIAS\Plugin\Proctorio\Administration\GeneralSettings\Settings;
 use ILIAS\Plugin\Proctorio\Frontend\HttpContext;
 use \ILIAS\UI\Factory;
 use \ILIAS\UI\Renderer;
@@ -38,6 +39,8 @@ abstract class Base
     protected $lng;
     /** @var \ilProctorioUIHookGUI */
     public $coreController;
+    /** @var Settings */
+    protected $globalProctorioSettings;
 
     /**
      * Base constructor.
@@ -60,6 +63,7 @@ abstract class Base
         $this->uiFactory = $dic->ui()->factory();
         $this->coreAccessHandler = $dic->access();
         $this->errorHandler = $dic['ilErr'];
+        $this->globalProctorioSettings = $dic['plugin.proctorio.settings'];
 
         $this->init();
     }

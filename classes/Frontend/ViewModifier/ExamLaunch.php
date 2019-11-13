@@ -119,6 +119,9 @@ class ExamLaunch extends Base
         $unmodified = ['mode' => \ilUIHookPluginGUI::KEEP, 'html' => ''];
 
         // TODO: Check if proctorio is enabled, return $unmodified if not
+        /*if (!$this->test->isRandomTest() && !$this->test->isFixedTest()) {
+            return $unmodified;
+        }*/
 
         $doc = new \DOMDocument("1.0", "utf-8");
         if (!@$doc->loadHTML('<?xml encoding="utf-8" ?><html><body>' . $html . '</body></html>')) {
@@ -164,6 +167,7 @@ class ExamLaunch extends Base
             false
         );
         $elm->setAttribute('onclick', 'window.location.href = "' . $url . '"; return false;');
+        $elm->setAttribute('name', 'cmd[]');
 
         $processedHtml = $doc->saveHTML($doc->getElementsByTagName('body')->item(0));
         if (strlen($processedHtml) === 0) {
