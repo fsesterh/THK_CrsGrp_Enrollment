@@ -11,3 +11,6 @@ api_launch_review_endpoint#:#API-Endpunkt
 api_launch_review_endpoint_info#:#Tragen Sie hier den Ressourcenpfad für Test-Start und Nachprüfung ein, z.B.: /6521ca945bd84cfc85d2767da06aa7c8 . 
 api_err_account_region_missing#:#Der Platzhalter "[ACCOUNT_REGION]" fehlt.
 exam_tab_proctorio#:#Proctorio
+api_call_generic#:#Der Proctorio-Test kann nicht gestartet oder fortgesetzt werden. Bitte kontaktieren Sie Ihren Systemadministrator.
+api_call_unexcpected_response_with_code#:#Der Proctorio-Test kann nicht gestartet oder fortgesetzt werden, da der Fehler <strong>%s</strong> aufgetreten ist. Bitte kontaktieren Sie Ihren Systemadministrator.
+btn_label_proctorio_review#:#Proctorio Review

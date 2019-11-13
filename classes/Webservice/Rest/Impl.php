@@ -7,6 +7,7 @@ use ILIAS\Data\URI;
 use ILIAS\Plugin\Proctorio\Administration\GeneralSettings\Settings;
 use ILIAS\Plugin\Proctorio\Refinery\Transformation\UriToString;
 use ILIAS\Plugin\Proctorio\Webservice\Exception;
+use ILIAS\Plugin\Proctorio\Webservice\Exception\QualifiedResponseError;
 use ILIAS\Plugin\Proctorio\Webservice\Rest;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
@@ -229,8 +230,29 @@ class Impl implements Rest
     }
 
     /**
+     * @param string $responseBody
+     * @throws Exception
+     * @throws QualifiedResponseError
+     */
+    private function handleResponseException(string $responseBody) : void
+    {
+        if (is_numeric($responseBody)) {
+            throw new QualifiedResponseError(sprintf(
+                "Unexpected Proctorio API Response: %s",
+                $responseBody
+            ), (int) $responseBody);
+        } else {
+            throw new Exception(sprintf(
+                "Unexpected Proctorio API Response: %s",
+                $responseBody
+            ));
+        }
+    }
+
+    /**
      * @inheritDoc
      * @throws Exception
+     * @throws QualifiedResponseError
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getLaunchUrl(
@@ -240,19 +262,21 @@ class Impl implements Rest
     ) : URI {
         $responseBody = $this->request($test, $testLaunchUrl, $testUrl);
 
-        $responseArray = json_decode($responseBody, true);
-
-        $isLaunchApiSuccess = is_array($responseArray) && isset($responseArray[0]) && is_string($responseArray[0]) && strlen($responseArray[0]) > 0;
-        if ($isLaunchApiSuccess) {
-            return new URI($responseArray[0]);
+        if (is_string($responseBody) && strlen($responseBody) > 0) {
+            $responseArray = json_decode($responseBody, true);
+            $isLaunchApiSuccess = is_array($responseArray) && isset($responseArray[0]) && is_string($responseArray[0]) && strlen($responseArray[0]) > 0;
+            if ($isLaunchApiSuccess) {
+                return new URI($responseArray[0]);
+            }
         }
 
-        throw new Exception(sprintf("Unexpected Proctorio API Response: %s", $responseBody));
+        $this->handleResponseException($responseBody);
     }
 
     /**
      * @inheritDoc
      * @throws Exception
+     * @throws QualifiedResponseError
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getReviewUrl(
@@ -262,13 +286,14 @@ class Impl implements Rest
     ) : URI {
         $responseBody = $this->request($test, $testLaunchUrl, $testUrl);
 
-        $responseArray = json_decode($responseBody, true);
-
-        $isEvalApiSuccess = is_array($responseArray) && isset($responseArray[1]) && is_string($responseArray[1]) && strlen($responseArray[1]) > 0;
-        if ($isEvalApiSuccess) {
-            return new URI($responseArray[1]);
+        if (is_string($responseBody) && strlen($responseBody) > 0) {
+            $responseArray = json_decode($responseBody, true);
+            $isReviewApiSuccess = is_array($responseArray) && isset($responseArray[1]) && is_string($responseArray[1]) && strlen($responseArray[1]) > 0;
+            if ($isReviewApiSuccess) {
+                return new URI($responseArray[1]);
+            }
         }
 
-        throw new Exception(sprintf("Unexpected Proctorio API Response: %s", $responseBody));
+        $this->handleResponseException($responseBody);
     }
 }

@@ -7,13 +7,14 @@ use GuzzleHttp\Exception\GuzzleException;
 use ILIAS\Data\URI;
 use ILIAS\Plugin\Proctorio\Refinery\Transformation\UriToString;
 use ILIAS\Plugin\Proctorio\Webservice\Exception;
+use ILIAS\Plugin\Proctorio\Webservice\Exception\QualifiedResponseError;
 
 /**
- * Class ExamLaunch
+ * Class ExamLaunchAndReview
  * @package ILIAS\Plugin\Proctorio\Frontend\Controller
  * @author Michael Jansen <mjansen@databay.de>
  */
-class ExamLaunch extends RepositoryObject
+class ExamLaunchAndReview extends RepositoryObject
 {
     /** @var \ilObjTest */
     protected $test;
@@ -182,17 +183,18 @@ class ExamLaunch extends RepositoryObject
                 $testLaunchUrl,
                 $testUrl)
             ));
-        } catch (GuzzleException $e) {
+        } catch (GuzzleException | Exception $e) {
             return $this->uiRenderer->render([
                 $this->uiFactory->messageBox()->failure(
-                    $this->getCoreController()->getPluginObject()->txt('')
+                    $this->getCoreController()->getPluginObject()->txt('api_call_generic')
                 )
             ]);
-        } catch (Exception $e) {
+        } catch (QualifiedResponseError $e) {
             return $this->uiRenderer->render([
-                $this->uiFactory->messageBox()->failure(
-                    $this->getCoreController()->getPluginObject()->txt('')
-                )
+                $this->uiFactory->messageBox()->failure(sprintf(
+                    $this->getCoreController()->getPluginObject()->txt('api_call_unexcpected_response_with_code'),
+                    $e->getCode()
+                ))
             ]);
         }
     }

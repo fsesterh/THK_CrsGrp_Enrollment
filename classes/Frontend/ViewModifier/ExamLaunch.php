@@ -161,7 +161,7 @@ class ExamLaunch extends Base
         );
         $url = $this->ctrl->getLinkTargetByClass(
             ['ilUIPluginRouterGUI', get_class($this->getCoreController())],
-            'ExamLaunch.launch',
+            'ExamLaunchAndReview.launch',
             '',
             false,
             false

@@ -11,3 +11,6 @@ api_launch_review_endpoint#:#API Endpoint
 api_launch_review_endpoint_info#:#Please enter the resource path for launching and reviewing purposes provided by provided by `Proctorio`, e.g.: /6521ca945bd84cfc85d2767da06aa7c8 . 
 api_err_account_region_missing#:#The "[ACCOUNT_REGION]" placeholder is missing.
 exam_tab_proctorio#:#Proctorio
+api_call_generic#:#The Proctorio test cannot be started or continue. Please contact your system administrator.
+api_call_unexcpected_response_with_code#:#The Proctorio test cannot be started or continue (Code: <strong>%s</strong>). Please contact your system administrator.
+btn_label_proctorio_review#:#Proctorio Review
