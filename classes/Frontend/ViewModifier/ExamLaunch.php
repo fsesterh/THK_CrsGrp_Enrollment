@@ -155,7 +155,7 @@ class ExamLaunch extends Base
         }
         
         $xpath = new \DomXPath($doc);
-        $toolbarButtons = $xpath->query("(//form[@id='ilToolbar'])[1]//input[last()]");
+        $toolbarButtons = $xpath->query("(//form[@id='ilToolbar'][1]//input | //form[@id='ilToolbar'][1]//a)[last()]");
 
         if ($toolbarButtons->length > 0) {
             $referenceButton = $toolbarButtons->item(0);
@@ -173,11 +173,6 @@ class ExamLaunch extends Base
                 false
             );
 
-            $btn = \ilLinkButton::getInstance();
-            $btn->setCaption($this->getCoreController()->getPluginObject()->txt('btn_label_proctorio_review'), false);
-            $btn->setUrl($url);
-            $btn->setPrimary(true);
-            
             $btn = $doc->createElement('a');
             $btn->setAttribute('class', 'btn btn-default btn-primary');
             $btn->setAttribute('style', 'margin-left: 5px;');
@@ -226,8 +221,16 @@ class ExamLaunch extends Base
             false,
             false
         );
-        $elm->setAttribute('onclick', 'window.location.href = "' . $url . '"; return false;');
-        $elm->removeAttribute('name');
+
+        $btn = $doc->createElement('a');
+        $btn->setAttribute('class', 'btn btn-default btn-primary');
+        $btn->setAttribute('href', $url);
+
+        $btnText = $doc->createTextNode($elm->getAttribute('value'));
+        $btn->appendChild($btnText);
+
+        $elm->parentNode->insertBefore($btn, $elm->nextSibling);
+        $elm->parentNode->removeChild($elm);
     }
 
     /**
