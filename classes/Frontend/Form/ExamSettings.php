@@ -101,7 +101,7 @@ class ExamSettings extends \ilPropertyFormGUI
             ],
 
             "lock_down" => [
-                "fullscreenlenient", // fullscreenmoderate or fullscreensevere
+                "fullscreenlenient", // or fullscreenmoderate or fullscreensevere
                 "onescreen",
                 "notabs", // or linksonly
                 "closetabs",
@@ -141,7 +141,7 @@ class ExamSettings extends \ilPropertyFormGUI
             $deckCardTemplate->setCurrentBlock('card');
 
             $cardTemplate = $this->plugin->getTemplate('tpl.settings_card.html', true, true);
-            $cardTemplate->setVariable('TITLE', $setting);
+            $cardTemplate->setVariable('TITLE', $this->plugin->txt('setting_' . $setting));
             $cardTemplate->setVariable('IMAGE', $DIC->ui()->renderer()->render([
                 $DIC->ui()->factory()->image()->standard(
                     'https://cdn.proctorio.net/assets/exam-settings/'. $setting . '.svg',

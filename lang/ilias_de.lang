@@ -22,6 +22,17 @@ exam_setting_label_status_info#:#Falls aktiviert, wird dieser Test über Proctor
 form_header_exam_settings#:#Proctorio Exam Einstellungen
 exam_settings_info_test_started#:#Die Einstellungen können nicht mehr verändert werden, sobald der erster Lernende den Test gestartet hat.
 acc_header_recording_options#:#Aufzeichnungseinstellungen
+acc_header_recording_options_info#:#Diese Einstellungen bestimmen, welche Informationen während de Prüfung aufgezeichnet werden.
 acc_header_lock_down_options#:#Benutzungseinschränkungen
 acc_header_verification_options#:#Verifizierung
 acc_header_in_quiz_options#:#Werkzeuge
+setting_recordvideo#:#Record Video
+setting_recordvideo_info#:#Record Video will capture Video from the webcam for the entire exam, giving insight to test taker's exam environment.
+setting_recordaudio#:#Record Audio
+setting_recordaudio_info#:#Record Audio will capture audio from the microphone for the entire exam, allowing you tto listen to the test taker's exam environment.
+setting_recordscreen#:#Record Screen
+setting_recordscreen_info#:#Record Screen will capture the student's desktop for the entire exam, allowing you to see exactly what they were seeing on screen. 
+setting_recordwebtraffic#:#Record Web Traffic
+setting_recordwebtraffic_info#:#Record Web Traffic will capture screenshots an URLs of any website during the exam.
+setting_recordroomstart#:#Record Room
+setting_recordroomstart_info#:#Record Room will require the student to show their entire test environment at intervals based on the option selected.

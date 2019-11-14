@@ -18,10 +18,21 @@ btn_label_proctorio_launch#:#Launch Proctorio Exam
 btn_label_proctorio_resume#:#Resume Proctorio Exam
 form_header_settings#:#Proctorio Settings
 exam_setting_label_status#:#Enable Proctorio
-exam_setting_label_status_info#:#If enabled, this test will be launched via Proctorio.
+exam_setting_label_status_info#:#If checked, Proctorio Secure Examt Proctor is enabled.
 form_header_exam_settings#:#Proctorio Exam Settings
-exam_settings_info_test_started#:#Exam settings can not be changed once the first learner has started the exam.
+exam_settings_info_test_started#:#Exam settings can not be changed once the first student has started the exam.
 acc_header_recording_options#:#Recording Options
+acc_header_recording_options_info#:#These options determine what information will be recorded during the exam.
 acc_header_lock_down_options#:#Lock Down Options
 acc_header_verification_options#:#Verification Options
 acc_header_in_quiz_options#:#In-Quiz Tools
+setting_recordvideo#:#Record Video
+setting_recordvideo_info#:#Record Video will capture Video from the webcam for the entire exam, giving insight to test taker's exam environment.
+setting_recordaudio#:#Record Audio
+setting_recordaudio_info#:#Record Audio will capture audio from the microphone for the entire exam, allowing you tto listen to the test taker's exam environment.
+setting_recordscreen#:#Record Screen
+setting_recordscreen_info#:#Record Screen will capture the student's desktop for the entire exam, allowing you to see exactly what they were seeing on screen. 
+setting_recordwebtraffic#:#Record Web Traffic
+setting_recordwebtraffic_info#:#Record Web Traffic will capture screenshots an URLs of any website during the exam.
+setting_recordroomstart#:#Record Room
+setting_recordroomstart_info#:#Record Room will require the student to show their entire test environment at intervals based on the option selected.
