@@ -67,7 +67,7 @@ trait HttpContext
         $matches = null;
         if (preg_match('/^[a-zA-Z0-9]+_(\d+)$/', ((string) $this->httpRequest->getQueryParams()['target'] ?? ''), $matches)) {
             if (is_array($matches) && isset($matches[1]) && is_numeric($matches[1]) && $matches[1] > 0) {
-                return $matches[1];
+                return (int) $matches[1];
             }
         }
 
