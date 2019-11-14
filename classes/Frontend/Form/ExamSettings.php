@@ -110,14 +110,15 @@ class ExamSettings extends \ilPropertyFormGUI
                 "downloads",
                 "cache",
                 "rightclick",
-                "noreentry", // or agentreentry
+                "noreentry", // or agentreentry (no images for both)
             ],
             
             "verification" => [
                 "verifyvideo",
                 "verifyaudio",
                 "verifydesktop",
-                "verifyidauto", // or verifyidlive
+                // "verifyroom", // missing
+                "verifyidauto", // or verifyidlive (no image)
                 "verifysignature",
             ],
             
@@ -146,14 +147,19 @@ class ExamSettings extends \ilPropertyFormGUI
             $deckCardTemplate->setCurrentBlock('card');
 
             $cardTemplate = $this->plugin->getTemplate('tpl.settings_card.html', true, true);
+            $cardTemplate->setVariable('KEY', $setting);
+            $cardTemplate->setVariable(
+                'DESCRIPTION',
+                filter_var($this->plugin->txt('setting_' . $setting . '_info'), FILTER_SANITIZE_FULL_SPECIAL_CHARS)
+            );
             $cardTemplate->setVariable('TITLE', $this->plugin->txt('setting_' . $setting));
             $cardTemplate->setVariable('IMAGE', $DIC->ui()->renderer()->render([
                 $DIC->ui()->factory()->image()->standard(
                     'https://cdn.proctorio.net/assets/exam-settings/'. $setting . '.svg',
-                    ''
+                    $this->plugin->txt('setting_' . $setting)
                 )
             ]));
-            
+
             $deckCardTemplate->setVariable('CARD', $cardTemplate->get());
             $deckCardTemplate->setVariable('SIZE', $size);
             $deckCardTemplate->setVariable('SMALL_SIZE', $smallSize);
@@ -164,7 +170,7 @@ class ExamSettings extends \ilPropertyFormGUI
                 $deckCardRowTemplate->setVariable('CARDS', $deckCardTemplate->get());
                 $deckCardRowTemplate->parseCurrentBlock();
                 $deckCardTemplate = $this->plugin->getTemplate('tpl.settings_deck_card.html', true, true);
-                $i=0;
+                $i = 0;
             }
             $i++;
         }

@@ -52,16 +52,15 @@
   width: 100%;
   background-color: white;
 }
-.proctorio-settings-card img {
-  width: 100%;
-}
 .proctorio-settings-card.thumbnail {
   margin-bottom: 0;
   padding-top: 10px;
   padding-bottom: 10px;
 }
 .proctorio-settings-card.thumbnail > img {
-  max-width: 48px;
+  height: 100%;
+  width: auto;
+  max-height: 48px;
 }
 .proctorio-settings-card .caption .card-title {
   overflow-wrap: break-word;
