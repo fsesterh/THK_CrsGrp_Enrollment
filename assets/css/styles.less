@@ -44,15 +44,19 @@
   padding: 0;
   width: 100%;
 
-
   background-color: @il-primary-container-bg;
 
   img {
     width: 100%;
   }
 
-  .thumbnail {
+  &.thumbnail {
     margin-bottom: 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    > img {
+      max-width: 48px;
+    }
   }
 
   .caption {
@@ -64,25 +68,12 @@
     &:nth-of-type(1n+3) {
       border-top: 1px solid @panel-inner-border;
     }
-
-    dl {
-      dt {
-        font-weight: normal;
-        color: @il-light-text-color;
-        font-size: @font-size-small;
-        padding-top: @padding-large-vertical;
-      }
-    }
   }
-}
-
-.il-panel-report .il-card {
-  background-color: @il-secondary-container-bg;
 }
 
 @media (min-width: @screen-sm-min) {
   .row-equal-height {
-    .il-card {
+    .proctorio-settings-card {
       display: flex;
       flex-direction: column;
 

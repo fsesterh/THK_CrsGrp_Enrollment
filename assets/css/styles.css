@@ -55,8 +55,13 @@
 .proctorio-settings-card img {
   width: 100%;
 }
-.proctorio-settings-card .thumbnail {
+.proctorio-settings-card.thumbnail {
   margin-bottom: 0;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.proctorio-settings-card.thumbnail > img {
+  max-width: 48px;
 }
 .proctorio-settings-card .caption .card-title {
   overflow-wrap: break-word;
@@ -65,21 +70,12 @@
 .proctorio-settings-card .caption:nth-of-type(1n+3) {
   border-top: 1px solid #ddd;
 }
-.proctorio-settings-card .caption dl dt {
-  font-weight: normal;
-  color: #909090;
-  font-size: 12px;
-  padding-top: 6px;
-}
-.il-panel-report .il-card {
-  background-color: #f9f9f9;
-}
 @media (min-width: 768px) {
-  .row-equal-height .il-card {
+  .row-equal-height .proctorio-settings-card {
     display: flex;
     flex-direction: column;
   }
-  .row-equal-height .il-card :nth-child(4) {
+  .row-equal-height .proctorio-settings-card :nth-child(4) {
     flex-grow: 2;
   }
 }
