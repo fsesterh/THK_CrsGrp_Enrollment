@@ -24,6 +24,7 @@ exam_settings_info_test_started#:#Exam settings can not be changed once the firs
 acc_header_recording_options#:#Recording Options
 acc_header_recording_options_info#:#These options determine what information will be recorded during the exam.
 acc_header_lock_down_options#:#Lock Down Options
+acc_header_lock_down_options_info#:#These options determine what will be restricted during the exam.
 acc_header_verification_options#:#Verification Options
 acc_header_in_quiz_options#:#In-Quiz Tools
 setting_recordvideo#:#Record Video
@@ -36,3 +37,23 @@ setting_recordwebtraffic#:#Record Web Traffic
 setting_recordwebtraffic_info#:#Record Web Traffic will capture screenshots an URLs of any website during the exam.
 setting_recordroomstart#:#Record Room
 setting_recordroomstart_info#:#Record Room will require the student to show their entire test environment at intervals based on the option selected.
+setting_fullscreenlenient#:#Force Full Screen
+setting_fullscreenlenient_info#:#Force Full Screen prevents access to other applications or websites during the exam.
+setting_onescreen#:#Only One Screen
+setting_onescreen_info#:#Only One Screen prevents notes or unauthorized materials to be hidden on a second screen.
+setting_notabs#:#Disabled New Tabs
+setting_notabs_info#:#Disabled New Tabs prevents access to unauthorized material by blocking other websites during the exam.
+setting_closetabs#:#Close Open Tabs
+setting_closetabs_info#:#Close Open Tabs prevents  access to unauthorized material by requiring any other webpages to be closed before starting the exam.
+setting_print#:#Disabled Printing
+setting_prints_info#:#Disable Printing prevents exam distribution by blocking Print, Save As and Screenshot functionalities.
+setting_clipboard#:#Disabled Clipboard
+setting_clipboard_info#:#Disabled Clipboard prevents exam material from being lifted or content being brought into the quiz.
+setting_downloads#:#Block Downloads
+setting_downloads_info#:#Block Downloads prevents students from downloading any type of file during the exam and automatically end the session.
+setting_cache#:#Clear Cache
+setting_cache_info#:#Clear Cache will prevent exam distribution by erasing all traces of the exam from the computer after the attempts ends.
+setting_rightclick#:#Disable Right Click
+setting_rightclick_info#:#Disable Right Click prevents access to the right click menu.
+setting_noreentry#:#Prevent Re-entry
+setting_noreentry_info#:#Prevent Re-entry requires the exam to be completed in one sitting, any disconnection will end the exam.
