@@ -117,6 +117,7 @@ class ComposerStaticInite1ae8bcb242e25c6de07f94f0328d793
         'ILIAS\\Plugin\\Proctorio\\Frontend\\Controller\\ExamSettings' => __DIR__ . '/../..' . '/classes/Frontend/Controller/ExamSettings.php',
         'ILIAS\\Plugin\\Proctorio\\Frontend\\Controller\\RepositoryObject' => __DIR__ . '/../..' . '/classes/Frontend/Controller/RepositoryObject.php',
         'ILIAS\\Plugin\\Proctorio\\Frontend\\Dispatcher' => __DIR__ . '/../..' . '/classes/Frontend/Dispatcher.php',
+        'ILIAS\\Plugin\\Proctorio\\Frontend\\Form\\ExamSettings' => __DIR__ . '/../..' . '/classes/Frontend/Form/ExamSettings.php',
         'ILIAS\\Plugin\\Proctorio\\Frontend\\HttpContext' => __DIR__ . '/../..' . '/classes/Frontend/HttpContext.php',
         'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier' => __DIR__ . '/../..' . '/classes/Frontend/ViewModifier.php',
         'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier\\Base' => __DIR__ . '/../..' . '/classes/Frontend/ViewModifier/Base.php',

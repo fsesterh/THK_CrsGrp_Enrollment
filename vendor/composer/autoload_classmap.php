@@ -16,6 +16,7 @@ return array(
     'ILIAS\\Plugin\\Proctorio\\Frontend\\Controller\\ExamSettings' => $baseDir . '/classes/Frontend/Controller/ExamSettings.php',
     'ILIAS\\Plugin\\Proctorio\\Frontend\\Controller\\RepositoryObject' => $baseDir . '/classes/Frontend/Controller/RepositoryObject.php',
     'ILIAS\\Plugin\\Proctorio\\Frontend\\Dispatcher' => $baseDir . '/classes/Frontend/Dispatcher.php',
+    'ILIAS\\Plugin\\Proctorio\\Frontend\\Form\\ExamSettings' => $baseDir . '/classes/Frontend/Form/ExamSettings.php',
     'ILIAS\\Plugin\\Proctorio\\Frontend\\HttpContext' => $baseDir . '/classes/Frontend/HttpContext.php',
     'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier' => $baseDir . '/classes/Frontend/ViewModifier.php',
     'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier\\Base' => $baseDir . '/classes/Frontend/ViewModifier/Base.php',
