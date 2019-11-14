@@ -28,6 +28,7 @@ acc_header_lock_down_options_info#:#These options determine what will be restric
 acc_header_verification_options#:#Verification Options
 acc_header_verification_options_info#:#These options determine what will be verified prior to the exam.
 acc_header_in_quiz_options#:#In-Quiz Tools
+acc_header_in_quiz_options_info#:#These options determine what tools the student will have access to during the quiz.
 setting_recordvideo#:#Record Video
 setting_recordvideo_info#:#Record Video will capture Video from the webcam for the entire exam, giving insight to test taker's exam environment.
 setting_recordaudio#:#Record Audio
@@ -68,3 +69,7 @@ setting_verifyidauto#:#Verify ID
 setting_verifyidauto_info#:#Verify ID will required the student to show a photo identification car before beginning the exam.
 setting_verifysignature#:#Verify Signature
 setting_verifysignature_info#:#Verifiy Signature requires the student to sign an academic agreement before beginning the exam.
+setting_calculatorbasic#:#Calculator
+setting_calculatorbasic_info#:#This option will allow test takers to perform calculations using an on-screen calculator.
+setting_whiteboard#:#Whiteboard
+setting_whiteboard_info#:#This option allows test takers to use a scratch pad on-screen.
