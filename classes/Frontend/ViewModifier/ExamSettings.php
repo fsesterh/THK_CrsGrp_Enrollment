@@ -86,7 +86,7 @@ class ExamSettings extends Base
                 $this->getCoreController()->getPluginObject()->getPrefix() . '_exam_tab_proctorio',
                 $this->ctrl->getLinkTargetByClass(
                     ['ilUIPluginRouterGUI', get_class($this->getCoreController())],
-                    'ExamSettings.showForm'
+                    'ExamSettings.showSettingsCmd'
                 )
             );
         }

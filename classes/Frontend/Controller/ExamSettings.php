@@ -3,6 +3,8 @@
 
 namespace ILIAS\Plugin\Proctorio\Frontend\Controller;
 
+use ILIAS\Plugin\Proctorio\Frontend\Form\ExamSettings as ExamSettingsForm;
+
 /**
  * Class ExamSettings
  * @package ILIAS\Plugin\Proctorio\Frontend\Controller
@@ -18,7 +20,7 @@ class ExamSettings extends RepositoryObject
      */
     public function getDefaultCommand() : string
     {
-        return 'showFormCmd';
+        return 'showSettingsCmd';
     }
 
     /**
@@ -46,10 +48,40 @@ class ExamSettings extends RepositoryObject
     }
 
     /**
+     * @return ExamSettingsForm
+     */
+    private function buildForm() : ExamSettingsForm
+    {
+        $form  = new ExamSettingsForm(
+            $this->getCoreController()->getPluginObject(),
+            $this->getCoreController(),
+            $this->globalProctorioSettings
+        );
+
+        return $form;
+    }
+    
+    /**
      * @return string
      */
-    public function showFormCmd() : string
+    public function showSettingsCmd() : string
     {
-        return 'TODO: Show Proctorio Exam Settings Form';
+        $form = $this->buildForm();
+
+        return $form->getHTML();
+    }
+
+    /**
+     *
+     */
+    public function saveSettings() : string
+    {
+        $form = $this->buildForm();
+        if ($form->saveObject()) {
+            \ilUtil::sendSuccess($this->lng->txt('saved_successfully'), true);
+            $this->ctrl->redirect($this->getCoreController(), $this->getControllerName() . '.showSettings');
+        }
+
+        return $form->getHtml();
     }
 }

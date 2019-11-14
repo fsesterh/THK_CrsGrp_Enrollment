@@ -16,3 +16,7 @@ api_call_unexcpected_response_with_code#:#Der Proctorio-Test kann nicht gestarte
 btn_label_proctorio_review#:#Proctorio Review
 btn_label_proctorio_launch#:#Launch Proctorio Exam
 btn_label_proctorio_resume#:#Resume Proctorio Exam
+form_header_settings#:#Proctorio Einstellungen
+exam_setting_label_status#:#Proctorio aktivieren
+exam_setting_label_status_info#:#Falls aktiviert, wird dieser Test über Proctorio gestartet.
+form_header_exam_settings#:#Proctorio Exam Einstellungen
