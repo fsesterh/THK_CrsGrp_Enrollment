@@ -130,6 +130,11 @@ class ExamSettings extends \ilPropertyFormGUI
         $deckCardRowTemplate = $this->plugin->getTemplate('tpl.settings_deck_row.html', true, true);
         $deckCardTemplate = $this->plugin->getTemplate('tpl.settings_deck_card.html', true, true);
 
+        $deckCardRowTemplate->setVariable(
+            'DESCRIPTION',
+            $this->plugin->txt('acc_header_' . $group . '_options_info')
+        );
+
         $size = 2;
         $smallSize = 6;
         
@@ -149,7 +154,7 @@ class ExamSettings extends \ilPropertyFormGUI
                 )
             ]));
             
-            $deckCardTemplate->setVariable('CARD', $cardTemplate->get());;
+            $deckCardTemplate->setVariable('CARD', $cardTemplate->get());
             $deckCardTemplate->setVariable('SIZE', $size);
             $deckCardTemplate->setVariable('SMALL_SIZE', $smallSize);
             $deckCardTemplate->parseCurrentBlock();
