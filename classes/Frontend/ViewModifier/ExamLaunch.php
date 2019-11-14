@@ -10,6 +10,9 @@ namespace ILIAS\Plugin\Proctorio\Frontend\ViewModifier;
  */
 class ExamLaunch extends Base
 {
+    const CMD_START_TEST = 'startPlayer';
+    const CMD_RESUME_TEST = 'resumePlayer';
+
     /**
      * @return bool
      */
@@ -191,8 +194,8 @@ class ExamLaunch extends Base
     private function manipulateLaunchButton(\DOMDocument $doc) : void
     {
         $xpath = new \DomXPath($doc);
-        $startPlayerCommandButton = $xpath->query("//input[contains(@name, 'startPlayer')]");
-        $resumePlayerCommandButton = $xpath->query("//input[contains(@name, 'resumePlayer')]");
+        $startPlayerCommandButton = $xpath->query("//input[contains(@name, '" . self::CMD_START_TEST . "')]");
+        $resumePlayerCommandButton = $xpath->query("//input[contains(@name, '" . self::CMD_RESUME_TEST . "')]");
 
         if (1 === $startPlayerCommandButton->length xor 1 === $resumePlayerCommandButton->length) {
             if (1 === $startPlayerCommandButton->length) {
@@ -226,7 +229,11 @@ class ExamLaunch extends Base
         $btn->setAttribute('class', 'btn btn-default btn-primary');
         $btn->setAttribute('href', $url);
 
-        $btnText = $doc->createTextNode($elm->getAttribute('value'));
+        $btlLabel = $this->getCoreController()->getPluginObject()->txt('btn_label_proctorio_launch');
+        if ('cmd[' . self::CMD_RESUME_TEST . ']' === $elm->getAttribute('name')) {
+            $btlLabel = $this->getCoreController()->getPluginObject()->txt('btn_label_proctorio_resume');
+        }
+        $btnText = $doc->createTextNode($btlLabel);
         $btn->appendChild($btnText);
 
         $elm->parentNode->insertBefore($btn, $elm->nextSibling);
