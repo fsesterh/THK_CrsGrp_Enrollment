@@ -1,0 +1,94 @@
+@bsbase: "../../../../../../../../../libs/bower/bower_components/bootstrap/less/";
+@appbase: "../../../../../../../../../templates/default/less/";
+
+@import "@{bsbase}variables.less";
+@import "@{appbase}variables.less";
+
+.proctorio-settings-deck .row {
+  margin-left: 0;
+  margin-right: 0;
+
+  > div {
+    padding-left: @padding-xs-horizontal;
+    padding-right: @padding-xs-horizontal;
+    margin-bottom: @padding-large-vertical;
+  }
+
+  &.row-equal-height {
+    &:before {
+      content: none !important;
+    }
+
+    &:after {
+      content: none !important;
+    }
+  }
+}
+
+@media (min-width: @screen-sm-min) {
+  .row-equal-height {
+
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    flex-wrap: wrap;
+
+    > div {
+      display: flex;
+    }
+  }
+}
+
+.proctorio-settings-card {
+  padding: 0;
+  width: 100%;
+
+
+  background-color: @il-primary-container-bg;
+
+  img {
+    width: 100%;
+  }
+
+  .thumbnail {
+    margin-bottom: 0;
+  }
+
+  .caption {
+    .card-title {
+      overflow-wrap: break-word;
+      text-align: center;
+    }
+
+    &:nth-of-type(1n+3) {
+      border-top: 1px solid @panel-inner-border;
+    }
+
+    dl {
+      dt {
+        font-weight: normal;
+        color: @il-light-text-color;
+        font-size: @font-size-small;
+        padding-top: @padding-large-vertical;
+      }
+    }
+  }
+}
+
+.il-panel-report .il-card {
+  background-color: @il-secondary-container-bg;
+}
+
+@media (min-width: @screen-sm-min) {
+  .row-equal-height {
+    .il-card {
+      display: flex;
+      flex-direction: column;
+
+      :nth-child(4) {
+        flex-grow: 2;
+      }
+    }
+  }
+}

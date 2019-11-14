@@ -20,3 +20,8 @@ form_header_settings#:#Proctorio Settings
 exam_setting_label_status#:#Enable Proctorio
 exam_setting_label_status_info#:#If enabled, this test will be launched via Proctorio.
 form_header_exam_settings#:#Proctorio Exam Settings
+exam_settings_info_test_started#:#Exam settings can not be changed once the first learner has started the exam.
+acc_header_recording_options#:#Recording Options
+acc_header_lock_down_options#:#Lock Down Options
+acc_header_verification_options#:#Verification Options
+acc_header_in_quiz_options#:#In-Quiz Tools

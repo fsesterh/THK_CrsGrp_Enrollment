@@ -44,6 +44,10 @@ class ExamSettings extends RepositoryObject
 
         $this->test = \ilObjectFactory::getInstanceByRefId($this->getRefId());
 
+        $this->tpl->addCss(
+            $this->getCoreController()->getPluginObject()->getDirectory() . '/assets/css/styles.css'
+        );
+
         $this->drawHeader();
     }
 
@@ -56,6 +60,12 @@ class ExamSettings extends RepositoryObject
             $this->getCoreController()->getPluginObject(),
             $this->getCoreController(),
             $this->globalProctorioSettings
+        );
+
+        $form->addCommandButton($this->getControllerName() . '.saveSettings', $this->lng->txt('save'));
+        $this->ctrl->setParameter($this->getCoreController(), 'ref_id', $this->getRefId());
+        $form->setFormAction(
+            $this->ctrl->getFormAction($this->getCoreController(), $this->getControllerName() . '.saveSettings')
         );
 
         return $form;
@@ -74,7 +84,7 @@ class ExamSettings extends RepositoryObject
     /**
      *
      */
-    public function saveSettings() : string
+    public function saveSettingsCmd() : string
     {
         $form = $this->buildForm();
         if ($form->saveObject()) {

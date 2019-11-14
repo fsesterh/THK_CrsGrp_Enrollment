@@ -43,9 +43,10 @@ class ExamSettings extends \ilPropertyFormGUI
      */
     protected function initForm() : void
     {
-        $this->addCommandButton('saveSettings', $this->lng->txt('save'));
-        $this->setFormAction($this->ctrl->getFormAction($this->cmdObject, 'saveSettings'));
         $this->setTitle($this->plugin->txt('form_header_settings'));
+        $this->setDescription($this->plugin->txt('exam_settings_info_test_started'));
+
+        // TODO: Check if there is any existing participant data. If yes, disabled all elements
 
         $activationStatus = new \ilCheckboxInputGUI(
             $this->plugin->txt('exam_setting_label_status'), 'status'
@@ -58,7 +59,115 @@ class ExamSettings extends \ilPropertyFormGUI
         $examSettingsHeader->setTitle($this->plugin->txt('form_header_exam_settings'));
         $this->addItem($examSettingsHeader);
 
+        $accordion = new \ilAccordionGUI();
+        $accordion->setBehaviour(\ilAccordionGUI::FIRST_OPEN);
+        $accordion->addItem(
+            $this->plugin->txt('acc_header_recording_options'),
+            $this->renderSettings('recording')
+        );
+        $accordion->addItem(
+            $this->plugin->txt('acc_header_lock_down_options'),
+            $this->renderSettings('lock_down')
+        );
+        $accordion->addItem(
+            $this->plugin->txt('acc_header_verification_options'),
+            $this->renderSettings('verification')
+        );
+        $accordion->addItem(
+            $this->plugin->txt('acc_header_in_quiz_options'),
+            $this->renderSettings('in_quiz')
+        );
+
+        $examSettings = new \ilNonEditableValueGUI('', '', true);
+        $examSettings->setValue($accordion->getHTML());
+        $this->addItem($examSettings);
+
         $this->setValuesByArray([]);
+    }
+
+    /**
+     * @param string $group
+     * @return string
+     */
+    private function renderSettings(string $group) : string 
+    {
+        $settings = [
+            "recording" => [
+                "recordvideo",
+                "recordaudio",
+                "recordscreen",
+                "recordwebtraffic",
+                "recordroomstart",
+            ],
+
+            "lock_down" => [
+                "fullscreenlenient", // fullscreenmoderate or fullscreensevere
+                "onescreen",
+                "notabs", // or linksonly
+                "closetabs",
+                "print",
+                "clipboard",
+                "downloads",
+                "cache",
+                "rightclick",
+                "noreentry", // or agentreentry
+            ],
+            
+            "verification" => [
+                "verifyvideo",
+                "verifyaudio",
+                "verifydesktop",
+                "verifyidauto", // or verifyidlive
+                "verifysignature",
+            ],
+            
+            "in_quiz" => [
+                "calculatorbasic", // or "calculatorsci
+                "whiteboard",
+            ],
+        ];
+
+        $deckCardRowTemplate = $this->plugin->getTemplate('tpl.settings_deck_row.html', true, true);
+        $deckCardTemplate = $this->plugin->getTemplate('tpl.settings_deck_card.html', true, true);
+
+        $size = 2;
+        $smallSize = 6;
+        
+        global $DIC;
+
+        $cardsPerRow = 12 / $size;
+        $i = 1;
+        foreach ($settings[$group] as $setting) {
+            $deckCardTemplate->setCurrentBlock('card');
+
+            $cardTemplate = $this->plugin->getTemplate('tpl.settings_card.html', true, true);
+            $cardTemplate->setVariable('TITLE', $setting);
+            $cardTemplate->setVariable('IMAGE', $DIC->ui()->renderer()->render([
+                $DIC->ui()->factory()->image()->standard(
+                    'https://cdn.proctorio.net/assets/exam-settings/'. $setting . '.svg',
+                    ''
+                )
+            ]));
+            
+            $deckCardTemplate->setVariable('CARD', $cardTemplate->get());;
+            $deckCardTemplate->setVariable('SIZE', $size);
+            $deckCardTemplate->setVariable('SMALL_SIZE', $smallSize);
+            $deckCardTemplate->parseCurrentBlock();
+
+            if (($i % $cardsPerRow) == 0) {
+                $deckCardRowTemplate->setCurrentBlock('row');
+                $deckCardRowTemplate->setVariable('CARDS', $deckCardTemplate->get());
+                $deckCardRowTemplate->parseCurrentBlock();
+                $deckCardTemplate = $this->plugin->getTemplate('tpl.settings_deck_card.html', true, true);
+                $i=0;
+            }
+            $i++;
+        }
+        $deckCardRowTemplate->setCurrentBlock('row');
+        $deckCardRowTemplate->setVariable('CARDS', $deckCardTemplate->get());
+        $deckCardRowTemplate->parseCurrentBlock();
+
+        return $deckCardRowTemplate->get();
     }
 
     /**
@@ -70,6 +179,8 @@ class ExamSettings extends \ilPropertyFormGUI
         if (!$bool) {
             return $bool;
         }
+
+        // TODO: Check if there is any existing participant data. If yes, respond with an error message and don't save
 
         return true;
     }
@@ -85,6 +196,7 @@ class ExamSettings extends \ilPropertyFormGUI
         }
 
         try {
+            // TODO: Save values
             return true;
         } catch (\ilException $e) {
             \ilUtil::sendFailure($this->plugin->txt($e->getMessage()));
@@ -105,9 +217,10 @@ class ExamSettings extends \ilPropertyFormGUI
         $success = true;
 
         try {
-            $this->setValuesByArray(
+            // TODO: Fill form
+            /*$this->setValuesByArray(
                 $this->generalSettings->toArray()
-            );
+            )*/;
         } catch (\ilException $e) {
             \ilUtil::sendFailure($e->getMessage());
             $success = false;

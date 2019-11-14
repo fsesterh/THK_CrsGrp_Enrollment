@@ -1,0 +1,86 @@
+/*		Color scheme
+		Dark BLue: #0f2152;
+		Mid Blue: #4c6586;
+		Green: #6ea03c;
+		Light Brown: #dcb496;
+		Dark Brown: #523228;
+		Orange: #fa8228;
+		External Blue: #21c5d8;
+		ILIAS 4 MainMenu Color: #c8e6ff;
+*/
+/** if left unchanged, you have to copy all the background images to your skin/images folder.
+* To use the delos background images in your skin,
+* please change this value (in custom less data or in variables.less of your custom skin) to "../../../../templates/default/images/"
+*/
+/** if left unchanged, you have to copy delos fonts folder to your skin folder.
+* To use the delos fonts in your skin,
+* please change this value (in custom less data or variables.less of your custom skin) to "../../../../templates/default/fonts/"
+*/
+/* @il-highlight-bg: saturate(lighten(@brand-warning, 34%), 80%); */
+/* @il-highlight-bg: lighten(@brand-secondary, 44%); */
+/* @il-highlight-bg: lighten(#21c5d8, 40%); */
+/* @nav-tabs-link-hover-border-color: @brand-primary; */
+.proctorio-settings-deck .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+.proctorio-settings-deck .row > div {
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-bottom: 6px;
+}
+.proctorio-settings-deck .row.row-equal-height:before {
+  content: none !important;
+}
+.proctorio-settings-deck .row.row-equal-height:after {
+  content: none !important;
+}
+@media (min-width: 768px) {
+  .row-equal-height {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .row-equal-height > div {
+    display: flex;
+  }
+}
+.proctorio-settings-card {
+  padding: 0;
+  width: 100%;
+  background-color: white;
+}
+.proctorio-settings-card img {
+  width: 100%;
+}
+.proctorio-settings-card .thumbnail {
+  margin-bottom: 0;
+}
+.proctorio-settings-card .caption .card-title {
+  overflow-wrap: break-word;
+  text-align: center;
+}
+.proctorio-settings-card .caption:nth-of-type(1n+3) {
+  border-top: 1px solid #ddd;
+}
+.proctorio-settings-card .caption dl dt {
+  font-weight: normal;
+  color: #909090;
+  font-size: 12px;
+  padding-top: 6px;
+}
+.il-panel-report .il-card {
+  background-color: #f9f9f9;
+}
+@media (min-width: 768px) {
+  .row-equal-height .il-card {
+    display: flex;
+    flex-direction: column;
+  }
+  .row-equal-height .il-card :nth-child(4) {
+    flex-grow: 2;
+  }
+}
+/*# sourceMappingURL=styles.css.map */
