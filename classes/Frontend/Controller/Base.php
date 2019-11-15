@@ -19,7 +19,7 @@ abstract class Base
     use HttpContext;
 
     /** @var \ilTemplate */
-    protected $tpl;
+    public $tpl;
     /** @var Factory */
     protected $uiFactory;
     /** @var \ilCtrl */

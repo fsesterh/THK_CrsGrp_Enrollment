@@ -3,6 +3,7 @@
 
 namespace ILIAS\Plugin\Proctorio\Frontend\Form;
 
+use ILIAS\Plugin\Proctorio\Frontend\Controller\Base;
 use ILIAS\Plugin\Proctorio\UI\Form\Bindable;
 
 /**
@@ -14,6 +15,8 @@ class ExamSettings extends \ilPropertyFormGUI
 {
     /** @var \ilProctorioPlugin */
     private $plugin;
+    /** @var Base */
+    private $controller;
     /** @var object */
     private $cmdObject;
     /** @var Bindable */
@@ -69,15 +72,18 @@ class ExamSettings extends \ilPropertyFormGUI
     /**
      * Form constructor.
      * @param \ilProctorioPlugin $plugin
+     * @param Base $controller
      * @param object $cmdObject
      * @param Bindable $generalSettings
      */
     public function __construct(
         \ilProctorioPlugin $plugin,
+        Base $controller,
         $cmdObject,
         Bindable $generalSettings
     ) {
         $this->plugin = $plugin;
+        $this->controller = $controller;
         $this->cmdObject = $cmdObject;
         $this->generalSettings = $generalSettings;
         parent::__construct();
@@ -130,6 +136,13 @@ class ExamSettings extends \ilPropertyFormGUI
         $this->addItem($examSettings);
 
         $this->setValuesByArray([]);
+
+        $configuration = json_encode([
+            'imgHttpBasePath' => 'https://cdn.proctorio.net/assets/exam-settings/'
+        ]);
+        $this->controller->tpl->addOnLoadCode(
+            'il.proctorioSettings.init(' . $configuration . ');'
+        );
     }
 
     /**

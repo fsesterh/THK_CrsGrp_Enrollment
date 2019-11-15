@@ -50,12 +50,6 @@ class ExamSettings extends RepositoryObject
         $this->tpl->addJavaScript(
             $this->getCoreController()->getPluginObject()->getDirectory() . '/assets/js/main.js'
         );
-        $configuration = json_encode([
-           'imgHttpBasePath' => 'https://cdn.proctorio.net/assets/exam-settings/'
-        ]);
-        $this->tpl->addOnLoadCode(
-            'il.proctorioSettings.init(' . $configuration . ');'
-        );
 
         $this->drawHeader();
     }
@@ -67,6 +61,7 @@ class ExamSettings extends RepositoryObject
     {
         $form  = new ExamSettingsForm(
             $this->getCoreController()->getPluginObject(),
+            $this,
             $this->getCoreController(),
             $this->globalProctorioSettings
         );
