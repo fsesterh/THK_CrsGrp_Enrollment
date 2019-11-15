@@ -43,8 +43,16 @@
 .proctorio-settings-card {
   padding: 0;
   width: 100%;
+  
+  &:hover {
+    cursor: pointer;
+  }
 
   background-color: @il-primary-container-bg;
+
+  &.active {
+    background-color: @alert-success-bg;
+  }
 
   &.thumbnail {
     margin-bottom: 0;

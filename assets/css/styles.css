@@ -52,6 +52,12 @@
   width: 100%;
   background-color: white;
 }
+.proctorio-settings-card:hover {
+  cursor: pointer;
+}
+.proctorio-settings-card.active {
+  background-color: #dff0d8;
+}
 .proctorio-settings-card.thumbnail {
   margin-bottom: 0;
   padding-top: 10px;
