@@ -19,26 +19,34 @@ class TestSettings extends \ilPropertyFormGUI
     private $controller;
     /** @var object */
     private $cmdObject;
+    /** @var \ilObjTest */
+    private $test;
     /** @var Bindable */
     private $generalSettings;
+    /** @var bool */
+    private $disabled = false;
 
     /**
      * Form constructor.
      * @param \ilProctorioPlugin $plugin
      * @param Base $controller
      * @param object $cmdObject
+     * @param \ilObjTest $test
      * @param Bindable $generalSettings
      */
     public function __construct(
         \ilProctorioPlugin $plugin,
         Base $controller,
         $cmdObject,
+        \ilObjTest $test,
         Bindable $generalSettings
     ) {
         $this->plugin = $plugin;
         $this->controller = $controller;
         $this->cmdObject = $cmdObject;
+        $this->test = $test;
         $this->generalSettings = $generalSettings;
+        $this->disabled = $this->test->participantDataExist();
         parent::__construct();
 
         $this->initForm();
@@ -51,14 +59,17 @@ class TestSettings extends \ilPropertyFormGUI
     {
         $this->setTitle($this->plugin->txt('form_header_settings'));
         $this->setDescription($this->plugin->txt('exam_settings_info_test_started'));
-
-        // TODO: Check if there is any existing participant data. If yes, disabled all elements
+        
+        if (!$this->disabled) {
+            $this->addCommandButton($this->controller->getControllerName() . '.saveSettings', $this->lng->txt('save'));
+        }
 
         $activationStatus = new \ilCheckboxInputGUI(
             $this->plugin->txt('exam_setting_label_status'), 'status'
         );
         $activationStatus->setInfo($this->plugin->txt('exam_setting_label_status_info'));
         $activationStatus->setValue(1);
+        $activationStatus->setDisabled($this->disabled);
         $this->addItem($activationStatus);
         
         $examSettingsHeader = new \ilFormSectionHeaderGUI();
@@ -70,12 +81,20 @@ class TestSettings extends \ilPropertyFormGUI
             '',
             'settings'
         );
+        $examSettings->setDisabled($this->disabled);
         $this->addItem($examSettings);
 
         $this->controller->lng->toJSMap($examSettings->getClientLanguageMapping());
         $this->controller->pageTemplate->addOnLoadCode($examSettings->getOnloadCode());
 
-        $this->setValuesByArray([]); // TODO: Fill form
+        // TODO: Fill form
+        $this->setValuesByArray([
+            'status' => true,
+            'settings' => [
+                'recordvideo',
+                'fullscreensevere',
+            ],
+        ]);
     }
 
     /**
@@ -88,8 +107,10 @@ class TestSettings extends \ilPropertyFormGUI
             return $bool;
         }
 
-        // TODO: Check if there is any existing participant data. If yes, respond with an error message and don't save
-        //exam_settings_err_existing_records
+        if ($this->disabled) {
+            \ilUtil::sendFailure('exam_settings_err_existing_records');
+            return false;
+        }
 
         return true;
     }

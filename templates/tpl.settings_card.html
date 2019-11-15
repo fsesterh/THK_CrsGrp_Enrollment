@@ -1,5 +1,5 @@
 <div role="<!-- BEGIN role_binary -->checkbox<!-- END role_binary --><!-- BEGIN role_modes -->switch<!-- END role_modes -->"
-	 class="proctorio-settings-card thumbnail<!-- BEGIN active --> active<!-- END active --><!-- BEGIN binary --> binary<!-- END binary --><!-- BEGIN modes --> modes<!-- END modes -->"
+	 class="proctorio-settings-card thumbnail<!-- BEGIN disabled --> disabled<!-- END disabled --><!-- BEGIN active --> active<!-- END active --><!-- BEGIN binary --> binary<!-- END binary --><!-- BEGIN modes --> modes<!-- END modes -->"
 	 data-key="{KEY}"
 	 data-current-value="{VALUE}"
 >
@@ -8,9 +8,9 @@
 		<h5 class="card-title">{TITLE}</h5>
 	</div>
 	<!-- BEGIN type_checkbox --> 
-	<input class="ilNoDisplay" type="checkbox" name="{TYPE_CHECKBOX_KEY}" value="1"<!-- BEGIN checkbox_checked --> checked<!-- END checkbox_checked --> />
+	<input class="ilNoDisplay" type="checkbox" name="{TYPE_CHECKBOX_NAME}[{TYPE_CHECKBOX_KEY}]" value="1"<!-- BEGIN checkbox_checked --> checked<!-- END checkbox_checked --> />
 	<!-- END type_checkbox -->
 	<!-- BEGIN type_radio -->
-	<input class="ilNoDisplay" type="radio" name="{TYPE_RADIO_KEY}" value="{TYPE_RADIO_VALUE}"<!-- BEGIN radio_checked --> checked<!-- END radio_checked --> />
+	<input class="ilNoDisplay" type="radio" name="{TYPE_RADIO_NAME}[{TYPE_RADIO_KEY}]" value="{TYPE_RADIO_VALUE}"<!-- BEGIN radio_checked --> checked<!-- END radio_checked --> />
 	<!-- END type_radio -->
 </div>

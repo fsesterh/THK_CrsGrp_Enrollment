@@ -63,10 +63,10 @@ class TestSettings extends RepositoryObject
             $this->getCoreController()->getPluginObject(),
             $this,
             $this->getCoreController(),
+            $this->test,
             $this->globalProctorioSettings
         );
 
-        $form->addCommandButton($this->getControllerName() . '.saveSettings', $this->lng->txt('save'));
         $this->ctrl->setParameter($this->getCoreController(), 'ref_id', $this->getRefId());
         $form->setFormAction(
             $this->ctrl->getFormAction($this->getCoreController(), $this->getControllerName() . '.saveSettings')

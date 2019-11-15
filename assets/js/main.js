@@ -8,6 +8,8 @@ if (typeof il === 'undefined') {
 	"use strict";
 
 	const defaults = {
+		postVar: "",
+		disabled: false,
 		imgHttpBasePath: "",
 		images: [],
 		modeValues: {},
@@ -64,15 +66,22 @@ if (typeof il === 'undefined') {
 		});
 
 		$(globalSettings.settingElementSelector).on("click", function (e) {
+			if (globalSettings.disabled) {
+				return false;
+			}
+
 			let $this = $(this);
 			const key = $this.data("key"), currentValue = $this.data("current-value");
 
 			if ($this.hasClass(globalSettings.binarySettingCssClass)) {
+				const isActive = !!$this.hasClass(globalSettings.activeSettingCssClass);
 				$this.toggleClass(globalSettings.activeSettingCssClass);
 
 				$this
-					.find('[name="' + key + '"]')
-					.prop("checked", !!$this.hasClass(globalSettings.activeSettingCssClass));
+					.find('[name=*"' + key + '"]')
+					.prop("checked", isActive);
+
+				$this.data("current-value", isActive ? key : '');
 			} else if ($this.hasClass(globalSettings.modeSettingCssClass)) {
 				let nextRadioValue = "", nextTitle = "", nextImage = "";
 
@@ -102,7 +111,7 @@ if (typeof il === 'undefined') {
 					$this.find(globalSettings.titleSelector).html(nextTitle);
 					if (0 !== nextRadioValue.length) {
 						$this
-							.find('[name="' + key + '"][value="' + nextRadioValue + '"]')
+							.find('[name*="' + key + '"][value="' + nextRadioValue + '"]')
 							.prop("checked", true);
 					}
 				};

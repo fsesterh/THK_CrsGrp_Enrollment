@@ -22,7 +22,6 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
         'modeValues' => [],
         'images' => [],
     ];
-
     /** @var array[] */
     private $validTestSettings = [
         "recording" => [
@@ -79,6 +78,8 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
             "whiteboard" => ['type' => 'binary'],
         ],
     ];
+    /** @var array */
+    private $value = [];
 
     /**
      * ExamSettingsInput constructor.
@@ -97,6 +98,7 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
      */
     protected function init() : void
     {
+        $this->onLoadCodeConfiguration['postVar'] = $this->getPostVar();
         foreach ($this->validTestSettings as $section => $settings) {
             foreach ($settings as $setting => $definition) {
                 if ('binary' === $definition['type']) {
@@ -117,19 +119,29 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
     }
 
     /**
-     * 
+     * @param $values
      */
-    public function setValueByArray($value)
+    public function setValueByArray($values) : void
     {
-        
+        $this->setValue($values[$this->getPostVar()] ?? []);
     }
 
     /**
-     *
+     * @param $value
      */
-    public function setValue($value)
+    public function setValue($value) : void
     {
+        if (is_array($value)) {
+            $this->value = $value;
+        }
+    }
 
+    /**
+     * @return array
+     */
+    public function getValue() : array
+    {
+        return $this->value;
     }
 
     /**
@@ -137,12 +149,37 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
      */
     public function checkInput()
     {
-        $isValid = parent::checkInput();
-        if (!$isValid) {
+        if (!isset($_POST[$this->getPostVar()]) || !is_array($_POST[$this->getPostVar()])) {
+            $_POST[$this->getPostVar()] = [];
+        }
+
+        foreach ($_POST[$this->getPostVar()] as $key => $value) {
+            $_POST[$this->getPostVar()][$key] = trim((string) \ilUtil::stripSlashesRecursive($value));
+        }
+
+        if ($this->getRequired() && 0 === strlen(implode('', $_POST[$this->getPostVar()]))) {
+            $this->setAlert($this->lng->txt('msg_input_is_required'));
             return false;
         }
 
-        return true;
+        return $this->checkSubItemsInput();
+    }
+
+    /**
+     * @return array
+     */
+    public function getClientLanguageMapping() : array
+    {
+        return $this->clientLanguageMapping;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOnloadCode() : string
+    {
+        $this->onLoadCodeConfiguration['disabled'] = (bool) $this->getDisabled();
+        return  'il.proctorioSettings.init(' . json_encode($this->onLoadCodeConfiguration) . ');';
     }
 
     /**
@@ -162,22 +199,6 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
         }
 
         return $accordion->getHTML();
-    }
-
-    /**
-     * @return array
-     */
-    public function getClientLanguageMapping() : array
-    {
-        return $this->clientLanguageMapping;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOnloadCode() : string
-    {
-        return  'il.proctorioSettings.init(' . json_encode($this->onLoadCodeConfiguration) . ');';
     }
 
     /**
@@ -248,44 +269,70 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
     {
         global $DIC;
 
+        $isActive = false;
+        $activeSetting = '';
+
         $cardTemplate = $this->plugin->getTemplate('tpl.settings_card.html', true, true);
 
         $cardTemplate->touchBlock('role_' . $definition['type']);
         $cardTemplate->touchBlock($definition['type']);
-        if (false) {  // TODO: Only if active
-            $cardTemplate->touchBlock('active');
+        
+        if ($this->getDisabled()) {
+            $cardTemplate->touchBlock('disabled');
         }
 
         $cardTemplate->setVariable('KEY', $setting);
         if ('binary' === $definition['type']) {
-            $cardTemplate->setVariable('VALUE', $setting);
+            if (in_array($setting, $this->getValue())) {
+                $isActive = true;
+                $activeSetting = $setting;
+                $cardTemplate->setVariable('VALUE', $setting);
+                $cardTemplate->touchBlock('active');
+            } else {
+                $cardTemplate->setVariable('VALUE', '');
+            }
         } else {
-            $cardTemplate->setVariable('VALUE', ''); // TODO: Mode
-        }
+            $intersection = array_intersect($definition['modes'], $this->getValue());
+            $isActive = (1 === count($intersection));
 
-        $cardTemplate->setVariable('TITLE', $this->plugin->txt('setting_' . $setting));
+            if ($isActive) {
+                $activeSetting = array_values($intersection)[0];
+                $cardTemplate->setVariable('VALUE', $activeSetting);
+                $cardTemplate->touchBlock('active');
+            } else {
+                $cardTemplate->setVariable('VALUE', '');
+            }
+        }
+        
+        $presentedSetting = $setting;
+        if ($isActive) {
+            $presentedSetting = $activeSetting;
+        }
+        $cardTemplate->setVariable('TITLE', $this->plugin->txt('setting_' . $presentedSetting));
         $cardTemplate->setVariable('IMAGE', $DIC->ui()->renderer()->render([
             $DIC->ui()->factory()->image()->standard(
-                'https://cdn.proctorio.net/assets/exam-settings/' . $setting . '.svg',
-                $this->plugin->txt('setting_' . $setting)
+                'https://cdn.proctorio.net/assets/exam-settings/' . $presentedSetting . '.svg',
+                $this->plugin->txt('setting_' . $presentedSetting)
             )
         ]));
 
         if ('binary' === $definition['type']) {
-            if (false) { // TODO: Only if active
+            if (in_array($setting, $this->getValue())) {
                 $cardTemplate->touchBlock('checkbox_checked');
             }
 
             $cardTemplate->setCurrentBlock('type_checkbox');
+            $cardTemplate->setVariable('TYPE_CHECKBOX_NAME', $this->getPostVar());
             $cardTemplate->setVariable('TYPE_CHECKBOX_KEY', $setting);
             $cardTemplate->parseCurrentBlock();
         } else {
             foreach ($definition['modes'] as $mode) {
-                if (false) {  // TODO: Only if active
+                if (in_array($mode, $this->getValue())) {
                     $cardTemplate->touchBlock('radio_checked');
                 }
 
                 $cardTemplate->setCurrentBlock('type_radio');
+                $cardTemplate->setVariable('TYPE_RADIO_NAME', $this->getPostVar());
                 $cardTemplate->setVariable('TYPE_RADIO_KEY', $setting);
                 $cardTemplate->setVariable('TYPE_RADIO_VALUE', $mode);
                 $cardTemplate->parseCurrentBlock();

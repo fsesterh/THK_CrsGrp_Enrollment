@@ -55,8 +55,17 @@
 .proctorio-settings-card:hover {
   cursor: pointer;
 }
+.proctorio-settings-card.disabled {
+  cursor: default;
+}
+.proctorio-settings-card.disabled {
+  background: repeating-linear-gradient(45deg, white, rgba(255, 255, 255, 0.2) 10px, rgba(255, 255, 255, 0.5) 10px, rgba(255, 255, 255, 0.8) 20px);
+}
 .proctorio-settings-card.active {
   background-color: #dff0d8;
+}
+.proctorio-settings-card.active.disabled {
+  background: repeating-linear-gradient(45deg, #dff0d8, rgba(223, 240, 216, 0.2) 10px, rgba(223, 240, 216, 0.5) 10px, rgba(223, 240, 216, 0.8) 20px);
 }
 .proctorio-settings-card.thumbnail {
   margin-bottom: 0;

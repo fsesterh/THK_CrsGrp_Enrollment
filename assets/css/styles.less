@@ -48,10 +48,32 @@
     cursor: pointer;
   }
 
+  &.disabled {
+    cursor: default;
+  }
+
   background-color: @il-primary-container-bg;
+  &.disabled {
+    background: repeating-linear-gradient(
+            45deg,
+            @il-primary-container-bg,
+            fade(@il-primary-container-bg, 20%) 10px,
+            fade(@il-primary-container-bg,50%) 10px,
+            fade(@il-primary-container-bg, 80%) 20px
+    );
+  }
 
   &.active {
     background-color: @alert-success-bg;
+    &.disabled {
+      background: repeating-linear-gradient(
+              45deg,
+              @alert-success-bg,
+              fade(@alert-success-bg, 20%) 10px,
+              fade(@alert-success-bg, 50%) 10px,
+              fade(@alert-success-bg, 80%) 20px
+      );
+    }
   }
 
   &.thumbnail {
