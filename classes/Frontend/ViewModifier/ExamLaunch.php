@@ -29,33 +29,34 @@ class ExamLaunch extends Base
      */
     private function isInfoScreenContext() : bool
     {
+        $validInfoScreenCommands = array_map('strtolower', [
+            'showNotes',
+            'infoScreen',
+            'showSummary',
+            'activateComments',
+            'deactivateComments',
+            'addNote',
+            'updateNote',
+            'deleteNote',
+            'editNoteForm',
+            'confirmDelete',
+            'cancelDelete',
+            'listSortAsc',
+            'listSortDesc',
+            'saveTags',
+        ]);
+        
         $isBaseClassInfoScreenRequest = (
             $this->isBaseClass('ilObjTestGUI') &&
-            in_array(
-                strtolower($this->ctrl->getCmd()),
-                [
-                    strtolower('infoScreen'),
-                    strtolower('showSummary'),
-                ]
-            )
+            in_array(strtolower($this->ctrl->getCmd()), $validInfoScreenCommands)
         );
 
         $isCmdClassInfoScreenRequest = (
             $this->isCommandClass('ilInfoScreenGUI') &&
-            in_array(
-                strtolower($this->ctrl->getCmd()),
-                [
-                    strtolower('infoScreen'),
-                ]
-            )
+            in_array(strtolower($this->ctrl->getCmd()), $validInfoScreenCommands)
         ) || (
             $this->isCommandClass('ilObjTestGUI') &&
-            in_array(
-                strtolower($this->ctrl->getCmd()),
-                [
-                    strtolower('infoScreen'),
-                ]
-            )
+            in_array(strtolower($this->ctrl->getCmd()), $validInfoScreenCommands)
          );
 
         $isGotoRequest = (
