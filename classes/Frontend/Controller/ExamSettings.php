@@ -47,6 +47,9 @@ class ExamSettings extends RepositoryObject
         $this->tpl->addCss(
             $this->getCoreController()->getPluginObject()->getDirectory() . '/assets/css/styles.css'
         );
+        $this->tpl->addJavaScript(
+            $this->getCoreController()->getPluginObject()->getDirectory() . '/assets/js/main.js'
+        );
 
         $this->drawHeader();
     }
