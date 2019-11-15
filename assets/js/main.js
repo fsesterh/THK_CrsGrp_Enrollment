@@ -78,7 +78,7 @@ if (typeof il === 'undefined') {
 				$this.toggleClass(globalSettings.activeSettingCssClass);
 
 				$this
-					.find('[name=*"' + key + '"]')
+					.find('[name*="' + key + '"]')
 					.prop("checked", isActive);
 
 				$this.data("current-value", isActive ? key : '');
