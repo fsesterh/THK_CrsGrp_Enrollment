@@ -18,6 +18,53 @@ class ExamSettings extends \ilPropertyFormGUI
     private $cmdObject;
     /** @var Bindable */
     private $generalSettings;
+    /** @var array[] */
+    private $validExamSettings = [
+        "recording" => [
+            "recordvideo" => ['type' => 'binary'],
+            "recordaudio" => ['type' => 'binary'],
+            "recordscreen"=> ['type' => 'binary'],
+            "recordwebtraffic" => ['type' => 'binary'],
+            "recordroomstart" => ['type' => 'binary'],
+        ],
+
+        "lock_down" => [
+            "fullscreenlenient" => ['type' => 'modes', 'modes' => [
+                'fullscreenlenient',
+                'fullscreenmoderate',
+                'fullscreensevere',
+            ]],
+            "onescreen" => ['type' => 'binary'],
+            "notabs" => ['type' => 'modes', 'modes' => [
+                'notabs',
+                'linksonly',
+            ]],
+            "closetabs" => ['type' => 'binary'],
+            "print" => ['type' => 'binary'],
+            "clipboard" => ['type' => 'binary'],
+            "downloads" => ['type' => 'binary'],
+            "cache" => ['type' => 'binary'],
+            "rightclick" => ['type' => 'binary'],
+            //"noreentry", // (not supported by API, although documented)
+        ],
+
+        "verification" => [
+            "verifyvideo" => ['type' => 'binary'],
+            "verifyaudio" => ['type' => 'binary'],
+            "verifydesktop" => ['type' => 'binary'],
+            // "verifyroom", // (not supported by API)
+            "verifyidauto" => ['type' => 'binary'], // or verifyidlive (no image available, not supported by API)
+            "verifysignature" => ['type' => 'binary'],
+        ],
+
+        "in_quiz" => [
+            "calculatorbasic" => ['type' => 'modes', 'modes' => [
+                'calculatorbasic',
+                'calculatorsci',
+            ]],
+            "whiteboard" => ['type' => 'binary'],
+        ],
+    ];
 
     /**
      * Form constructor.
@@ -91,42 +138,7 @@ class ExamSettings extends \ilPropertyFormGUI
      */
     private function renderSettings(string $group) : string 
     {
-        $settings = [
-            "recording" => [
-                "recordvideo",
-                "recordaudio",
-                "recordscreen",
-                "recordwebtraffic",
-                "recordroomstart",
-            ],
-
-            "lock_down" => [
-                "fullscreenlenient", // or fullscreenmoderate or fullscreensevere
-                "onescreen",
-                "notabs", // or linksonly
-                "closetabs",
-                "print",
-                "clipboard",
-                "downloads",
-                "cache",
-                "rightclick",
-                "noreentry", // or agentreentry (no images for both)
-            ],
-            
-            "verification" => [
-                "verifyvideo",
-                "verifyaudio",
-                "verifydesktop",
-                // "verifyroom", // missing
-                "verifyidauto", // or verifyidlive (no image)
-                "verifysignature",
-            ],
-            
-            "in_quiz" => [
-                "calculatorbasic", // or "calculatorsci
-                "whiteboard",
-            ],
-        ];
+        global $DIC;
 
         $deckCardRowTemplate = $this->plugin->getTemplate('tpl.settings_deck_row.html', true, true);
         $deckCardTemplate = $this->plugin->getTemplate('tpl.settings_deck_card.html', true, true);
@@ -138,15 +150,18 @@ class ExamSettings extends \ilPropertyFormGUI
 
         $size = 2;
         $smallSize = 6;
-        
-        global $DIC;
 
         $cardsPerRow = 12 / $size;
         $i = 1;
-        foreach ($settings[$group] as $setting) {
+        foreach ($this->validExamSettings[$group] as $setting => $definition) {
             $deckCardTemplate->setCurrentBlock('card');
 
             $cardTemplate = $this->plugin->getTemplate('tpl.settings_card.html', true, true);
+
+            if (rand(0, 1)) {
+                $cardTemplate->touchBlock('active');
+            }
+            
             $cardTemplate->setVariable('KEY', $setting);
             $cardTemplate->setVariable(
                 'DESCRIPTION',
@@ -159,6 +174,28 @@ class ExamSettings extends \ilPropertyFormGUI
                     $this->plugin->txt('setting_' . $setting)
                 )
             ]));
+
+            if ('binary' === $definition['type']) {
+                if (true) {
+                    $cardTemplate->touchBlock('checkbox_checked');
+                }
+                
+                $cardTemplate->setCurrentBlock('type_checkbox');
+                $cardTemplate->setVariable('TYPE_CHECKBOX_KEY', $setting);
+                $cardTemplate->parseCurrentBlock();
+            } else {
+                foreach ($definition['modes'] as $mode) {
+                    if (true) {
+                        $cardTemplate->touchBlock('radio_checked');
+                    }
+
+                    $cardTemplate->setCurrentBlock('type_radio');
+                    $cardTemplate->setVariable('TYPE_RADIO_KEY', $setting);
+                    $cardTemplate->setVariable('TYPE_RADIO_VALUE', $mode);
+                    //$cardTemplate->setVariable('TYPE_RADIO_CHECKED', $mode);
+                    $cardTemplate->parseCurrentBlock();
+                }
+            }
 
             $deckCardTemplate->setVariable('CARD', $cardTemplate->get());
             $deckCardTemplate->setVariable('SIZE', $size);
