@@ -22,7 +22,7 @@ exam_setting_label_status_info#:#Falls aktiviert, wird dieser Test über Proctor
 form_header_exam_settings#:#Proctorio Exam Einstellungen
 exam_settings_info_test_started#:#Die Einstellungen können nicht mehr verändert werden, sobald der erster Lernende den Test gestartet hat.
 acc_header_recording_options#:#Aufzeichnungseinstellungen
-acc_header_recording_options_info#:#Diese Einstellungen bestimmen, welche Informationen während de Prüfung aufgezeichnet werden.
+acc_header_recording_options_info#:#Diese Einstellungen bestimmen, welche Informationen während der Prüfung aufgezeichnet werden.
 acc_header_lock_down_options#:#Benutzungseinschränkungen
 acc_header_lock_down_options_info#:#These options determine what will be restricted during the exam.
 acc_header_verification_options#:#Verifizierung
@@ -41,10 +41,16 @@ setting_recordroomstart#:#Record Room
 setting_recordroomstart_info#:#Record Room will require the student to show their entire test environment at intervals based on the option selected.
 setting_fullscreenlenient#:#Force Full Screen
 setting_fullscreenlenient_info#:#Force Full Screen prevents access to other applications or websites during the exam.
+setting_fullscreenmoderate#:#Full Screen Moderate
+setting_fullscreenmoderate_info#:#Full Screen Moderate prevents access to other applications or websites during the exam.
+setting_fullscreensevere#:#Full Screen Severe
+setting_fullscreenlenient_info#:#Full Screen Severe prevents access to other applications or websites during the exam.
 setting_onescreen#:#Only One Screen
 setting_onescreen_info#:#Only One Screen prevents notes or unauthorized materials to be hidden on a second screen.
 setting_notabs#:#Disabled New Tabs
 setting_notabs_info#:#Disabled New Tabs prevents access to unauthorized material by blocking other websites during the exam.
+setting_linksonly#:#Disabled Non-exam Tabs
+setting_linksonly#:#Disabled Non-exam Tabs prevents access to unauthorized material by blocking other websites during the exam, except links embedded in the exam page.
 setting_closetabs#:#Close Open Tabs
 setting_closetabs_info#:#Close Open Tabs prevents  access to unauthorized material by requiring any other webpages to be closed before starting the exam.
 setting_print#:#Disabled Printing
@@ -71,5 +77,7 @@ setting_verifysignature#:#Verify Signature
 setting_verifysignature_info#:#Verifiy Signature requires the student to sign an academic agreement before beginning the exam.
 setting_calculatorbasic#:#Calculator
 setting_calculatorbasic_info#:#This option will allow test takers to perform calculations using an on-screen calculator.
+setting_calculatorsci#:#Scientific Calculator
+setting_calculatorsci_info#:#This option will allow test takers to perform calculations using an on-screen calculator with scientific cuntions.
 setting_whiteboard#:#Whiteboard
 setting_whiteboard_info#:#This option allows test takers to use a scratch pad on-screen.
