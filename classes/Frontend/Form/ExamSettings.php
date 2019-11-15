@@ -114,42 +114,43 @@ class ExamSettings extends \ilPropertyFormGUI
 
         $accordion = new \ilAccordionGUI();
         $accordion->setBehaviour(\ilAccordionGUI::FIRST_OPEN);
-        $accordion->addItem(
-            $this->plugin->txt('acc_header_recording_options'),
-            $this->renderSettings('recording')
-        );
-        $accordion->addItem(
-            $this->plugin->txt('acc_header_lock_down_options'),
-            $this->renderSettings('lock_down')
-        );
-        $accordion->addItem(
-            $this->plugin->txt('acc_header_verification_options'),
-            $this->renderSettings('verification')
-        );
-        $accordion->addItem(
-            $this->plugin->txt('acc_header_in_quiz_options'),
-            $this->renderSettings('in_quiz')
-        );
+        
+        $sections = array_keys($this->validExamSettings);
+        $lngMap = [];
+        $configuration = [
+            'imgHttpBasePath' => 'https://cdn.proctorio.net/assets/exam-settings/',
+        ];
+        foreach ($sections as $section) {
+            $accordion->addItem(
+                $this->plugin->txt('acc_header_' . $section . '_options'),
+                $this->renderSettings($section, $lngMap, $configuration)
+            );
+        }
 
         $examSettings = new \ilNonEditableValueGUI('', '', true);
         $examSettings->setValue($accordion->getHTML());
         $this->addItem($examSettings);
 
-        $this->setValuesByArray([]);
-
-        $configuration = json_encode([
-            'imgHttpBasePath' => 'https://cdn.proctorio.net/assets/exam-settings/'
-        ]);
+        $this->controller->lng->toJSMap($lngMap);
         $this->controller->tpl->addOnLoadCode(
-            'il.proctorioSettings.init(' . $configuration . ');'
+            'il.proctorioSettings.init(' . json_encode($configuration) . ');'
         );
+
+        $this->setValuesByArray([]); // TODO: Fill form
     }
 
     /**
-     * @param string $group
+     * @param string $section
+     * @param array $lngMap
+     * @param array $configuration
      * @return string
+     * @throws \ilTemplateException
      */
-    private function renderSettings(string $group) : string 
+    private function renderSettings(
+        string $section,
+        array &$lngMap,
+        array &$configuration
+    ) : string 
     {
         global $DIC;
 
@@ -158,7 +159,7 @@ class ExamSettings extends \ilPropertyFormGUI
 
         $deckCardRowTemplate->setVariable(
             'DESCRIPTION',
-            $this->plugin->txt('acc_header_' . $group . '_options_info')
+            $this->plugin->txt('acc_header_' . $section . '_options_info')
         );
 
         $size = 2;
@@ -166,21 +167,24 @@ class ExamSettings extends \ilPropertyFormGUI
 
         $cardsPerRow = 12 / $size;
         $i = 1;
-        foreach ($this->validExamSettings[$group] as $setting => $definition) {
+        foreach ($this->validExamSettings[$section] as $setting => $definition) {
             $deckCardTemplate->setCurrentBlock('card');
 
             $cardTemplate = $this->plugin->getTemplate('tpl.settings_card.html', true, true);
 
+            $cardTemplate->touchBlock('role_' . $definition['type']);
             $cardTemplate->touchBlock($definition['type']);
-            if (rand(0, 1)) {
+            if (rand(0, 1)) {  // TODO: Only if active
                 $cardTemplate->touchBlock('active');
             }
-            
+
             $cardTemplate->setVariable('KEY', $setting);
-            $cardTemplate->setVariable(
-                'DESCRIPTION',
-                filter_var($this->plugin->txt('setting_' . $setting . '_info'), FILTER_SANITIZE_FULL_SPECIAL_CHARS)
-            );
+            if ('binary' === $definition['type']) {
+                $cardTemplate->setVariable('VALUE', $setting);
+            } else {
+                $cardTemplate->setVariable('VALUE', $setting); // TODO: Mode
+            }
+            
             $cardTemplate->setVariable('TITLE', $this->plugin->txt('setting_' . $setting));
             $cardTemplate->setVariable('IMAGE', $DIC->ui()->renderer()->render([
                 $DIC->ui()->factory()->image()->standard(
@@ -190,7 +194,9 @@ class ExamSettings extends \ilPropertyFormGUI
             ]));
 
             if ('binary' === $definition['type']) {
-                if (true) {
+                $lngMap['setting_' . $setting] = $this->plugin->txt('setting_' . $setting);
+                $lngMap['setting_' . $setting . '_info'] = $this->plugin->txt('setting_' . $setting . '_info');
+                if (true) { // TODO: Only if active
                     $cardTemplate->touchBlock('checkbox_checked');
                 }
                 
@@ -199,7 +205,9 @@ class ExamSettings extends \ilPropertyFormGUI
                 $cardTemplate->parseCurrentBlock();
             } else {
                 foreach ($definition['modes'] as $mode) {
-                    if (true) {
+                    $lngMap['setting_' . $mode] = $this->plugin->txt('setting_' . $mode);
+                    $lngMap['setting_' . $mode . '_info'] = $this->plugin->txt('setting_' . $mode . '_info');
+                    if (true) {  // TODO: Only if active
                         $cardTemplate->touchBlock('radio_checked');
                     }
 
@@ -217,6 +225,7 @@ class ExamSettings extends \ilPropertyFormGUI
 
             if (($i % $cardsPerRow) == 0) {
                 $deckCardRowTemplate->setCurrentBlock('row');
+                $deckCardRowTemplate->setVariable('KEY', $section);
                 $deckCardRowTemplate->setVariable('CARDS', $deckCardTemplate->get());
                 $deckCardRowTemplate->parseCurrentBlock();
                 $deckCardTemplate = $this->plugin->getTemplate('tpl.settings_deck_card.html', true, true);
@@ -225,6 +234,7 @@ class ExamSettings extends \ilPropertyFormGUI
             $i++;
         }
         $deckCardRowTemplate->setCurrentBlock('row');
+        $deckCardRowTemplate->setVariable('KEY', $section);
         $deckCardRowTemplate->setVariable('CARDS', $deckCardTemplate->get());
         $deckCardRowTemplate->parseCurrentBlock();
 

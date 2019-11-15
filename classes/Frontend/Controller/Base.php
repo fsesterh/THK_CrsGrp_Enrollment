@@ -37,7 +37,7 @@ abstract class Base
     /** @var \ilErrorHandling */
     protected $errorHandler;
     /** @var \ilLanguage */
-    protected $lng;
+    public $lng;
     /** @var \ilProctorioUIHookGUI */
     public $coreController;
     /** @var Settings */
