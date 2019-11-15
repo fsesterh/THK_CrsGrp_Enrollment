@@ -4,6 +4,8 @@
 use ILIAS\Plugin\Proctorio\Administration\Controller;
 use ILIAS\Plugin\Proctorio\Administration\GeneralSettings\UI\Form;
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
 /**
  * Class ilProctorioConfigGUI
  * @author Michael Jansen <mjansen@databay.de>
