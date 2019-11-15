@@ -37,8 +37,6 @@ abstract class Base extends \ilPluginConfigGUI
         $this->lng = $DIC->language();
         $this->tpl = $DIC->ui()->mainTemplate();
         $this->user = $DIC->user();
-        $this->settings = $DIC['plugin.proctorio.settings'];
-
         $this->plugin_object = $plugin_object;
     }
 
@@ -47,6 +45,10 @@ abstract class Base extends \ilPluginConfigGUI
      */
     public function performCommand($cmd)
     {
+        global $DIC;
+
+        $this->settings = $DIC['plugin.proctorio.settings'];
+
         switch (true) {
             case method_exists($this, $cmd):
                 $this->{$cmd}();
