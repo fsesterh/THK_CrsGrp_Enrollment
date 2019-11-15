@@ -119,6 +119,9 @@ class ExamSettings extends \ilPropertyFormGUI
         $lngMap = [];
         $configuration = [
             'imgHttpBasePath' => 'https://cdn.proctorio.net/assets/exam-settings/',
+            'modeValues' => [
+                
+            ],
         ];
         foreach ($sections as $section) {
             $accordion->addItem(
@@ -216,6 +219,8 @@ class ExamSettings extends \ilPropertyFormGUI
                     $cardTemplate->setVariable('TYPE_RADIO_VALUE', $mode);
                     $cardTemplate->parseCurrentBlock();
                 }
+
+                $configuration['modeValues'][$setting] = $definition['modes'];
             }
 
             $deckCardTemplate->setVariable('CARD', $cardTemplate->get());
