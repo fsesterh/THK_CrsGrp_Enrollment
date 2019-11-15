@@ -13,6 +13,8 @@ use ILIAS\Plugin\Proctorio\UI\Form\Bindable;
  */
 class TestSettings extends \ilPropertyFormGUI
 {
+    const IMAGE_CDN_BASE_URL = 'https://cdn.proctorio.net/assets/exam-settings/';
+
     /** @var \ilProctorioPlugin */
     private $plugin;
     /** @var Base */
@@ -118,10 +120,9 @@ class TestSettings extends \ilPropertyFormGUI
         $sections = array_keys($this->validTestSettings);
         $lngMap = [];
         $configuration = [
-            'imgHttpBasePath' => 'https://cdn.proctorio.net/assets/exam-settings/',
-            'modeValues' => [
-                
-            ],
+            'imgHttpBasePath' => self::IMAGE_CDN_BASE_URL,
+            'modeValues' => [],
+            'images' => [],
         ];
         foreach ($sections as $section) {
             $accordion->addItem(
@@ -197,6 +198,7 @@ class TestSettings extends \ilPropertyFormGUI
             ]));
 
             if ('binary' === $definition['type']) {
+                $configuration['images'][] = self::IMAGE_CDN_BASE_URL . $setting . '.svg';
                 $lngMap['setting_' . $setting] = $this->plugin->txt('setting_' . $setting);
                 $lngMap['setting_' . $setting . '_info'] = $this->plugin->txt('setting_' . $setting . '_info');
                 if (false) { // TODO: Only if active
@@ -208,6 +210,7 @@ class TestSettings extends \ilPropertyFormGUI
                 $cardTemplate->parseCurrentBlock();
             } else {
                 foreach ($definition['modes'] as $mode) {
+                    $configuration['images'][] = self::IMAGE_CDN_BASE_URL . $mode . '.svg';
                     $lngMap['setting_' . $mode] = $this->plugin->txt('setting_' . $mode);
                     $lngMap['setting_' . $mode . '_info'] = $this->plugin->txt('setting_' . $mode . '_info');
                     if (false) {  // TODO: Only if active

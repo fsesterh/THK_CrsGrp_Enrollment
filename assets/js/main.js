@@ -9,6 +9,7 @@ if (typeof il === 'undefined') {
 
 	const defaults = {
 		imgHttpBasePath: "",
+		images: [],
 		modeValues: {},
 		activeSettingCssClass: "active",
 		binarySettingCssClass: "binary",
@@ -24,7 +25,7 @@ if (typeof il === 'undefined') {
 		deckDescriptions = {},
 		methods = {};
 
-	let Img = function (src) {
+	const Img = function (src) {
 		return new Promise(function (resolve, reject) {
 			let img = new Image();
 			img.addEventListener('load', function (e) {
@@ -37,12 +38,24 @@ if (typeof il === 'undefined') {
 		});
 	};
 
+	const Images = function (sources) {
+		let promises = sources.map(function (value, key) {
+			return Img(value);
+		});
+
+		return Promise.all(promises);
+	};
+
 	/**
 	 *
 	 * @param settings
 	 */
 	methods.init = function (settings) {
 		globalSettings = $.extend({}, defaults, settings);
+
+		Images(globalSettings.images).then(function () {
+		}).catch(function (e) {
+		});
 
 		$(globalSettings.deckSectionSelector).each(function () {
 			let $this = $(this);
