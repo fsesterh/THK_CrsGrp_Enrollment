@@ -44,10 +44,10 @@ class TestSettings extends RepositoryObject
 
         $this->test = \ilObjectFactory::getInstanceByRefId($this->getRefId());
 
-        $this->tpl->addCss(
+        $this->pageTemplate->addCss(
             $this->getCoreController()->getPluginObject()->getDirectory() . '/assets/css/styles.css'
         );
-        $this->tpl->addJavaScript(
+        $this->pageTemplate->addJavaScript(
             $this->getCoreController()->getPluginObject()->getDirectory() . '/assets/js/main.js'
         );
 

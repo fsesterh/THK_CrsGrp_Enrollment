@@ -28,6 +28,6 @@ abstract class RepositoryObject extends Base
         $reflectionMethod->invoke($object);
 
         $this->dic['ilLocator']->addRepositoryItems($this->getRefId());
-        $this->tpl->setLocator();
+        $this->pageTemplate->setLocator();
     }
 }

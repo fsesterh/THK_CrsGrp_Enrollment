@@ -21,6 +21,7 @@ exam_setting_label_status#:#Proctorio aktivieren
 exam_setting_label_status_info#:#Falls aktiviert, wird dieser Test über Proctorio gestartet.
 form_header_exam_settings#:#Proctorio Exam Einstellungen
 exam_settings_info_test_started#:#Die Einstellungen können nicht mehr verändert werden, sobald der erster Lernende den Test gestartet hat.
+exam_settings_err_existing_records#:#Die Einstellungen können nicht mehr verändert werden, sobald der erster Lernende den Test gestartet hat.
 acc_header_recording_options#:#Aufzeichnungseinstellungen
 acc_header_recording_options_info#:#Diese Einstellungen bestimmen, welche Informationen während der Prüfung aufgezeichnet werden.
 acc_header_lock_down_options#:#Benutzungseinschränkungen

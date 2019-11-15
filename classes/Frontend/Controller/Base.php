@@ -19,7 +19,7 @@ abstract class Base
     use HttpContext;
 
     /** @var \ilTemplate */
-    public $tpl;
+    public $pageTemplate;
     /** @var Factory */
     protected $uiFactory;
     /** @var \ilCtrl */
@@ -60,7 +60,7 @@ abstract class Base
 
         $this->ctrl = $dic->ctrl();
         $this->lng = $dic->language();
-        $this->tpl = $dic->ui()->mainTemplate();
+        $this->pageTemplate = $dic->ui()->mainTemplate();
         $this->user = $dic->user();
         $this->uiRenderer = $dic->ui()->renderer();
         $this->uiFactory = $dic->ui()->factory();

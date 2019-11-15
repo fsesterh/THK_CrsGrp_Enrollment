@@ -26,7 +26,7 @@ class ilProctorioConfigGUI extends Controller\Base
     public function showSettings() : void
     {
         $form = new Form($this->plugin_object, $this, $this->settings);
-        $this->tpl->setContent($form->getHTML());
+        $this->pageTemplate->setContent($form->getHTML());
     }
 
     /**
@@ -40,6 +40,6 @@ class ilProctorioConfigGUI extends Controller\Base
             $this->ctrl->redirect($this);
         }
 
-        $this->tpl->setContent($form->getHTML());
+        $this->pageTemplate->setContent($form->getHTML());
     }
 }

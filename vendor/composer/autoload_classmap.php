@@ -16,6 +16,7 @@ return array(
     'ILIAS\\Plugin\\Proctorio\\Frontend\\Controller\\TestLaunchAndReview' => $baseDir . '/classes/Frontend/Controller/TestLaunchAndReview.php',
     'ILIAS\\Plugin\\Proctorio\\Frontend\\Controller\\TestSettings' => $baseDir . '/classes/Frontend/Controller/TestSettings.php',
     'ILIAS\\Plugin\\Proctorio\\Frontend\\Dispatcher' => $baseDir . '/classes/Frontend/Dispatcher.php',
+    'ILIAS\\Plugin\\Proctorio\\Frontend\\Form\\ExamSettingsInput' => $baseDir . '/classes/Frontend/Form/ExamSettingsInput.php',
     'ILIAS\\Plugin\\Proctorio\\Frontend\\Form\\TestSettings' => $baseDir . '/classes/Frontend/Form/TestSettings.php',
     'ILIAS\\Plugin\\Proctorio\\Frontend\\HttpContext' => $baseDir . '/classes/Frontend/HttpContext.php',
     'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier' => $baseDir . '/classes/Frontend/ViewModifier.php',

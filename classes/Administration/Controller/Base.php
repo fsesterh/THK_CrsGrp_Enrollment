@@ -19,7 +19,7 @@ abstract class Base extends \ilPluginConfigGUI
     /** @var \ilLanguage */
     protected $lng;
     /** @var \ilTemplate */
-    protected $tpl;
+    protected $pageTemplate;
     /** @var \ilObjUser */
     protected $user;
     /** @var \ilProctorioPlugin */
@@ -35,7 +35,7 @@ abstract class Base extends \ilPluginConfigGUI
 
         $this->ctrl = $DIC->ctrl();
         $this->lng = $DIC->language();
-        $this->tpl = $DIC->ui()->mainTemplate();
+        $this->pageTemplate = $DIC->ui()->mainTemplate();
         $this->user = $DIC->user();
         $this->plugin_object = $plugin_object;
     }

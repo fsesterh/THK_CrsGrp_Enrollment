@@ -20,7 +20,7 @@ abstract class Base implements ViewModifier
     use HttpContext;
 
     /** @var \ilTemplate */
-    protected $tpl;
+    protected $pageTemplate;
     /** @var Factory */
     protected $uiFactory;
     /** @var \ilCtrl */
@@ -60,7 +60,7 @@ abstract class Base implements ViewModifier
         $this->mainTemplate = $dic->ui()->mainTemplate();
         $this->ctrl = $dic->ctrl();
         $this->lng = $dic->language();
-        $this->tpl = $dic->ui()->mainTemplate();
+        $this->pageTemplate = $dic->ui()->mainTemplate();
         $this->user = $dic->user();
         $this->uiRenderer = $dic->ui()->renderer();
         $this->uiFactory = $dic->ui()->factory();
