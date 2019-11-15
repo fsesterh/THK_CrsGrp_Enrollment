@@ -1,0 +1,27 @@
+language: php
+
+cache:
+  directories:
+    - $HOME/.composer/cache/files
+
+php:
+  - 7.2
+  - 7.3
+  - 7.4snapshot
+
+allow_failures:
+  - php: 7.4snapshot
+
+before_script:
+  - composer self-update
+  - composer install --no-interaction --prefer-dist
+
+script:
+  - vendor/bin/phpunit
+
+after_success:
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover build/logs/clover.xml
+
+notifications:
+  email: false

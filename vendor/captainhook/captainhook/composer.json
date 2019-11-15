@@ -1,0 +1,62 @@
+{
+  "name": "captainhook/captainhook",
+  "type": "library",
+  "description": "PHP git hook manager",
+  "keywords": ["git", "hooks", "pre-commit", "pre-push", "commit-msg", "prepare-commit-msg"],
+  "homepage": "https://github.com/captainhookphp/captainhook",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Sebastian Feldmann",
+      "email": "sf@sebastian-feldmann.info"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/captainhookphp/captainhook/issues"
+  },
+  "autoload": {
+    "psr-4": {
+      "CaptainHook\\App\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "CaptainHook\\App\\": "tests/CaptainHook/"
+    }
+  },
+  "require": {
+    "php": "^7.1",
+    "ext-json": "*",
+    "ext-simplexml": "*",
+    "ext-spl": "*",
+    "sebastianfeldmann/cli": "^3.0",
+    "sebastianfeldmann/git": "^2.2",
+    "symfony/console": ">=2.7"
+  },
+  "require-dev": {
+    "composer/composer": "~1",
+    "phpunit/phpunit": "^7.0"
+  },
+  "bin": [
+    "captainhook",
+    "captainhook-run"
+  ],
+  "extra": {
+    "captainhook-config": "captainhook.json",
+    "captainhook-git-dir": ".git",
+    "branch-alias": {
+      "dev-master": "4.3.x-dev"
+    }
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "\\CaptainHook\\App\\Composer\\Cmd::setup"
+    ]
+  },
+  "replace" : {
+    "sebastianfeldmann/captainhook": "*"
+  },
+  "config": {
+    "sort-packages": true
+  }
+}
