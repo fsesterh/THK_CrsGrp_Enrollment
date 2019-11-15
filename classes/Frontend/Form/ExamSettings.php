@@ -177,7 +177,7 @@ class ExamSettings extends \ilPropertyFormGUI
 
             $cardTemplate->touchBlock('role_' . $definition['type']);
             $cardTemplate->touchBlock($definition['type']);
-            if (rand(0, 1)) {  // TODO: Only if active
+            if (false) {  // TODO: Only if active
                 $cardTemplate->touchBlock('active');
             }
 
@@ -185,7 +185,7 @@ class ExamSettings extends \ilPropertyFormGUI
             if ('binary' === $definition['type']) {
                 $cardTemplate->setVariable('VALUE', $setting);
             } else {
-                $cardTemplate->setVariable('VALUE', $setting); // TODO: Mode
+                $cardTemplate->setVariable('VALUE', ''); // TODO: Mode
             }
             
             $cardTemplate->setVariable('TITLE', $this->plugin->txt('setting_' . $setting));
@@ -199,7 +199,7 @@ class ExamSettings extends \ilPropertyFormGUI
             if ('binary' === $definition['type']) {
                 $lngMap['setting_' . $setting] = $this->plugin->txt('setting_' . $setting);
                 $lngMap['setting_' . $setting . '_info'] = $this->plugin->txt('setting_' . $setting . '_info');
-                if (true) { // TODO: Only if active
+                if (false) { // TODO: Only if active
                     $cardTemplate->touchBlock('checkbox_checked');
                 }
                 
@@ -210,7 +210,7 @@ class ExamSettings extends \ilPropertyFormGUI
                 foreach ($definition['modes'] as $mode) {
                     $lngMap['setting_' . $mode] = $this->plugin->txt('setting_' . $mode);
                     $lngMap['setting_' . $mode . '_info'] = $this->plugin->txt('setting_' . $mode . '_info');
-                    if (true) {  // TODO: Only if active
+                    if (false) {  // TODO: Only if active
                         $cardTemplate->touchBlock('radio_checked');
                     }
 
