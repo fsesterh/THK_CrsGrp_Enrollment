@@ -158,6 +158,7 @@ class ExamSettings extends \ilPropertyFormGUI
 
             $cardTemplate = $this->plugin->getTemplate('tpl.settings_card.html', true, true);
 
+            $cardTemplate->touchBlock($definition['type']);
             if (rand(0, 1)) {
                 $cardTemplate->touchBlock('active');
             }
@@ -192,7 +193,6 @@ class ExamSettings extends \ilPropertyFormGUI
                     $cardTemplate->setCurrentBlock('type_radio');
                     $cardTemplate->setVariable('TYPE_RADIO_KEY', $setting);
                     $cardTemplate->setVariable('TYPE_RADIO_VALUE', $mode);
-                    //$cardTemplate->setVariable('TYPE_RADIO_CHECKED', $mode);
                     $cardTemplate->parseCurrentBlock();
                 }
             }
