@@ -4,8 +4,8 @@
 use ILIAS\DI\Container;
 use ILIAS\Plugin\Proctorio\Frontend;
 use ILIAS\Plugin\Proctorio\Frontend\ViewModifier;
-use ILIAS\Plugin\Proctorio\Frontend\ViewModifier\ExamLaunch;
-use ILIAS\Plugin\Proctorio\Frontend\ViewModifier\ExamSettings;
+use ILIAS\Plugin\Proctorio\Frontend\ViewModifier\TestLaunch;
+use ILIAS\Plugin\Proctorio\Frontend\ViewModifier\TestSettings;
 
 /**
  * @author            Michael Jansen <mjansen@databay.de>
@@ -78,14 +78,14 @@ class ilProctorioUIHookGUI extends ilUIHookPluginGUI
             return;
         }
 
-        $isBootsrappedRequest = in_array($script, ['login.php', 'goto.php', 'ilias.php']);
-        if (!$isBootsrappedRequest) {
+        $isBootstrappedRequest = in_array($script, ['login.php', 'goto.php', 'ilias.php']);
+        if (!$isBootstrappedRequest) {
             return;
         }
 
         self::$modifiers = [
-            new ExamSettings($this, $this->dic),
-            new ExamLaunch($this, $this->dic),
+            new TestSettings($this, $this->dic),
+            new TestLaunch($this, $this->dic),
         ];
     }
 

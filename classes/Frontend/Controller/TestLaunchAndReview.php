@@ -10,11 +10,11 @@ use ILIAS\Plugin\Proctorio\Webservice\Exception;
 use ILIAS\Plugin\Proctorio\Webservice\Exception\QualifiedResponseError;
 
 /**
- * Class ExamLaunchAndReview
+ * Class TestLaunchAndReview
  * @package ILIAS\Plugin\Proctorio\Frontend\Controller
  * @author Michael Jansen <mjansen@databay.de>
  */
-class ExamLaunchAndReview extends RepositoryObject
+class TestLaunchAndReview extends RepositoryObject
 {
     /** @var \ilObjTest */
     protected $test;

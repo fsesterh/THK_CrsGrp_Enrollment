@@ -7,11 +7,11 @@ use ILIAS\Plugin\Proctorio\Frontend\Controller\Base;
 use ILIAS\Plugin\Proctorio\UI\Form\Bindable;
 
 /**
- * Class ExamSettings
+ * Class TestSettings
  * @package ILIAS\Plugin\Proctorio\Frontend\Form
  * @author Michael Jansen <mjansen@databay.de>
  */
-class ExamSettings extends \ilPropertyFormGUI
+class TestSettings extends \ilPropertyFormGUI
 {
     /** @var \ilProctorioPlugin */
     private $plugin;
@@ -22,7 +22,7 @@ class ExamSettings extends \ilPropertyFormGUI
     /** @var Bindable */
     private $generalSettings;
     /** @var array[] */
-    private $validExamSettings = [
+    private $validTestSettings = [
         "recording" => [
             "recordvideo" => ['type' => 'binary'],
             "recordaudio" => ['type' => 'binary'],
@@ -115,7 +115,7 @@ class ExamSettings extends \ilPropertyFormGUI
         $accordion = new \ilAccordionGUI();
         $accordion->setBehaviour(\ilAccordionGUI::FIRST_OPEN);
         
-        $sections = array_keys($this->validExamSettings);
+        $sections = array_keys($this->validTestSettings);
         $lngMap = [];
         $configuration = [
             'imgHttpBasePath' => 'https://cdn.proctorio.net/assets/exam-settings/',
@@ -170,7 +170,7 @@ class ExamSettings extends \ilPropertyFormGUI
 
         $cardsPerRow = 12 / $size;
         $i = 1;
-        foreach ($this->validExamSettings[$section] as $setting => $definition) {
+        foreach ($this->validTestSettings[$section] as $setting => $definition) {
             $deckCardTemplate->setCurrentBlock('card');
 
             $cardTemplate = $this->plugin->getTemplate('tpl.settings_card.html', true, true);

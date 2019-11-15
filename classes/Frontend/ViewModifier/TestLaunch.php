@@ -4,11 +4,11 @@
 namespace ILIAS\Plugin\Proctorio\Frontend\ViewModifier;
 
 /**
- * Class ExamLaunch
+ * Class TestLaunch
  * @package ILIAS\Plugin\Proctorio\Frontend\Controller
  * @author Michael Jansen <mjansen@databay.de>
  */
-class ExamLaunch extends Base
+class TestLaunch extends Base
 {
     const CMD_START_TEST = 'startPlayer';
     const CMD_RESUME_TEST = 'resumePlayer';
@@ -179,7 +179,7 @@ class ExamLaunch extends Base
             );
             $url = $this->ctrl->getLinkTargetByClass(
                 ['ilUIPluginRouterGUI', get_class($this->getCoreController())],
-                'ExamLaunchAndReview.review',
+                'TestLaunchAndReview.review',
                 '',
                 false,
                 false
@@ -228,7 +228,7 @@ class ExamLaunch extends Base
         );
         $url = $this->ctrl->getLinkTargetByClass(
             ['ilUIPluginRouterGUI', get_class($this->getCoreController())],
-            'ExamLaunchAndReview.launch',
+            'TestLaunchAndReview.launch',
             '',
             false,
             false

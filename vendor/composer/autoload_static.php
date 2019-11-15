@@ -7,11 +7,11 @@ namespace Composer\Autoload;
 class ComposerStaticInitd4fd4d4abedff257df830006e5bcf642
 {
     public static $files = array (
-        '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
-        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
+        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
     );
 
@@ -113,16 +113,16 @@ class ComposerStaticInitd4fd4d4abedff257df830006e5bcf642
         'ILIAS\\Plugin\\Proctorio\\Exception' => __DIR__ . '/../..' . '/classes/Exception.php',
         'ILIAS\\Plugin\\Proctorio\\Frontend\\Controller\\Base' => __DIR__ . '/../..' . '/classes/Frontend/Controller/Base.php',
         'ILIAS\\Plugin\\Proctorio\\Frontend\\Controller\\Error' => __DIR__ . '/../..' . '/classes/Frontend/Controller/Error.php',
-        'ILIAS\\Plugin\\Proctorio\\Frontend\\Controller\\ExamLaunchAndReview' => __DIR__ . '/../..' . '/classes/Frontend/Controller/ExamLaunchAndReview.php',
-        'ILIAS\\Plugin\\Proctorio\\Frontend\\Controller\\ExamSettings' => __DIR__ . '/../..' . '/classes/Frontend/Controller/ExamSettings.php',
         'ILIAS\\Plugin\\Proctorio\\Frontend\\Controller\\RepositoryObject' => __DIR__ . '/../..' . '/classes/Frontend/Controller/RepositoryObject.php',
+        'ILIAS\\Plugin\\Proctorio\\Frontend\\Controller\\TestLaunchAndReview' => __DIR__ . '/../..' . '/classes/Frontend/Controller/TestLaunchAndReview.php',
+        'ILIAS\\Plugin\\Proctorio\\Frontend\\Controller\\TestSettings' => __DIR__ . '/../..' . '/classes/Frontend/Controller/TestSettings.php',
         'ILIAS\\Plugin\\Proctorio\\Frontend\\Dispatcher' => __DIR__ . '/../..' . '/classes/Frontend/Dispatcher.php',
-        'ILIAS\\Plugin\\Proctorio\\Frontend\\Form\\ExamSettings' => __DIR__ . '/../..' . '/classes/Frontend/Form/ExamSettings.php',
+        'ILIAS\\Plugin\\Proctorio\\Frontend\\Form\\TestSettings' => __DIR__ . '/../..' . '/classes/Frontend/Form/TestSettings.php',
         'ILIAS\\Plugin\\Proctorio\\Frontend\\HttpContext' => __DIR__ . '/../..' . '/classes/Frontend/HttpContext.php',
         'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier' => __DIR__ . '/../..' . '/classes/Frontend/ViewModifier.php',
         'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier\\Base' => __DIR__ . '/../..' . '/classes/Frontend/ViewModifier/Base.php',
-        'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier\\ExamLaunch' => __DIR__ . '/../..' . '/classes/Frontend/ViewModifier/ExamLaunch.php',
-        'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier\\ExamSettings' => __DIR__ . '/../..' . '/classes/Frontend/ViewModifier/ExamSettings.php',
+        'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier\\TestLaunch' => __DIR__ . '/../..' . '/classes/Frontend/ViewModifier/TestLaunch.php',
+        'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier\\TestSettings' => __DIR__ . '/../..' . '/classes/Frontend/ViewModifier/TestSettings.php',
         'ILIAS\\Plugin\\Proctorio\\Refinery\\Transformation\\UriToString' => __DIR__ . '/../..' . '/classes/Refinery/Transformation/UriToString.php',
         'ILIAS\\Plugin\\Proctorio\\UI\\Form\\Bindable' => __DIR__ . '/../..' . '/classes/UI/Form/Bindable.php',
         'ILIAS\\Plugin\\Proctorio\\Webservice\\Exception' => __DIR__ . '/../..' . '/classes/Webservice/Exception.php',

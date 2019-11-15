@@ -4,11 +4,11 @@
 namespace ILIAS\Plugin\Proctorio\Frontend\ViewModifier;
 
 /**
- * Class ExamSettings
+ * Class TestSettings
  * @package ILIAS\Plugin\Proctorio\Frontend\Controller
  * @author Michael Jansen <mjansen@databay.de>
  */
-class ExamSettings extends Base
+class TestSettings extends Base
 {
     /**
      * @inheritDoc
@@ -86,7 +86,7 @@ class ExamSettings extends Base
                 $this->getCoreController()->getPluginObject()->getPrefix() . '_exam_tab_proctorio',
                 $this->ctrl->getLinkTargetByClass(
                     ['ilUIPluginRouterGUI', get_class($this->getCoreController())],
-                    'ExamSettings.showSettingsCmd'
+                    'TestSettings.showSettingsCmd'
                 )
             );
         }

@@ -3,14 +3,14 @@
 
 namespace ILIAS\Plugin\Proctorio\Frontend\Controller;
 
-use ILIAS\Plugin\Proctorio\Frontend\Form\ExamSettings as ExamSettingsForm;
+use ILIAS\Plugin\Proctorio\Frontend\Form\TestSettings as TestSettingsForm;
 
 /**
- * Class ExamSettings
+ * Class TestSettings
  * @package ILIAS\Plugin\Proctorio\Frontend\Controller
  * @author Michael Jansen <mjansen@databay.de>
  */
-class ExamSettings extends RepositoryObject
+class TestSettings extends RepositoryObject
 {
     /** @var \ilObjTest */
     protected $test;
@@ -55,11 +55,11 @@ class ExamSettings extends RepositoryObject
     }
 
     /**
-     * @return ExamSettingsForm
+     * @return TestSettingsForm
      */
-    private function buildForm() : ExamSettingsForm
+    private function buildForm() : TestSettingsForm
     {
-        $form  = new ExamSettingsForm(
+        $form  = new TestSettingsForm(
             $this->getCoreController()->getPluginObject(),
             $this,
             $this->getCoreController(),
