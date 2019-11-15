@@ -48,7 +48,15 @@ class ExamLaunch extends Base
                     strtolower('infoScreen'),
                 ]
             )
-        );
+        ) || (
+            $this->isCommandClass('ilObjTestGUI') &&
+            in_array(
+                strtolower($this->ctrl->getCmd()),
+                [
+                    strtolower('infoScreen'),
+                ]
+            )
+         );
 
         $isGotoRequest = (
             preg_match('/^tst_\d+$/', (string) $this->httpRequest->getQueryParams()['target'] ?? '')
