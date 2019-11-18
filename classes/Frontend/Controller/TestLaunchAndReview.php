@@ -41,6 +41,9 @@ class TestLaunchAndReview extends RepositoryObject
         return \ilObjTestGUI::class;
     }
 
+    /**
+     * 
+     */
     private function ensureInitialisedSessionLockString() : void
     {
         if (!is_string($this->getSessionLockString()) || !strlen($this->getSessionLockString())) {

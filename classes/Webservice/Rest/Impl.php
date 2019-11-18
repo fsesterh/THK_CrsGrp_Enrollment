@@ -259,14 +259,14 @@ class Impl implements Rest
         \ilObjTest $test,
         URI $testLaunchUrl,
         URI $testUrl
-    ) : string {
+    ) : URI {
         $responseBody = $this->request($test, $testLaunchUrl, $testUrl);
 
         if (is_string($responseBody) && strlen($responseBody) > 0) {
             $responseArray = json_decode($responseBody, true);
             $isLaunchApiSuccess = is_array($responseArray) && isset($responseArray[0]) && is_string($responseArray[0]) && strlen($responseArray[0]) > 0;
             if ($isLaunchApiSuccess) {
-                return $responseArray[0];
+                return new URI($responseArray[0]);
             }
         }
 
@@ -283,14 +283,14 @@ class Impl implements Rest
         \ilObjTest $test,
         URI $testLaunchUrl,
         URI $testUrl
-    ) : string {
+    ) : URI {
         $responseBody = $this->request($test, $testLaunchUrl, $testUrl);
 
         if (is_string($responseBody) && strlen($responseBody) > 0) {
             $responseArray = json_decode($responseBody, true);
             $isReviewApiSuccess = is_array($responseArray) && isset($responseArray[1]) && is_string($responseArray[1]) && strlen($responseArray[1]) > 0;
             if ($isReviewApiSuccess) {
-                return $responseArray[1];
+                return URI($responseArray[1]);
             }
         }
 
