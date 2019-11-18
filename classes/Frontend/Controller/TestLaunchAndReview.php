@@ -92,6 +92,10 @@ class TestLaunchAndReview extends RepositoryObject
             $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
         }
 
+        if (!$this->service->getConfigurationForTest($this->test)['status']) {
+            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
+        }
+
         $this->drawHeader();
 
         $testQuestionSetConfigFactory = new \ilTestQuestionSetConfigFactory(

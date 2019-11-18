@@ -81,14 +81,17 @@ class TestSettings extends Base
             );
             $tabs->setBackTarget($this->lng->txt('back'), $tstSettingsUrl);
         } else {
-            $this->ctrl->setParameterByClass(get_class($this->getCoreController()), 'ref_id', $this->getRefId());
-            $tabs->addSubTabTarget(
-                $this->getCoreController()->getPluginObject()->getPrefix() . '_exam_tab_proctorio',
-                $this->ctrl->getLinkTargetByClass(
-                    ['ilUIPluginRouterGUI', get_class($this->getCoreController())],
-                    'TestSettings.showSettingsCmd'
-                )
-            );
+            $test = \ilObjectFactory::getInstanceByRefId($this->getRefId());
+            if ($this->service->isTestSupported($test)) {
+                $this->ctrl->setParameterByClass(get_class($this->getCoreController()), 'ref_id', $this->getRefId());
+                $tabs->addSubTabTarget(
+                    $this->getCoreController()->getPluginObject()->getPrefix() . '_exam_tab_proctorio',
+                    $this->ctrl->getLinkTargetByClass(
+                        ['ilUIPluginRouterGUI', get_class($this->getCoreController())],
+                        'TestSettings.showSettingsCmd'
+                    )
+                );
+            }
         }
     }
 }

@@ -123,6 +123,10 @@ class TestLaunch extends Base
            return false;
         }
 
+        if (!$this->service->getConfigurationForTest($test)['status']) {
+            return false;
+        }
+
         return true;
     }
 
