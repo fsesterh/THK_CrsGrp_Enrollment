@@ -63,14 +63,15 @@ class TestSettings extends RepositoryObject
             $this->getCoreController()->getPluginObject(),
             $this,
             $this->getCoreController(),
-            $this->test,
-            $this->globalProctorioSettings
+            $this->service,
+            $this->test
         );
 
         $this->ctrl->setParameter($this->getCoreController(), 'ref_id', $this->getRefId());
         $form->setFormAction(
             $this->ctrl->getFormAction($this->getCoreController(), $this->getControllerName() . '.saveSettings')
         );
+        $form->addCommandButton($this->getControllerName() . '.saveSettings', $this->lng->txt('save'));
 
         return $form;
     }
@@ -81,6 +82,7 @@ class TestSettings extends RepositoryObject
     public function showSettingsCmd() : string
     {
         $form = $this->buildForm();
+        $form->setValuesByArray($this->service->getConfigurationForTest($this->test));
 
         return $form->getHTML();
     }
@@ -91,10 +93,14 @@ class TestSettings extends RepositoryObject
     public function saveSettingsCmd() : string
     {
         $form = $this->buildForm();
-        if ($form->saveObject()) {
+        if ($form->checkInput()) {
+            $this->service->saveConfigurationForTest($this->test, $form);
             \ilUtil::sendSuccess($this->lng->txt('saved_successfully'), true);
+
+            $this->ctrl->setParameter($this->getCoreController(), 'ref_id', $this->getRefId());
             $this->ctrl->redirect($this->getCoreController(), $this->getControllerName() . '.showSettings');
         }
+        $form->setValuesByPost();
 
         return $form->getHtml();
     }

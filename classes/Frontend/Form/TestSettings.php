@@ -4,6 +4,7 @@
 namespace ILIAS\Plugin\Proctorio\Frontend\Form;
 
 use ILIAS\Plugin\Proctorio\Frontend\Controller\Base;
+use ILIAS\Plugin\Proctorio\Service\Proctorio\Impl as ProctorioService;
 use ILIAS\Plugin\Proctorio\UI\Form\Bindable;
 
 /**
@@ -19,37 +20,48 @@ class TestSettings extends \ilPropertyFormGUI
     private $controller;
     /** @var object */
     private $cmdObject;
+    /** @var ProctorioService */
+    protected $service;
     /** @var \ilObjTest */
-    private $test;
-    /** @var Bindable */
-    private $generalSettings;
+    protected $test;
     /** @var bool */
-    private $disabled = false;
+    private $isReadOnly = false;
 
     /**
      * Form constructor.
      * @param \ilProctorioPlugin $plugin
      * @param Base $controller
      * @param object $cmdObject
+     * @param ProctorioService $service
      * @param \ilObjTest $test
-     * @param Bindable $generalSettings
      */
     public function __construct(
         \ilProctorioPlugin $plugin,
         Base $controller,
         $cmdObject,
-        \ilObjTest $test,
-        Bindable $generalSettings
+        ProctorioService $service,
+        \ilObjTest $test
     ) {
         $this->plugin = $plugin;
         $this->controller = $controller;
         $this->cmdObject = $cmdObject;
+        $this->service = $service;
         $this->test = $test;
-        $this->generalSettings = $generalSettings;
-        $this->disabled = $this->test->participantDataExist();
         parent::__construct();
 
+        $this->isReadOnly = !$this->service->isConfigurationChangeAllowed($this->test);
+
         $this->initForm();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addCommandButton($a_cmd, $a_text, $a_id = "")
+    {
+        if (!$this->isReadOnly) {
+            parent::addCommandButton($a_cmd, $a_text, $a_id);
+        }
     }
 
     /**
@@ -60,16 +72,12 @@ class TestSettings extends \ilPropertyFormGUI
         $this->setTitle($this->plugin->txt('form_header_settings'));
         $this->setDescription($this->plugin->txt('exam_settings_info_test_started'));
         
-        if (!$this->disabled) {
-            $this->addCommandButton($this->controller->getControllerName() . '.saveSettings', $this->lng->txt('save'));
-        }
-
         $activationStatus = new \ilCheckboxInputGUI(
             $this->plugin->txt('exam_setting_label_status'), 'status'
         );
         $activationStatus->setInfo($this->plugin->txt('exam_setting_label_status_info'));
         $activationStatus->setValue(1);
-        $activationStatus->setDisabled($this->disabled);
+        $activationStatus->setDisabled($this->isReadOnly);
         $this->addItem($activationStatus);
         
         $examSettingsHeader = new \ilFormSectionHeaderGUI();
@@ -79,83 +87,12 @@ class TestSettings extends \ilPropertyFormGUI
         $examSettings = new ExamSettingsInput(
             $this->plugin,
             '',
-            'settings'
+            'exam_settings'
         );
-        $examSettings->setDisabled($this->disabled);
+        $examSettings->setDisabled($this->isReadOnly);
         $this->addItem($examSettings);
 
         $this->controller->lng->toJSMap($examSettings->getClientLanguageMapping());
         $this->controller->pageTemplate->addOnLoadCode($examSettings->getOnloadCode());
-
-        // TODO: Fill form
-        $this->setValuesByArray([
-            'status' => true,
-            'settings' => [
-                'recordvideo',
-                'fullscreensevere',
-            ],
-        ]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function checkInput()
-    {
-        $bool = parent::checkInput();
-        if (!$bool) {
-            return $bool;
-        }
-
-        if ($this->disabled) {
-            \ilUtil::sendFailure('exam_settings_err_existing_records');
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
-    public function saveObject() : bool
-    {
-        if (!$this->fillObject()) {
-            $this->setValuesByPost();
-            return false;
-        }
-
-        try {
-            // TODO: Save values
-            return true;
-        } catch (\ilException $e) {
-            \ilUtil::sendFailure($this->plugin->txt($e->getMessage()));
-            $this->setValuesByPost();
-            return false;
-        }
-    }
-
-    /**
-     * @return bool
-     */
-    protected function fillObject() : bool
-    {
-        if (!$this->checkInput()) {
-            return false;
-        }
-
-        $success = true;
-
-        try {
-            // TODO: Fill form
-            /*$this->setValuesByArray(
-                $this->generalSettings->toArray()
-            )*/;
-        } catch (\ilException $e) {
-            \ilUtil::sendFailure($e->getMessage());
-            $success = false;
-        }
-
-        return $success;
     }
 }

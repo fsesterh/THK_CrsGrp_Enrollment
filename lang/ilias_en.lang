@@ -21,7 +21,7 @@ exam_setting_label_status#:#Enable Proctorio
 exam_setting_label_status_info#:#If checked, Proctorio Secure Exam Proctor is enabled.
 form_header_exam_settings#:#Proctorio Exam Settings
 exam_settings_info_test_started#:#Exam settings can not be changed once the first student has started the exam.
-exam_settings_err_existing_records#:#Exam settings can not be changed once the first student has started the exam.
+exam_settings_err_not_changeable#:#Exam settings can not be changed once the first student has started the exam.
 acc_header_recording_options#:#Recording Options
 acc_header_recording_options_info#:#These options determine what information will be recorded during the exam.
 acc_header_lock_down_options#:#Lock Down Options
