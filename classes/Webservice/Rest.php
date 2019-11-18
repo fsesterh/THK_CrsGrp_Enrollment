@@ -16,23 +16,23 @@ interface Rest
      * @param \ilObjTest $test
      * @param URI $testLaunchUrl
      * @param URI $testUrl
-     * @return URI
+     * @return string
      */
     public function getLaunchUrl(
         \ilObjTest $test,
         URI $testLaunchUrl,
         URI $testUrl
-    ) : URI;
+    ) : string;
 
     /**
      * @param \ilObjTest $test
      * @param URI $testLaunchUrl
      * @param URI $testUrl
-     * @return URI
+     * @return string
      */
     public function getReviewUrl(
         \ilObjTest $test,
         URI $testLaunchUrl,
         URI $testUrl
-    ) : URI;
+    ) : string;
 }

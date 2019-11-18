@@ -69,34 +69,34 @@ class Impl implements Rest
             \ilTestPlayerCommands::INIT_TEST,
             \ilTestPlayerCommands::START_PLAYER,
             \ilTestPlayerCommands::RESUME_PLAYER,
-            //\ilTestPlayerCommands::DISPLAY_ACCESS_CODE,
-            //\ilTestPlayerCommands::ACCESS_CODE_CONFIRMED,
+            \ilTestPlayerCommands::DISPLAY_ACCESS_CODE,
+            \ilTestPlayerCommands::ACCESS_CODE_CONFIRMED,
             \ilTestPlayerCommands::SHOW_QUESTION,
             \ilTestPlayerCommands::PREVIOUS_QUESTION,
             \ilTestPlayerCommands::NEXT_QUESTION,
             \ilTestPlayerCommands::EDIT_SOLUTION,
-            //ilTestPlayerCommands::MARK_QUESTION,
-            //ilTestPlayerCommands::MARK_QUESTION_SAVE,
-            //ilTestPlayerCommands::UNMARK_QUESTION,
-            //ilTestPlayerCommands::UNMARK_QUESTION_SAVE,
+            \ilTestPlayerCommands::MARK_QUESTION,
+            \ilTestPlayerCommands::MARK_QUESTION_SAVE,
+            \ilTestPlayerCommands::UNMARK_QUESTION,
+            \ilTestPlayerCommands::UNMARK_QUESTION_SAVE,
             \ilTestPlayerCommands::SUBMIT_INTERMEDIATE_SOLUTION,
             \ilTestPlayerCommands::SUBMIT_SOLUTION,
             \ilTestPlayerCommands::SUBMIT_SOLUTION_AND_NEXT,
             \ilTestPlayerCommands::REVERT_CHANGES,
-            //\ilTestPlayerCommands::DETECT_CHANGES,
-            //\ilTestPlayerCommands::DISCARD_SOLUTION,
-            //\ilTestPlayerCommands::SKIP_QUESTION,
-            //\ilTestPlayerCommands::SHOW_INSTANT_RESPONSE,
-            //\ilTestPlayerCommands::CONFIRM_HINT_REQUEST,
-            //\ilTestPlayerCommands::SHOW_REQUESTED_HINTS_LIST,
+            \ilTestPlayerCommands::DETECT_CHANGES,
+            \ilTestPlayerCommands::DISCARD_SOLUTION,
+            \ilTestPlayerCommands::SKIP_QUESTION,
+            \ilTestPlayerCommands::SHOW_INSTANT_RESPONSE,
+            \ilTestPlayerCommands::CONFIRM_HINT_REQUEST,
+            \ilTestPlayerCommands::SHOW_REQUESTED_HINTS_LIST,
             \ilTestPlayerCommands::QUESTION_SUMMARY,
-            //\ilTestPlayerCommands::QUESTION_SUMMARY_INC_OBLIGATIONS,
-            //\ilTestPlayerCommands::QUESTION_SUMMARY_OBLIGATIONS_ONLY,
-            //\ilTestPlayerCommands::TOGGLE_SIDE_LIST,
+            \ilTestPlayerCommands::QUESTION_SUMMARY_INC_OBLIGATIONS,
+            \ilTestPlayerCommands::QUESTION_SUMMARY_OBLIGATIONS_ONLY,
+            \ilTestPlayerCommands::TOGGLE_SIDE_LIST,
             \ilTestPlayerCommands::SHOW_QUESTION_SELECTION,
-            //\ilTestPlayerCommands::UNFREEZE_ANSWERS,
-            //\ilTestPlayerCommands::AUTO_SAVE,
-            //\ilTestPlayerCommands::REDIRECT_ON_TIME_LIMIT,
+            \ilTestPlayerCommands::UNFREEZE_ANSWERS,
+            \ilTestPlayerCommands::AUTO_SAVE,
+            \ilTestPlayerCommands::REDIRECT_ON_TIME_LIMIT,
             \ilTestPlayerCommands::SUSPEND_TEST,
             \ilTestPlayerCommands::FINISH_TEST,
             \ilTestPlayerCommands::AFTER_TEST_PASS_FINISHED,
@@ -259,14 +259,14 @@ class Impl implements Rest
         \ilObjTest $test,
         URI $testLaunchUrl,
         URI $testUrl
-    ) : URI {
+    ) : string {
         $responseBody = $this->request($test, $testLaunchUrl, $testUrl);
 
         if (is_string($responseBody) && strlen($responseBody) > 0) {
             $responseArray = json_decode($responseBody, true);
             $isLaunchApiSuccess = is_array($responseArray) && isset($responseArray[0]) && is_string($responseArray[0]) && strlen($responseArray[0]) > 0;
             if ($isLaunchApiSuccess) {
-                return new URI($responseArray[0]);
+                return $responseArray[0];
             }
         }
 
@@ -283,14 +283,14 @@ class Impl implements Rest
         \ilObjTest $test,
         URI $testLaunchUrl,
         URI $testUrl
-    ) : URI {
+    ) : string {
         $responseBody = $this->request($test, $testLaunchUrl, $testUrl);
 
         if (is_string($responseBody) && strlen($responseBody) > 0) {
             $responseArray = json_decode($responseBody, true);
             $isReviewApiSuccess = is_array($responseArray) && isset($responseArray[1]) && is_string($responseArray[1]) && strlen($responseArray[1]) > 0;
             if ($isReviewApiSuccess) {
-                return new URI($responseArray[1]);
+                return $responseArray[1];
             }
         }
 
