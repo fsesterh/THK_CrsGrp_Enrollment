@@ -23,7 +23,7 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
         'images' => [],
     ];
     /** @var array[] */
-    private $validTestSettings = [
+    private $validExamSettings = [
         "recording" => [
             "recordvideo" => ['type' => 'binary'],
             "recordaudio" => ['type' => 'binary'],
@@ -78,6 +78,10 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
             "whiteboard" => ['type' => 'binary'],
         ],
     ];
+    /** @var array[] */
+    private $validExamSettingsKeysBySetting = [];
+    /** @var bool */
+    private $wasValidationError = false;
     /** @var array */
     private $value = [];
 
@@ -99,14 +103,20 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
     protected function init() : void
     {
         $this->onLoadCodeConfiguration['postVar'] = $this->getPostVar();
-        foreach ($this->validTestSettings as $section => $settings) {
+        foreach ($this->validExamSettings as $section => $settings) {
             foreach ($settings as $setting => $definition) {
                 if ('binary' === $definition['type']) {
+                    $this->validExamSettingsKeysBySetting[$setting] = [
+                        '',
+                        $setting
+                    ];
                     $this->onLoadCodeConfiguration['images'][] = self::IMAGE_CDN_BASE_URL . $setting . '.svg';
                     $this->clientLanguageMapping['setting_' . $setting] = $this->plugin->txt('setting_' . $setting);
                     $this->clientLanguageMapping['setting_' . $setting . '_info'] = $this->plugin->txt('setting_' . $setting . '_info');
                 } else {
+                    $this->validExamSettingsKeysBySetting[$setting] = [''];
                     foreach ($definition['modes'] as $mode) {
+                        $this->validExamSettingsKeysBySetting[$setting][] = $mode;
                         $this->onLoadCodeConfiguration['images'][] = self::IMAGE_CDN_BASE_URL . $mode . '.svg';
                         $this->clientLanguageMapping['setting_' . $mode] = $this->plugin->txt('setting_' . $mode);
                         $this->clientLanguageMapping['setting_' . $mode . '_info'] = $this->plugin->txt('setting_' . $mode . '_info');
@@ -153,12 +163,46 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
             $_POST[$this->getPostVar()] = [];
         }
 
-        foreach ($_POST[$this->getPostVar()] as $key => $value) {
-            $_POST[$this->getPostVar()][$key] = trim((string) \ilUtil::stripSlashesRecursive($value));
+        foreach ($_POST[$this->getPostVar()] as $value) {
+            if (!is_string($value)) {
+                $this->setAlert($this->plugin->txt('err_wrong_format_for_selection'));
+                $this->wasValidationError = true;
+                return false; 
+            }
         }
+
+        $_POST[$this->getPostVar()] = array_map(function($value) {
+            return trim((string) \ilUtil::stripSlashesRecursive($value));
+        }, $_POST[$this->getPostVar()]);
 
         if ($this->getRequired() && 0 === strlen(implode('', $_POST[$this->getPostVar()]))) {
             $this->setAlert($this->lng->txt('msg_input_is_required'));
+            $this->wasValidationError = true;
+            return false;
+        }
+
+        $validExamSettingKeys = array_keys($this->validExamSettingsKeysBySetting);
+        $submittedExamSettingKeys = array_keys($_POST[$this->getPostVar()]);
+        $invalidRequestedExamSettings = array_diff($submittedExamSettingKeys, $validExamSettingKeys);
+        if (count($invalidRequestedExamSettings) > 0) {
+            $this->setAlert(sprintf($this->plugin->txt('err_invalid_selection'), implode(', ', $invalidRequestedExamSettings)));
+            $this->wasValidationError = true;
+            return false;
+        }
+        
+        $invalidSelections = [];
+        foreach ($_POST[$this->getPostVar()] as $setting => $value) {
+            if (!in_array($value, $this->validExamSettingsKeysBySetting[$setting])) {
+                $invalidSelections[] = $setting;
+            }
+        }
+        
+        if (count($invalidSelections) > 0) {
+            $this->setAlert(sprintf(
+                $this->plugin->txt('err_invalid_selection'),
+                implode(', ', $invalidRequestedExamSettings)
+            ));
+            $this->wasValidationError = true;
             return false;
         }
 
@@ -188,9 +232,11 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
     private function render() : string
     {
         $accordion = new \ilAccordionGUI();
-        $accordion->setBehaviour(\ilAccordionGUI::FIRST_OPEN);
+        $accordion->setBehaviour(
+            $this->wasValidationError ? \ilAccordionGUI::FORCE_ALL_OPEN : \ilAccordionGUI::FIRST_OPEN
+        );
 
-        $sections = array_keys($this->validTestSettings);
+        $sections = array_keys($this->validExamSettings);
         foreach ($sections as $section) {
             $accordion->addItem(
                 $this->plugin->txt('acc_header_' . $section . '_options'),
@@ -220,7 +266,7 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
 
         $cardsPerRow = 12 / $size;
         $i = 1;
-        foreach ($this->validTestSettings[$section] as $setting => $definition) {
+        foreach ($this->validExamSettings[$section] as $setting => $definition) {
             $deckCardTemplate->setCurrentBlock('card');
 
             $cardTemplate = $this->renderCard($setting, $definition);

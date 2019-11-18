@@ -82,3 +82,5 @@ setting_calculatorsci#:#Scientific Calculator
 setting_calculatorsci_info#:#This option will allow test takers to perform calculations using an on-screen calculator with scientific cuntions.
 setting_whiteboard#:#Whiteboard
 setting_whiteboard_info#:#This option allows test takers to use a scratch pad on-screen.
+err_wrong_format_for_selection#:#The selection data does not match the expected format.
+err_invalid_selection#:#At least one selected option is invalid: %s
