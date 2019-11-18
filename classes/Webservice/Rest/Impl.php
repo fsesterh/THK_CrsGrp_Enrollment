@@ -157,7 +157,7 @@ class Impl implements Rest
             'exam_start' => $regexQuotedBaseUrlWithScript . $startRegex,
             'exam_take' => $regexQuotedBaseUrlWithScript . $takeRegex,
             'exam_end' => $regexQuotedBaseUrlWithScript . $endRegex,
-            'exam_settings' => $this->service->getConfigurationForTest($test)['exam_settings'],
+            'exam_settings' => implode(',', $this->service->getConfigurationForTest($test)['exam_settings']),
             'fullname' => $this->service->getActor()->getFullname(),
             'exam_tag' => $test->getId(),
             'oauth_signature_method' => 'HMAC-SHA1',
