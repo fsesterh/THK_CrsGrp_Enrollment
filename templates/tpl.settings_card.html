@@ -1,11 +1,12 @@
 <div role="<!-- BEGIN role_binary -->checkbox<!-- END role_binary --><!-- BEGIN role_modes -->switch<!-- END role_modes -->"
 	 class="proctorio-settings-card thumbnail<!-- BEGIN disabled --> disabled<!-- END disabled --><!-- BEGIN active --> active<!-- END active --><!-- BEGIN binary --> binary<!-- END binary --><!-- BEGIN modes --> modes<!-- END modes -->"
 	 data-key="{KEY}"
+	 aria-labelledby="label-{KEY}"
 	 data-current-value="{VALUE}"
 >
 	{IMAGE}
 	<div class="caption">
-		<h5 class="card-title">{TITLE}</h5>
+		<h5 class="card-title" id="label-{KEY}">{TITLE}</h5>
 	</div>
 	<!-- BEGIN type_checkbox --> 
 	<input class="ilNoDisplay" type="checkbox" name="{TYPE_CHECKBOX_NAME}[{TYPE_CHECKBOX_KEY}]" value="{TYPE_CHECKBOX_KEY}"<!-- BEGIN checkbox_checked --> checked<!-- END checkbox_checked --> />
