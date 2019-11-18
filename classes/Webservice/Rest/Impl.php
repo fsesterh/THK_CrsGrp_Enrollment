@@ -288,7 +288,7 @@ class Impl implements Rest
             $responseArray = json_decode($responseBody, true);
             $isReviewApiSuccess = is_array($responseArray) && isset($responseArray[1]) && is_string($responseArray[1]) && strlen($responseArray[1]) > 0;
             if ($isReviewApiSuccess) {
-                return URI($responseArray[1]);
+                return new URI($responseArray[1]);
             }
         }
 
