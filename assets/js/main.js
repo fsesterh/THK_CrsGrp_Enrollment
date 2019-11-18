@@ -74,14 +74,14 @@ if (typeof il === 'undefined') {
 			const key = $this.data("key"), currentValue = $this.data("current-value");
 
 			if ($this.hasClass(globalSettings.binarySettingCssClass)) {
-				const isActive = !!$this.hasClass(globalSettings.activeSettingCssClass);
+				const wasActive = !!$this.hasClass(globalSettings.activeSettingCssClass);
 				$this.toggleClass(globalSettings.activeSettingCssClass);
 
 				$this
 					.find('[name*="' + key + '"]')
-					.prop("checked", isActive);
+					.prop("checked", !wasActive);
 
-				$this.data("current-value", isActive ? key : '');
+				$this.data("current-value", wasActive ? '' : key);
 			} else if ($this.hasClass(globalSettings.modeSettingCssClass)) {
 				let nextRadioValue = "", nextTitle = "", nextImage = "";
 
