@@ -55,9 +55,16 @@ class ilProctorioPlugin extends ilUserInterfaceHookPlugin
 
             $GLOBALS['DIC']['plugin.proctorio.api'] = function (Container $c) {
                 return new Impl(
-                    $c->user(),
+                    $c['plugin.proctorio.service'],
                     $c['plugin.proctorio.settings'],
                     $c->logger()->root()
+                );
+            };
+
+            $GLOBALS['DIC']['plugin.proctorio.service'] = function (Container $c) {
+                return new \ILIAS\Plugin\Proctorio\Service\Proctorio\Impl(
+                    $c->user(),
+                    $c['plugin.proctorio.settings']
                 );
             };
         }

@@ -6,6 +6,7 @@ namespace ILIAS\Plugin\Proctorio\Frontend\Controller;
 use \ILIAS\DI\Container;
 use ILIAS\Plugin\Proctorio\Administration\GeneralSettings\Settings;
 use ILIAS\Plugin\Proctorio\Frontend\HttpContext;
+use ILIAS\Plugin\Proctorio\Service\Proctorio\Impl as ProctorioService;
 use ILIAS\Plugin\Proctorio\Webservice\Rest\Impl;
 use \ILIAS\UI\Factory;
 use \ILIAS\UI\Renderer;
@@ -44,6 +45,10 @@ abstract class Base
     protected $globalProctorioSettings;
     /** @var Impl */
     protected $proctorioApi;
+    /** @var ProctorioService */
+    protected $service;
+    /** @var ServerRequestInterface */
+    protected $httpRequest;
 
     /**
      * Base constructor.
@@ -68,6 +73,7 @@ abstract class Base
         $this->errorHandler = $dic['ilErr'];
         $this->globalProctorioSettings = $dic['plugin.proctorio.settings'];
         $this->proctorioApi = $dic['plugin.proctorio.api'];
+        $this->service = $dic['plugin.proctorio.service'];
 
         $this->init();
     }

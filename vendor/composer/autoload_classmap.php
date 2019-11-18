@@ -24,6 +24,7 @@ return array(
     'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier\\TestLaunch' => $baseDir . '/classes/Frontend/ViewModifier/TestLaunch.php',
     'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier\\TestSettings' => $baseDir . '/classes/Frontend/ViewModifier/TestSettings.php',
     'ILIAS\\Plugin\\Proctorio\\Refinery\\Transformation\\UriToString' => $baseDir . '/classes/Refinery/Transformation/UriToString.php',
+    'ILIAS\\Plugin\\Proctorio\\Service\\Proctorio\\Impl' => $baseDir . '/classes/Service/Proctorio/Impl.php',
     'ILIAS\\Plugin\\Proctorio\\UI\\Form\\Bindable' => $baseDir . '/classes/UI/Form/Bindable.php',
     'ILIAS\\Plugin\\Proctorio\\Webservice\\Exception' => $baseDir . '/classes/Webservice/Exception.php',
     'ILIAS\\Plugin\\Proctorio\\Webservice\\Exception\\QualifiedResponseError' => $baseDir . '/classes/Webservice/Exception/QualifiedResponseError.php',

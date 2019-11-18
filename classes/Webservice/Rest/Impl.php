@@ -6,6 +6,7 @@ namespace ILIAS\Plugin\Proctorio\Webservice\Rest;
 use ILIAS\Data\URI;
 use ILIAS\Plugin\Proctorio\Administration\GeneralSettings\Settings;
 use ILIAS\Plugin\Proctorio\Refinery\Transformation\UriToString;
+use ILIAS\Plugin\Proctorio\Service\Proctorio\Impl as ProctorioService;
 use ILIAS\Plugin\Proctorio\Webservice\Exception;
 use ILIAS\Plugin\Proctorio\Webservice\Exception\QualifiedResponseError;
 use ILIAS\Plugin\Proctorio\Webservice\Rest;
@@ -20,8 +21,8 @@ use GuzzleHttp\Middleware;
  */
 class Impl implements Rest
 {
-    /** @var \ilObjUser */
-    private $actor;
+    /** @var ProctorioService */
+    private $service;
     /** @var \ilLogger */
     private $logger;
     /** @var Settings */
@@ -29,13 +30,13 @@ class Impl implements Rest
 
     /**
      * Impl constructor.
-     * @param \ilObjUser $actor
+     * @param ProctorioService $service
      * @param Settings $proctorioSettings
      * @param \ilLogger $logger
      */
-    public function __construct(\ilObjUser $actor, Settings $proctorioSettings, \ilLogger $logger)
+    public function __construct(ProctorioService $service, Settings $proctorioSettings, \ilLogger $logger)
     {
-        $this->actor = $actor;
+        $this->service = $service;
         $this->proctorioSettings = $proctorioSettings;
         $this->logger = $logger;
     }
@@ -151,7 +152,7 @@ class Impl implements Rest
 
         $postParameters = [
             'launch_url' => $finalLaunchUrl,
-            'user_id' => (string) $this->actor->getId(),
+            'user_id' => (string) $this->getActor()->getId(),
             'oauth_consumer_key' => $this->proctorioSettings->getApiKey(),
             'exam_start' => $regexQuotedBaseUrlWithScript . $startRegex,
             'exam_take' => $regexQuotedBaseUrlWithScript . $takeRegex,
@@ -160,7 +161,7 @@ class Impl implements Rest
                 'recordaudio', // TODO: Read from specific/concrete test config
                 'recordvideo',
             ]),
-            'fullname' => $this->actor->getFullname(),
+            'fullname' => $this->getActor()->getFullname(),
             'exam_tag' => $test->getId(),
             'oauth_signature_method' => 'HMAC-SHA1',
             'oauth_version' => '1.0',

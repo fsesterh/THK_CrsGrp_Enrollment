@@ -125,6 +125,7 @@ class ComposerStaticInitd4fd4d4abedff257df830006e5bcf642
         'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier\\TestLaunch' => __DIR__ . '/../..' . '/classes/Frontend/ViewModifier/TestLaunch.php',
         'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier\\TestSettings' => __DIR__ . '/../..' . '/classes/Frontend/ViewModifier/TestSettings.php',
         'ILIAS\\Plugin\\Proctorio\\Refinery\\Transformation\\UriToString' => __DIR__ . '/../..' . '/classes/Refinery/Transformation/UriToString.php',
+        'ILIAS\\Plugin\\Proctorio\\Service\\Proctorio\\Impl' => __DIR__ . '/../..' . '/classes/Service/Proctorio/Impl.php',
         'ILIAS\\Plugin\\Proctorio\\UI\\Form\\Bindable' => __DIR__ . '/../..' . '/classes/UI/Form/Bindable.php',
         'ILIAS\\Plugin\\Proctorio\\Webservice\\Exception' => __DIR__ . '/../..' . '/classes/Webservice/Exception.php',
         'ILIAS\\Plugin\\Proctorio\\Webservice\\Exception\\QualifiedResponseError' => __DIR__ . '/../..' . '/classes/Webservice/Exception/QualifiedResponseError.php',

@@ -88,7 +88,7 @@ class TestLaunchAndReview extends RepositoryObject
 
         $this->test = \ilObjectFactory::getInstanceByRefId($this->getRefId());
 
-        if (!$this->test->isRandomTest() && !$this->test->isFixedTest()) {
+        if (!$this->service->isTestSupported($this->test)) {
             $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
         }
 

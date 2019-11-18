@@ -118,6 +118,11 @@ class TestLaunch extends Base
             return false;
         }
 
+        $test = \ilObjectFactory::getInstanceByRefId($this->getTestRefId());
+        if (!$this->service->isTestSupported($test)) {
+           return false;
+        }
+
         return true;
     }
 
@@ -129,11 +134,6 @@ class TestLaunch extends Base
         $html = $parameters['html'];
 
         $unmodified = ['mode' => \ilUIHookPluginGUI::KEEP, 'html' => ''];
-
-        // TODO: Check if proctorio is enabled, return $unmodified if not
-        /*if (!$this->test->isRandomTest() && !$this->test->isFixedTest()) {
-            return $unmodified;
-        }*/
 
         $doc = new \DOMDocument("1.0", "utf-8");
         if (!@$doc->loadHTML('<?xml encoding="utf-8" ?><html><body>' . $html . '</body></html>')) {
