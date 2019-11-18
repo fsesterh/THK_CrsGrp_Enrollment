@@ -52,6 +52,10 @@ class TestSettings extends RepositoryObject
         );
 
         $this->drawHeader();
+
+        if (!$this->service->isTestSupported($this->test)) {
+            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
+        }
     }
 
     /**
