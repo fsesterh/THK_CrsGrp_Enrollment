@@ -29,25 +29,54 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
             "recordaudio" => ['type' => 'binary'],
             "recordscreen" => ['type' => 'binary'],
             "recordwebtraffic" => ['type' => 'binary'],
-            "recordroomstart" => ['type' => 'binary'],
+            "recordroomstart" => [
+                'type' => 'binary',
+                'depends_on' => [
+                    'recordvideo',
+                    'verifyvideo',
+                ]
+            ],
         ],
 
         "lock_down" => [
             "fullscreenlenient" => [
                 'type' => 'modes',
                 'modes' => [
-                    'fullscreenlenient',
-                    'fullscreenmoderate',
-                    'fullscreensevere',
+                    'fullscreenlenient' => [
+                        'blocks' => [
+                            'linksonly',
+                        ],
+                    ],
+                    'fullscreenmoderate' => [
+                        'blocks' => [
+                            'linksonly',
+                        ],
+                    ],
+                    'fullscreensevere' => [
+                        'blocks' => [
+                            'linksonly',
+                        ],
+                    ],
+                ],
+                'depends_on' => [
+                    'onescreen',
+                    'notabs',
+                    'closetabs',
                 ]
             ],
             "onescreen" => ['type' => 'binary'],
             "notabs" => [
                 'type' => 'modes',
                 'modes' => [
-                    'notabs',
-                    'linksonly',
-                ]
+                    'notabs' => [],
+                    'linksonly' => [
+                        'blocks' => [
+                            'fullscreenlenient',
+                            'fullscreenmoderate',
+                            'fullscreensevere',
+                        ],
+                    ],
+                ],
             ],
             "closetabs" => ['type' => 'binary'],
             "print" => ['type' => 'binary'],
@@ -59,9 +88,24 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
         ],
 
         "verification" => [
-            "verifyvideo" => ['type' => 'binary'],
-            "verifyaudio" => ['type' => 'binary'],
-            "verifydesktop" => ['type' => 'binary'],
+            "verifyvideo" => [
+                'type' => 'binary',
+                'depends_on' => [
+                    'recordvideo',
+                ]
+            ],
+            "verifyaudio" => [
+                'type' => 'binary',
+                'depends_on' => [
+                    'recordaudio',
+                ],
+            ],
+            "verifydesktop" => [
+                'type' => 'binary',
+                'depends_on' => [
+                    'recordscreen',
+                ],
+            ],
             // "verifyroom", // (not supported by API)
             "verifyidauto" => ['type' => 'binary'], // or verifyidlive (no image available, not supported by API)
             "verifysignature" => ['type' => 'binary'],
@@ -71,8 +115,8 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
             "calculatorbasic" => [
                 'type' => 'modes',
                 'modes' => [
-                    'calculatorbasic',
-                    'calculatorsci',
+                    'calculatorbasic' => [],
+                    'calculatorsci' => [],
                 ]
             ],
             "whiteboard" => ['type' => 'binary'],
@@ -80,6 +124,10 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
     ];
     /** @var array[] */
     private $validExamSettingsKeysBySetting = [];
+    /** @var string[] */
+    private $dependenciesOfSetting = [];
+    /** @var string[] */
+    private $blocksBySetting = [];
     /** @var bool */
     private $wasValidationError = false;
     /** @var array */
@@ -106,23 +154,45 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
         foreach ($this->validExamSettings as $section => $settings) {
             foreach ($settings as $setting => $definition) {
                 if ('binary' === $definition['type']) {
+                    if (isset($definition['depends_on']) && is_array($definition['depends_on'])) {
+                        $this->dependenciesOfSetting[$setting] = $definition['depends_on'];
+                    }
+                    
+                    if (isset($definition['blocks']) && is_array($definition['blocks'])) {
+                        foreach ($definition['blocks'] as $blockingSetting) {
+                            $this->blocksBySetting[$blockingSetting][] = $settings;
+                        }
+                    }
+
                     $this->validExamSettingsKeysBySetting[$setting] = [
                         '',
                         $setting
                     ];
+
                     $this->onLoadCodeConfiguration['images'][] = self::IMAGE_CDN_BASE_URL . $setting . '.svg';
                     $this->clientLanguageMapping['setting_' . $setting] = $this->plugin->txt('setting_' . $setting);
                     $this->clientLanguageMapping['setting_' . $setting . '_info'] = $this->plugin->txt('setting_' . $setting . '_info');
                 } else {
                     $this->validExamSettingsKeysBySetting[$setting] = [''];
-                    foreach ($definition['modes'] as $mode) {
+                    foreach ($definition['modes'] as $mode => $modeDefinition) {
+                        if (isset($definition['depends_on']) && is_array($definition['depends_on'])) {
+                            $this->dependenciesOfSetting[$mode] = $definition['depends_on'];
+                        }
+
+                        if (isset($modeDefinition['blocks']) && is_array($modeDefinition['blocks'])) {
+                            foreach ($modeDefinition['blocks'] as $blockingSetting) {
+                                $this->blocksBySetting[$blockingSetting][] = $mode;
+                            }
+                        }
+
                         $this->validExamSettingsKeysBySetting[$setting][] = $mode;
+
                         $this->onLoadCodeConfiguration['images'][] = self::IMAGE_CDN_BASE_URL . $mode . '.svg';
                         $this->clientLanguageMapping['setting_' . $mode] = $this->plugin->txt('setting_' . $mode);
                         $this->clientLanguageMapping['setting_' . $mode . '_info'] = $this->plugin->txt('setting_' . $mode . '_info');
                     }
 
-                    $this->onLoadCodeConfiguration['modeValues'][$setting] = $definition['modes'];
+                    $this->onLoadCodeConfiguration['modeValues'][$setting] = array_keys($definition['modes']);
                 }
             }
         }
@@ -191,6 +261,7 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
         }
         
         $invalidSelections = [];
+        
         foreach ($_POST[$this->getPostVar()] as $setting => $value) {
             if (!in_array($value, $this->validExamSettingsKeysBySetting[$setting])) {
                 $invalidSelections[] = $setting;
@@ -202,6 +273,55 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
                 $this->plugin->txt('err_invalid_selection'),
                 implode(', ', $invalidRequestedExamSettings)
             ));
+            $this->wasValidationError = true;
+            return false;
+        }
+        
+        $missingDependencies = [];
+        $blockingSettings = [];
+        foreach ($_POST[$this->getPostVar()] as $setting => $value) {
+            $dependenciesOfSetting = $this->dependenciesOfSetting[$value] ?? [];
+            $blockingSettingsOfSetting = $this->blocksBySetting[$value] ?? [];
+            $missingDependenciesOfSetting = [];
+            $givenBlockingSettingsBySetting = [];
+            
+            foreach ($dependenciesOfSetting as $dependentSetting) {
+                if (!in_array($dependentSetting, $_POST[$this->getPostVar()])) {
+                    $missingDependenciesOfSetting[] = $this->plugin->txt('setting_' . $dependentSetting);
+                }
+            }
+
+            foreach ($blockingSettingsOfSetting as $blockingSetting) {
+                if (in_array($blockingSetting, $_POST[$this->getPostVar()])) {
+                    $givenBlockingSettingsBySetting[] = $this->plugin->txt('setting_' . $blockingSetting);
+                }
+            }
+
+            if (count($missingDependenciesOfSetting) > 0) {
+                $missingDependencies[] = sprintf(
+                    $this->plugin->txt('err_dependency_not_fulfilled_' . (count($missingDependenciesOfSetting) === 1 ? 's' : 'p')),
+                    $this->plugin->txt('setting_' . $value),
+                    implode(', ', $missingDependenciesOfSetting)
+                );
+            }
+
+            if (count($givenBlockingSettingsBySetting) > 0) {
+                $blockingSettings[] = sprintf(
+                    $this->plugin->txt('err_blocking_setting_' . (count($givenBlockingSettingsBySetting) === 1 ? 's' : 'p')),
+                    $this->plugin->txt('setting_' . $value),
+                    implode(', ', $givenBlockingSettingsBySetting)
+                );
+            }
+        }
+
+        if (count($missingDependencies) > 0) {
+            $this->setAlert(implode(' / ', $missingDependencies));
+            $this->wasValidationError = true;
+            return false;
+        }
+
+        if (count($blockingSettings) > 0) {
+            $this->setAlert(implode(' / ', $blockingSettings));
             $this->wasValidationError = true;
             return false;
         }
@@ -338,7 +458,7 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
                 $cardTemplate->setVariable('VALUE', '');
             }
         } else {
-            $intersection = array_intersect($definition['modes'], $this->getValue());
+            $intersection = array_intersect(array_keys($definition['modes']), $this->getValue());
             $isActive = (1 === count($intersection));
 
             if ($isActive) {
@@ -372,7 +492,7 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
             $cardTemplate->setVariable('TYPE_CHECKBOX_KEY', $setting);
             $cardTemplate->parseCurrentBlock();
         } else {
-            foreach ($definition['modes'] as $mode) {
+            foreach (array_keys($definition['modes']) as $mode) {
                 if (in_array($mode, $this->getValue())) {
                     $cardTemplate->touchBlock('radio_checked');
                 }

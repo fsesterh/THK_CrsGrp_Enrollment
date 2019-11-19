@@ -51,7 +51,7 @@ setting_onescreen_info#:#Only One Screen prevents notes or unauthorized material
 setting_notabs#:#Disabled New Tabs
 setting_notabs_info#:#Disabled New Tabs prevents access to unauthorized material by blocking other websites during the exam.
 setting_linksonly#:#Disabled Non-exam Tabs
-setting_linksonly#:#Disabled Non-exam Tabs prevents access to unauthorized material by blocking other websites during the exam, except links embedded in the exam page.
+setting_linksonly_info#:#Disabled Non-exam Tabs prevents access to unauthorized material by blocking other websites during the exam, except links embedded in the exam page.
 setting_closetabs#:#Close Open Tabs
 setting_closetabs_info#:#Close Open Tabs prevents  access to unauthorized material by requiring any other webpages to be closed before starting the exam.
 setting_print#:#Disabled Printing
