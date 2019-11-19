@@ -98,4 +98,13 @@ abstract class Base implements ViewModifier
     {
         return (new \ReflectionClass($this))->getShortName();
     }
+
+    /**
+     * @param string $html
+     * @return string
+     */
+    final protected function cleanHtmlString(string $html) : string
+    {
+        return str_replace(['<body>', '</body>'], '', $html);
+    }
 }

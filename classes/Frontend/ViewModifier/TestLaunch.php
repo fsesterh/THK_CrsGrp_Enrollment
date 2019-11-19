@@ -12,6 +12,9 @@ class TestLaunch extends Base
 {
     const CMD_START_TEST = 'startPlayer';
     const CMD_RESUME_TEST = 'resumePlayer';
+    
+    /** @var \ilObjTest */
+    private $test;
 
     /**
      * @return bool
@@ -105,6 +108,7 @@ class TestLaunch extends Base
                 return false;
             }
         } else {
+            // TODO: Maybe we have to check another template, because if there is no toolbar button, we will never be able to render a new button on the info svreen
             if ('Services/UIComponent/Toolbar/tpl.toolbar.html' !== $parameters['tpl_id']) {
                 return false;
             }
@@ -118,12 +122,12 @@ class TestLaunch extends Base
             return false;
         }
 
-        $test = \ilObjectFactory::getInstanceByRefId($this->getTestRefId());
-        if (!$this->service->isTestSupported($test)) {
+        $this->test = \ilObjectFactory::getInstanceByRefId($this->getTestRefId());
+        if (!$this->service->isTestSupported($this->test)) {
            return false;
         }
 
-        if (!$this->service->getConfigurationForTest($test)['status']) {
+        if (!$this->service->getConfigurationForTest($this->test)['status']) {
             return false;
         }
 
@@ -153,7 +157,7 @@ class TestLaunch extends Base
             return $unmodified;
         }
 
-        return ['mode' => \ilUIHookPluginGUI::REPLACE, 'html' => $processedHtml];
+        return ['mode' => \ilUIHookPluginGUI::REPLACE, 'html' => $this->cleanHtmlString($processedHtml)];
     }
 
     /**
@@ -173,21 +177,21 @@ class TestLaunch extends Base
         $xpath = new \DomXPath($doc);
         $toolbarButtons = $xpath->query("(//form[@id='ilToolbar'][1]//input | //form[@id='ilToolbar'][1]//a)[last()]");
 
+        $this->ctrl->setParameterByClass(
+            get_class($this->getCoreController()),
+            'ref_id',
+            $this->getTestRefId()
+        );
+        $url = $this->ctrl->getLinkTargetByClass(
+            ['ilUIPluginRouterGUI', get_class($this->getCoreController())],
+            'TestLaunchAndReview.review',
+            '',
+            false,
+            false
+        );
+        
         if ($toolbarButtons->length > 0) {
             $referenceButton = $toolbarButtons->item(0);
-
-            $this->ctrl->setParameterByClass(
-                get_class($this->getCoreController()),
-                'ref_id',
-                $this->getTestRefId()
-            );
-            $url = $this->ctrl->getLinkTargetByClass(
-                ['ilUIPluginRouterGUI', get_class($this->getCoreController())],
-                'TestLaunchAndReview.review',
-                '',
-                false,
-                false
-            );
 
             $btn = $doc->createElement('a');
             $btn->setAttribute('class', 'btn btn-default btn-primary');
@@ -198,6 +202,31 @@ class TestLaunch extends Base
             $btn->appendChild($btnText);
 
             $referenceButton->parentNode->insertBefore($btn, $referenceButton->nextSibling);
+        } else {
+            $toolbar = new \ilToolbarGUI();
+            $btn = \ilLinkButton::getInstance();
+            $btn->setUrl($url);
+            $btn->setCaption($this->getCoreController()->getPluginObject()->txt('btn_label_proctorio_review'), false);
+            $toolbar->addButtonInstance($btn);
+            $toolbarHtml = $toolbar->getHTML();
+
+            if ($this->isPreviewContext()) {
+                $nodes = $xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' item-intro-add-container ')]");
+                if (1 === $nodes->length) {
+                    $toolbarDoc = new \DOMDocument("1.0", "utf-8");
+                    if (!@$toolbarDoc->loadHTML('<?xml encoding="utf-8" ?><html><body>' . $toolbarHtml . '</body></html>')) {
+                        return;
+                    }
+                    $toolbarDoc->encoding = 'UTF-8';
+                    
+                    foreach ($toolbarDoc->getElementsByTagName('body')->item(0)->childNodes as $child) {
+                        $importedToolbarNode = $doc->importNode($child, true);
+                        $nodes->item(0)->appendChild($importedToolbarNode);
+                    }
+                }
+            }  elseif ($this->isInfoScreenContext()) {
+                // TODO: Analyse where to append, maybe another template must be used
+            }
         }
     }
 
