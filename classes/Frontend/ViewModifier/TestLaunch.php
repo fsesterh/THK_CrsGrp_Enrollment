@@ -71,9 +71,9 @@ class TestLaunch extends Base
      */
     private function getTestRefId() : int
     {
-        $refId = $this->getRefId();
+        $refId = $this->getPreviewRefId();
         if ($refId <= 0) {
-            $refId = $this->getPreviewRefId();
+            $refId = $this->getRefId();
         }
 
         if ($refId <= 0) {
