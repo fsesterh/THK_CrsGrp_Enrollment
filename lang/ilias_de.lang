@@ -22,66 +22,66 @@ exam_setting_label_status_info#:#Falls aktiviert, wird dieser Test über Proctor
 form_header_exam_settings#:#Proctorio Exam Einstellungen
 exam_settings_info_test_started#:#Die Einstellungen können nicht mehr verändert werden, sobald der erster Lernende den Test gestartet hat.
 exam_settings_err_not_changeable#:#Die Einstellungen können nicht mehr verändert werden, sobald der erster Lernende den Test gestartet hat.
-acc_header_recording_options#:#Aufzeichnungseinstellungen
-acc_header_recording_options_info#:#Diese Einstellungen bestimmen, welche Informationen während der Prüfung aufgezeichnet werden.
-acc_header_lock_down_options#:#Benutzungseinschränkungen
-acc_header_lock_down_options_info#:#These options determine what will be restricted during the exam.
-acc_header_verification_options#:#Verifizierung
-acc_header_verification_options_info#:#These options determine what will be verified prior to the exam.
-acc_header_in_quiz_options#:#Werkzeuge
-acc_header_in_quiz_options_info#:#These options determine what tools the student will have access to during the quiz.
-setting_recordvideo#:#Record Video
-setting_recordvideo_info#:#Record Video will capture Video from the webcam for the entire exam, giving insight to test taker's exam environment.
-setting_recordaudio#:#Record Audio
-setting_recordaudio_info#:#Record Audio will capture audio from the microphone for the entire exam, allowing you tto listen to the test taker's exam environment.
-setting_recordscreen#:#Record Screen
-setting_recordscreen_info#:#Record Screen will capture the student's desktop for the entire exam, allowing you to see exactly what they were seeing on screen. 
-setting_recordwebtraffic#:#Record Web Traffic
-setting_recordwebtraffic_info#:#Record Web Traffic will capture screenshots an URLs of any website during the exam.
-setting_recordroomstart#:#Record Room
-setting_recordroomstart_info#:#Record Room will require the student to show their entire test environment at intervals based on the option selected.
-setting_fullscreenlenient#:#Force Full Screen
-setting_fullscreenlenient_info#:#Force Full Screen prevents access to other applications or websites during the exam.
-setting_fullscreenmoderate#:#Full Screen Moderate
-setting_fullscreenmoderate_info#:#Full Screen Moderate prevents access to other applications or websites during the exam.
-setting_fullscreensevere#:#Full Screen Severe
-setting_fullscreenlenient_info#:#Full Screen Severe prevents access to other applications or websites during the exam.
-setting_onescreen#:#Only One Screen
-setting_onescreen_info#:#Only One Screen prevents notes or unauthorized materials to be hidden on a second screen.
-setting_notabs#:#Disabled New Tabs
-setting_notabs_info#:#Disabled New Tabs prevents access to unauthorized material by blocking other websites during the exam.
-setting_linksonly#:#Disabled Non-exam Tabs
-setting_linksonly_info#:#Disabled Non-exam Tabs prevents access to unauthorized material by blocking other websites during the exam, except links embedded in the exam page.
-setting_closetabs#:#Close Open Tabs
-setting_closetabs_info#:#Close Open Tabs prevents  access to unauthorized material by requiring any other webpages to be closed before starting the exam.
-setting_print#:#Disabled Printing
-setting_prints_info#:#Disable Printing prevents exam distribution by blocking Print, Save As and Screenshot functionalities.
-setting_clipboard#:#Disabled Clipboard
-setting_clipboard_info#:#Disabled Clipboard prevents exam material from being lifted or content being brought into the quiz.
-setting_downloads#:#Block Downloads
-setting_downloads_info#:#Block Downloads prevents students from downloading any type of file during the exam and automatically end the session.
-setting_cache#:#Clear Cache
-setting_cache_info#:#Clear Cache will prevent exam distribution by erasing all traces of the exam from the computer after the attempts ends.
-setting_rightclick#:#Disable Right Click
-setting_rightclick_info#:#Disable Right Click prevents access to the right click menu.
-setting_noreentry#:#Prevent Re-entry
-setting_noreentry_info#:#Prevent Re-entry requires the exam to be completed in one sitting, any disconnection will end the exam.
-setting_verifyvideo#:#Verify Video
-setting_verifyvideo_info#:#Verify Video will ensure the webcam is working, pointed in the right direction, and their face is clearly visible.
-setting_verifyaudio#:#Verify Audio
-setting_verifyaudio_info#:#Verify Audio will ensure the microphone is working and any sounds in the test environment are recorded.
-setting_verifydesktop#:#Verify Desktop
-setting_verifydesktop_info#:#Verify Desktop will ensure the desktop recording is working and properly recorded.
-setting_verifyidauto#:#Verify ID
-setting_verifyidauto_info#:#Verify ID will required the student to show a photo identification car before beginning the exam.
-setting_verifysignature#:#Verify Signature
-setting_verifysignature_info#:#Verifiy Signature requires the student to sign an academic agreement before beginning the exam.
-setting_calculatorbasic#:#Calculator
-setting_calculatorbasic_info#:#This option will allow test takers to perform calculations using an on-screen calculator.
-setting_calculatorsci#:#Scientific Calculator
-setting_calculatorsci_info#:#This option will allow test takers to perform calculations using an on-screen calculator with scientific cuntions.
+acc_header_recording_options#:#Aufnahmeoptionen
+acc_header_recording_options_info#:#Diese Optionen bestimmen, welche Informationen während der Prüfung aufgezeichnet werden.
+acc_header_lock_down_options#:#Sperroptionen
+acc_header_lock_down_options_info#:#Diese Optionen bestimmen, was während der Prüfung eingeschränkt wird.
+acc_header_verification_options#:#Verifizierungsoptionen
+acc_header_verification_options_info#:#Diese Optionen bestimmen, was vor der Prüfung verifiziert wird.
+acc_header_in_quiz_options#:#In-Test Tools
+acc_header_in_quiz_options_info#:#Diese Optionen bestimmen, auf welche Tools der Prüfungsteilnehmer während der Prüfung zugreifen kann.
+setting_recordvideo#:#Video Aufnehmen
+setting_recordvideo_info#:#Video Aufnehmen erfasst ein Webcamvideo während der gesamten Prüfung und gibt Einblicke in die Umgebung des Prüfungsteilnehmers.
+setting_recordaudio#:#Audio Aufnehmen
+setting_recordaudio_info#:#Audio Aufnehmen erfasst den Mikrofonton während der gesamten Prüfung, damit Sie die Umgebung des Prüfungsteilnehmers hören können.
+setting_recordscreen#:#Bildschirm Aufzeichnen
+setting_recordscreen_info#:#Bildschirm Aufzeichnen erfasst den Desktop des Prüfungsteilnehmers während der gesamten Prüfung, damit Sie genau sehen, was auf dem Bildschirm passiert ist.
+setting_recordwebtraffic#:#Web-Traffic Aufzeichnen
+setting_recordwebtraffic_info#:#Web-Traffic Aufzeichnen erfasst Screenshots und URLs jeder Webseite, die während der Prüfung besucht wurde.
+setting_recordroomstart#:#Raum Aufnehmen
+setting_recordroomstart_info#:#Raum Aufnehmen erfordert, dass der Prüfungsteilnehmer in Intervallen seine gesamte Umgebung zeigt. Basierend auf der ausgewählten Option.
+setting_fullscreenlenient#:#Vollbildschirm Erzwingen
+setting_fullscreenlenient_info#:#Vollbildschirm Erzwingen verhindert den Zugriff auf andere Anwendungen oder Webseiten während der Prüfung.
+setting_fullscreenmoderate#:#Vollbildschirm Erzwingen Moderat
+setting_fullscreenmoderate_info#:#Vollbildschirm Erzwingen verhindert den Zugriff auf andere Anwendungen oder Webseiten während der Prüfung.
+setting_fullscreensevere#:#Vollbildschirm Erzwingen Streng
+setting_fullscreenlenient_info#:#Vollbildschirm Erzwingen verhindert den Zugriff auf andere Anwendungen oder Webseiten während der Prüfung.
+setting_onescreen#:#Nur ein Bildschirm
+setting_onescreen_info#:#Nur ein Bildschirm verhindert, dass Notizen oder unautorisiertes Material auf einem zweiten Bildschirm versteckt werden.
+setting_notabs#:#Neue Tabs Deaktivieren
+setting_notabs_info#:#Neue Tabs Deaktivieren verhindert den Zugriff auf unautorisiertes Material, indem andere Webseiten während der Prüfung blockiert werden.
+setting_linksonly#:#Nur Prüfungs-Tabs
+setting_linksonly_info#:#Nur Prüfungs-Tabs verhindert den Zugriff auf unautorisiertes Material, indem andere Webseiten während der Prüfung blockiert werden, ausgenommen der Links, die in die Prüfungsseite eingebettet sind.
+setting_closetabs#:#Offene Tabs Schließen
+setting_closetabs_info#:#Offene Tabs Schließen verhindert den Zugriff auf unautorisiertes Material, indem andere Webseiten geschlossen werden müssen, bevor die Prüfung beginnt.
+setting_print#:#Drucken Deaktivieren
+setting_prints_info#:#Drucken Deaktivieren verhindert die Prüfungsverteilung, indem Druck-Funktionen blockiert werden.
+setting_clipboard#:#Zwischenablage deaktivieren
+setting_clipboard_info#:#Zwischenablage deaktivieren verhindert, dass Prüfungsmaterial aufgehoben oder Inhalte in die Prüfung eingebracht werden.
+setting_downloads#:#Downloads Blockieren
+setting_downloads_info#:#Downloads Blockieren verhindert, dass Prüfungsteilnehmer während der Prüfung Dateien herunterladen oder speichern und die Sitzung automatisch beenden.
+setting_cache#:#Cache Leeren
+setting_cache_info#:#Cache Leeren verhindert die Prüfungsverteilung, indem alle Spuren der Prüfung nach Ende des Versuchs vom Computer gelöscht werden.
+setting_rightclick#:#Rechtsklick Deaktivieren
+setting_rightclick_info#:#Rechtsklick Deaktivieren verhindert den Zugriff auf das Rechtsklick-Menü.
+setting_noreentry#:#Wiedereintritt Verhindern
+setting_noreentry_info#:#Wiedereintritt Verhindern erfordert, dass die Prüfung in einer Sitzung abgeschlossen wird. Jegliche Trennung beendet die Prüfung.
+setting_verifyvideo#:#Video Verifizieren
+setting_verifyvideo_info#:#Video Verifizieren stellt sicher, dass die Webcam funktioniert, in die richtige Richtung zeigt und das Gesicht deutlich sichtbar ist.
+setting_verifyaudio#:#Audio Verifizieren
+setting_verifyaudio_info#:#Audio Verifizieren stellt sicher, dass das Mikrofon funktioniert und alle Geräusche der Prüfungsumgebung aufgezeichnet werden.
+setting_verifydesktop#:#Desktop Verifizieren
+setting_verifydesktop_info#:#Desktop Verifizieren stellt sicher, dass die Desktopaufzeichnung funktioniert und ordnungsgemäß aufzeichnet.
+setting_verifyidauto#:#ID Verifizieren
+setting_verifyidauto_info#:#ID Verifizieren erfordert, dass der Prüfungsteilnehmer vor Beginn der Prüfung einen Ausweis vorzeigt.
+setting_verifysignature#:#Unterschrift Verifizieren
+setting_verifysignature_info#:#Unterschrift Verifizieren erfordert, dass der Prüfungsteilnehmer eine Vereinbarung unterzeichnet, bevor er mit der Prüfung beginnt.
+setting_calculatorbasic#:#Rechner
+setting_calculatorbasic_info#:#Mit dieser Option können Prüfungsteilnehmer Berechnungen mit einem On-Screen-Rechner durchführen.
+setting_calculatorsci#:#Wissenschaftlicher Rechner
+setting_calculatorsci_info#:#Prüfungsteilnehmer haben Zugriff auf einen wissenschaftlichen On-Screen-Rechner.
 setting_whiteboard#:#Whiteboard
-setting_whiteboard_info#:#This option allows test takers to use a scratch pad on-screen.
+setting_whiteboard_info#:#Mit dieser Option können Prüfungsteilnehmer einen On-Screen-Notizblock verwenden.
 err_wrong_format_for_selection#:#Die Daten der Auswahl entsprechen nicht dem erwarteten Format.
 err_invalid_selection#:#Mindestens eine der gewählten Option ist ungültig: %s
 err_dependency_not_fulfilled_s#:#Die Einstellung '%s' bedingt die Auswahl der der folgenden Einstellung: %s
