@@ -84,3 +84,7 @@ setting_whiteboard#:#Whiteboard
 setting_whiteboard_info#:#This option allows test takers to use a scratch pad on-screen.
 err_wrong_format_for_selection#:#The selection data does not match the expected format.
 err_invalid_selection#:#At least one selected option is invalid: %s
+err_dependency_not_fulfilled_s#:#The setting '%s' depends on the selection of the following setting: %s
+err_dependency_not_fulfilled_p#:#The setting '%s' depends on the selection of the following settings: %s
+err_blocking_setting_s#:#The setting '%s' cannot be selected because it is blocked by the following setting: %s
+err_blocking_setting_p#:#The setting '%s' cannot be selected because it is blocked by the following settings: %s
