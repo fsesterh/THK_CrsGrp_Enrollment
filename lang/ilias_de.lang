@@ -71,7 +71,7 @@ setting_verifyvideo_info#:#Verify Video will ensure the webcam is working, point
 setting_verifyaudio#:#Verify Audio
 setting_verifyaudio_info#:#Verify Audio will ensure the microphone is working and any sounds in the test environment are recorded.
 setting_verifydesktop#:#Verify Desktop
-setting_verifydesktop_info#Verify Desktop will ensure the desktop recording is working and properly recorded.
+setting_verifydesktop_info#:#Verify Desktop will ensure the desktop recording is working and properly recorded.
 setting_verifyidauto#:#Verify ID
 setting_verifyidauto_info#:#Verify ID will required the student to show a photo identification car before beginning the exam.
 setting_verifysignature#:#Verify Signature
