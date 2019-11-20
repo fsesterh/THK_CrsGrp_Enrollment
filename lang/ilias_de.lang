@@ -42,10 +42,10 @@ setting_recordroomstart#:#Raum Aufnehmen
 setting_recordroomstart_info#:#Raum Aufnehmen erfordert, dass der Prüfungsteilnehmer in Intervallen seine gesamte Umgebung zeigt. Basierend auf der ausgewählten Option.
 setting_fullscreenlenient#:#Vollbildschirm Erzwingen
 setting_fullscreenlenient_info#:#Vollbildschirm Erzwingen verhindert den Zugriff auf andere Anwendungen oder Webseiten während der Prüfung.
-setting_fullscreenmoderate#:#Vollbildschirm Erzwingen Moderat
-setting_fullscreenmoderate_info#:#Vollbildschirm Erzwingen verhindert den Zugriff auf andere Anwendungen oder Webseiten während der Prüfung.
-setting_fullscreensevere#:#Vollbildschirm Erzwingen Streng
-setting_fullscreenlenient_info#:#Vollbildschirm Erzwingen verhindert den Zugriff auf andere Anwendungen oder Webseiten während der Prüfung.
+setting_fullscreenmoderate#:#Vollbildschirm Moderat
+setting_fullscreenmoderate_info#:#Prüfungsteilnehmer können die Prüfungsseite nicht verlassen, aber es besteht eine moderate Toleranz.
+setting_fullscreensevere#:#Vollbildschirm Streng
+setting_fullscreenlenient_info#:#Prüfungsteilnehmer können die Prüfungsseite nicht verlassen. Jegliche Aktion außerhalb der Prüfungsseite beendet den Versuch.
 setting_onescreen#:#Nur ein Bildschirm
 setting_onescreen_info#:#Nur ein Bildschirm verhindert, dass Notizen oder unautorisiertes Material auf einem zweiten Bildschirm versteckt werden.
 setting_notabs#:#Neue Tabs Deaktivieren
