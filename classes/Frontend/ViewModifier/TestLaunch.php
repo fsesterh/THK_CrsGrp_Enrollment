@@ -148,10 +148,6 @@ class TestLaunch extends Base
         $unmodified = ['mode' => \ilUIHookPluginGUI::KEEP, 'html' => ''];
 
         if ('Services/InfoScreen/tpl.infoscreen.html' === $parameters['tpl_id']) {
-            if (!$this->hasReviewAccess()) {
-                return $unmodified;
-            }
-
             $this->addReviewButtonToToolbar();
 
             return $unmodified;
@@ -181,6 +177,10 @@ class TestLaunch extends Base
     {
         $this->reviewButtonRendered = true;
 
+        if (!$this->hasReviewRbacAccess() || !$this->accessHandler->mayReadTestReviews($this->test)) {
+            return;
+        }
+
         $this->ctrl->setParameterByClass(
             get_class($this->getCoreController()),
             'ref_id',
@@ -205,7 +205,7 @@ class TestLaunch extends Base
     /**
      * @return bool
      */
-    private function hasReviewAccess() : bool
+    private function hasReviewRbacAccess() : bool
     {
         return (
             $this->coreAccessHandler->checkAccess('write', '', $this->getRefId()) ||
@@ -224,6 +224,10 @@ class TestLaunch extends Base
             return;
         }
         
+        if (!$this->hasReviewRbacAccess() || !$this->accessHandler->mayReadTestReviews($this->test)) {
+            return;
+        }
+
         $xpath = new \DomXPath($doc);
         $toolbarButtons = $xpath->query("(//form[@id='ilToolbar'][1]//input | //form[@id='ilToolbar'][1]//a)[last()]");
 

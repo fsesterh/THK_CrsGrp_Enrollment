@@ -20,36 +20,32 @@ class TestSettings extends \ilPropertyFormGUI
     private $controller;
     /** @var object */
     private $cmdObject;
-    /** @var ProctorioService */
-    protected $service;
+    /** @var bool */
+    protected $isReadOnly = false;
     /** @var \ilObjTest */
     protected $test;
-    /** @var bool */
-    private $isReadOnly = false;
 
     /**
      * Form constructor.
      * @param \ilProctorioPlugin $plugin
      * @param Base $controller
      * @param object $cmdObject
-     * @param ProctorioService $service
+     * @param bool $isReadonly
      * @param \ilObjTest $test
      */
     public function __construct(
         \ilProctorioPlugin $plugin,
         Base $controller,
         $cmdObject,
-        ProctorioService $service,
+        bool $isReadOnly,
         \ilObjTest $test
     ) {
         $this->plugin = $plugin;
         $this->controller = $controller;
         $this->cmdObject = $cmdObject;
-        $this->service = $service;
+        $this->isReadOnly = $isReadOnly;
         $this->test = $test;
         parent::__construct();
-
-        $this->isReadOnly = !$this->service->isConfigurationChangeAllowed($this->test);
 
         $this->initForm();
     }

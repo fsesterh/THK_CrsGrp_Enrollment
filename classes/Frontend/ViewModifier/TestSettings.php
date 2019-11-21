@@ -82,7 +82,7 @@ class TestSettings extends Base
             $tabs->setBackTarget($this->lng->txt('back'), $tstSettingsUrl);
         } else {
             $test = \ilObjectFactory::getInstanceByRefId($this->getRefId());
-            if ($this->service->isTestSupported($test)) {
+            if ($this->service->isTestSupported($test) && $this->accessHandler->mayReadTestSettings($test)) {
                 $this->ctrl->setParameterByClass(get_class($this->getCoreController()), 'ref_id', $this->getRefId());
                 $tabs->addSubTabTarget(
                     $this->getCoreController()->getPluginObject()->getPrefix() . '_exam_tab_proctorio',

@@ -197,6 +197,10 @@ class TestLaunchAndReview extends RepositoryObject
             $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
         }
 
+        if (!$this->accessHandler->mayReadTestReviews($this->test)) {
+            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
+        }
+
         try {
             $this->ctrl->redirectToURL((new UriToString())->transform($this->proctorioApi->getReviewUrl(
                 $this->test,

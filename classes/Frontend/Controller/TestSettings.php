@@ -56,6 +56,10 @@ class TestSettings extends RepositoryObject
         if (!$this->service->isTestSupported($this->test)) {
             $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
         }
+
+        if (!$this->accessHandler->mayReadTestSettings($this->test)) {
+            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
+        }
     }
 
     /**
@@ -67,7 +71,11 @@ class TestSettings extends RepositoryObject
             $this->getCoreController()->getPluginObject(),
             $this,
             $this->getCoreController(),
-            $this->service,
+            (
+                true||
+                !$this->service->isConfigurationChangeAllowed($this->test) ||
+                !$this->accessHandler->mayWriteTestSettings($this->test)
+            ),
             $this->test
         );
 
@@ -96,6 +104,10 @@ class TestSettings extends RepositoryObject
      */
     public function saveSettingsCmd() : string
     {
+        if (!$this->accessHandler->mayWriteTestSettings($this->test)) {
+            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
+        }
+
         $form = $this->buildForm();
         if ($form->checkInput()) {
             $this->service->saveConfigurationForTest($this->test, $form);

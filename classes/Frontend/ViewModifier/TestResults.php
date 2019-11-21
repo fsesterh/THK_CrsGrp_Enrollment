@@ -30,18 +30,14 @@ class TestResults extends Base
             return false;
         }
 
-        if (
-            !$this->coreAccessHandler->checkAccess('write', '', $this->getRefId()) &&
-            !$this->coreAccessHandler->checkAccess('tst_results', '', $this->getRefId()) &&
-            !$this->coreAccessHandler->checkPositionAccess(\ilOrgUnitOperation::OP_MANAGE_PARTICIPANTS, $this->getRefId()) &&
-            !$this->coreAccessHandler->checkPositionAccess(\ilOrgUnitOperation::OP_ACCESS_RESULTS, $this->getRefId())
-        ) {
-            return false;
-        }
-
         $this->test = \ilObjectFactory::getInstanceByRefId($this->getRefId());
         if (!$this->service->isTestSupported($this->test)) {
            return false;
+        }
+
+        // We do not check any RBAC permissions here, since this is already done by the ILIAS core when rendering this view
+        if (!$this->accessHandler->mayReadTestReviews($this->test)) {
+            return false;
         }
 
         if (!$this->service->getConfigurationForTest($this->test)['status']) {
