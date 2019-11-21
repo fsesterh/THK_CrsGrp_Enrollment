@@ -5,6 +5,7 @@ use ILIAS\DI\Container;
 use ILIAS\Plugin\Proctorio\Frontend;
 use ILIAS\Plugin\Proctorio\Frontend\ViewModifier;
 use ILIAS\Plugin\Proctorio\Frontend\ViewModifier\TestLaunch;
+use ILIAS\Plugin\Proctorio\Frontend\ViewModifier\TestResults;
 use ILIAS\Plugin\Proctorio\Frontend\ViewModifier\TestSettings;
 
 /**
@@ -86,6 +87,7 @@ class ilProctorioUIHookGUI extends ilUIHookPluginGUI
         self::$modifiers = [
             new TestSettings($this, $this->dic),
             new TestLaunch($this, $this->dic),
+            new TestResults($this, $this->dic),
         ];
     }
 

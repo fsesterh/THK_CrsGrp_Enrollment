@@ -71,6 +71,7 @@ abstract class Base implements ViewModifier
         $this->uiFactory = $dic->ui()->factory();
         $this->coreAccessHandler = $dic->access();
         $this->errorHandler = $dic['ilErr'];
+        $this->toolbar = $dic->toolbar();
         $this->service = $dic['plugin.proctorio.service'];
     }
 

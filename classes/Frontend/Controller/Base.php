@@ -71,6 +71,7 @@ abstract class Base
         $this->uiFactory = $dic->ui()->factory();
         $this->coreAccessHandler = $dic->access();
         $this->errorHandler = $dic['ilErr'];
+        $this->toolbar = $dic->toolbar();
         $this->globalProctorioSettings = $dic['plugin.proctorio.settings'];
         $this->proctorioApi = $dic['plugin.proctorio.api'];
         $this->service = $dic['plugin.proctorio.service'];

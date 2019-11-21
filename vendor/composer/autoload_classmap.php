@@ -22,6 +22,7 @@ return array(
     'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier' => $baseDir . '/classes/Frontend/ViewModifier.php',
     'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier\\Base' => $baseDir . '/classes/Frontend/ViewModifier/Base.php',
     'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier\\TestLaunch' => $baseDir . '/classes/Frontend/ViewModifier/TestLaunch.php',
+    'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier\\TestResults' => $baseDir . '/classes/Frontend/ViewModifier/TestResults.php',
     'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier\\TestSettings' => $baseDir . '/classes/Frontend/ViewModifier/TestSettings.php',
     'ILIAS\\Plugin\\Proctorio\\Refinery\\Transformation\\UriToString' => $baseDir . '/classes/Refinery/Transformation/UriToString.php',
     'ILIAS\\Plugin\\Proctorio\\Service\\Proctorio\\Impl' => $baseDir . '/classes/Service/Proctorio/Impl.php',

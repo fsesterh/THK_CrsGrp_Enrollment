@@ -123,6 +123,7 @@ class ComposerStaticInitd4fd4d4abedff257df830006e5bcf642
         'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier' => __DIR__ . '/../..' . '/classes/Frontend/ViewModifier.php',
         'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier\\Base' => __DIR__ . '/../..' . '/classes/Frontend/ViewModifier/Base.php',
         'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier\\TestLaunch' => __DIR__ . '/../..' . '/classes/Frontend/ViewModifier/TestLaunch.php',
+        'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier\\TestResults' => __DIR__ . '/../..' . '/classes/Frontend/ViewModifier/TestResults.php',
         'ILIAS\\Plugin\\Proctorio\\Frontend\\ViewModifier\\TestSettings' => __DIR__ . '/../..' . '/classes/Frontend/ViewModifier/TestSettings.php',
         'ILIAS\\Plugin\\Proctorio\\Refinery\\Transformation\\UriToString' => __DIR__ . '/../..' . '/classes/Refinery/Transformation/UriToString.php',
         'ILIAS\\Plugin\\Proctorio\\Service\\Proctorio\\Impl' => __DIR__ . '/../..' . '/classes/Service/Proctorio/Impl.php',
