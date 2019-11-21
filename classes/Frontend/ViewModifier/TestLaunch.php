@@ -15,6 +15,8 @@ class TestLaunch extends Base
     
     /** @var \ilObjTest */
     private $test;
+        /** @var bool */
+    private $reviewButtonRendered = false;
 
     /**
      * @return bool
@@ -108,8 +110,10 @@ class TestLaunch extends Base
                 return false;
             }
         } else {
-            // TODO: Maybe we have to check another template, because if there is no toolbar button, we will never be able to render a new button on the info svreen
-            if ('Services/UIComponent/Toolbar/tpl.toolbar.html' !== $parameters['tpl_id']) {
+            if (
+                'Services/UIComponent/Toolbar/tpl.toolbar.html' !== $parameters['tpl_id'] &&
+                'Services/InfoScreen/tpl.infoscreen.html' !== $parameters['tpl_id']
+            ) {
                 return false;
             }
 
@@ -143,6 +147,16 @@ class TestLaunch extends Base
 
         $unmodified = ['mode' => \ilUIHookPluginGUI::KEEP, 'html' => ''];
 
+        if ('Services/InfoScreen/tpl.infoscreen.html' === $parameters['tpl_id']) {
+            if (!$this->hasReviewAccess()) {
+                return $unmodified;
+            }
+
+            $this->addReviewButtonToToolbar();
+
+            return $unmodified;
+        }
+
         $doc = new \DOMDocument("1.0", "utf-8");
         if (!@$doc->loadHTML('<?xml encoding="utf-8" ?><html><body>' . $html . '</body></html>')) {
             return $unmodified;
@@ -161,16 +175,52 @@ class TestLaunch extends Base
     }
 
     /**
+     *
+     */
+    private function addReviewButtonToToolbar() : void
+    {
+        $this->reviewButtonRendered = true;
+
+        $this->ctrl->setParameterByClass(
+            get_class($this->getCoreController()),
+            'ref_id',
+            $this->getTestRefId()
+        );
+        $url = $this->ctrl->getLinkTargetByClass(
+            ['ilUIPluginRouterGUI', get_class($this->getCoreController())],
+            'TestLaunchAndReview.review',
+            '',
+            false,
+            false
+        );
+        $btn = \ilLinkButton::getInstance();
+        $btn->setUrl($url);
+        $btn->setCaption(
+            $this->getCoreController()->getPluginObject()->txt('btn_label_proctorio_review'),
+            false
+        );
+        $this->toolbar->addButtonInstance($btn);
+    }
+
+    /**
+     * @return bool
+     */
+    private function hasReviewAccess() : bool
+    {
+        return (
+            $this->coreAccessHandler->checkAccess('write', '', $this->getRefId()) ||
+            $this->coreAccessHandler->checkAccess('tst_results', '', $this->getRefId()) ||
+            $this->coreAccessHandler->checkPositionAccess(\ilOrgUnitOperation::OP_MANAGE_PARTICIPANTS, $this->getRefId()) ||
+            $this->coreAccessHandler->checkPositionAccess(\ilOrgUnitOperation::OP_ACCESS_RESULTS, $this->getRefId())
+        );
+    }
+
+    /**
      * @param \DOMDocument $doc
      */
     private function addReviewButton(\DOMDocument $doc) : void 
     {
-        if (
-            !$this->coreAccessHandler->checkAccess('write', '', $this->getRefId()) &&
-            !$this->coreAccessHandler->checkAccess('tst_results', '', $this->getRefId()) &&
-            !$this->coreAccessHandler->checkPositionAccess(\ilOrgUnitOperation::OP_MANAGE_PARTICIPANTS, $this->getRefId()) &&
-            !$this->coreAccessHandler->checkPositionAccess(\ilOrgUnitOperation::OP_ACCESS_RESULTS, $this->getRefId())
-        ) {
+        if ($this->reviewButtonRendered) {
             return;
         }
         
@@ -224,8 +274,6 @@ class TestLaunch extends Base
                         $nodes->item(0)->appendChild($importedToolbarNode);
                     }
                 }
-            }  elseif ($this->isInfoScreenContext()) {
-                // TODO: Analyse where to append, maybe another template must be used
             }
         }
     }
