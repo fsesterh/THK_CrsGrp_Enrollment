@@ -3,6 +3,7 @@
 
 use ILIAS\Plugin\Proctorio\Administration\Controller;
 use ILIAS\Plugin\Proctorio\Administration\GeneralSettings\UI\Form;
+use ILIAS\Plugin\Proctorio\AccessControl\Acl;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -12,6 +13,19 @@ require_once __DIR__ . '/../vendor/autoload.php';
  */
 class ilProctorioConfigGUI extends Controller\Base
 {
+    /** @var Acl */
+    private $acl;
+
+    /**
+     * @inheritDoc
+     */
+    public function __construct(\ilProctorioPlugin $plugin_object = null)
+    {
+        parent::__construct($plugin_object);
+
+        $this->acl = $GLOBALS['DIC']['plugin.proctorio.acl'];
+    }
+
     /**
      * @inheritDoc
      */
@@ -25,7 +39,7 @@ class ilProctorioConfigGUI extends Controller\Base
      */
     public function showSettings() : void
     {
-        $form = new Form($this->plugin_object, $this, $this->settings);
+        $form = new Form($this->plugin_object, $this, $this->settings, $this->objectCache, $this->rbacReview, $this->acl);
         $this->pageTemplate->setContent($form->getHTML());
     }
 
@@ -34,7 +48,7 @@ class ilProctorioConfigGUI extends Controller\Base
      */
     public function saveSettings() : void
     {
-        $form = new Form($this->plugin_object, $this, $this->settings);
+        $form = new Form($this->plugin_object, $this, $this->settings, $this->objectCache, $this->rbacReview, $this->acl);
         if ($form->saveObject()) {
             \ilUtil::sendSuccess($this->lng->txt('saved_successfully'), true);
             $this->ctrl->redirect($this);

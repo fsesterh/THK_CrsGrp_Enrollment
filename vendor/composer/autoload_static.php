@@ -107,6 +107,19 @@ class ComposerStaticInitd4fd4d4abedff257df830006e5bcf642
     );
 
     public static $classMap = array (
+        'ILIAS\\Plugin\\Proctorio\\AccessControl\\AccessHandler' => __DIR__ . '/../..' . '/classes/AccessControl/AccessHandler.php',
+        'ILIAS\\Plugin\\Proctorio\\AccessControl\\Acl' => __DIR__ . '/../..' . '/classes/AccessControl/Acl.php',
+        'ILIAS\\Plugin\\Proctorio\\AccessControl\\Acl\\Exception\\InvalidArgument' => __DIR__ . '/../..' . '/classes/AccessControl/Acl/Exception/PermissionDenied.php',
+        'ILIAS\\Plugin\\Proctorio\\AccessControl\\Acl\\Impl' => __DIR__ . '/../..' . '/classes/AccessControl/Acl/Impl.php',
+        'ILIAS\\Plugin\\Proctorio\\AccessControl\\Acl\\Resource' => __DIR__ . '/../..' . '/classes/AccessControl/Acl/Resource.php',
+        'ILIAS\\Plugin\\Proctorio\\AccessControl\\Acl\\Resource\\GenericResource' => __DIR__ . '/../..' . '/classes/AccessControl/Acl/Resource/GenericResource.php',
+        'ILIAS\\Plugin\\Proctorio\\AccessControl\\Acl\\Role' => __DIR__ . '/../..' . '/classes/AccessControl/Acl/Role.php',
+        'ILIAS\\Plugin\\Proctorio\\AccessControl\\Acl\\Role\\GenericRole' => __DIR__ . '/../..' . '/classes/AccessControl/Acl/Role/GenericRole.php',
+        'ILIAS\\Plugin\\Proctorio\\AccessControl\\Acl\\Role\\Registry' => __DIR__ . '/../..' . '/classes/AccessControl/Acl/Role/Registry.php',
+        'ILIAS\\Plugin\\Proctorio\\AccessControl\\Exception\\PermissionDenied' => __DIR__ . '/../..' . '/classes/AccessControl/Exception/PermissionDenied.php',
+        'ILIAS\\Plugin\\Proctorio\\AccessControl\\Exception\\PermissionRestricted' => __DIR__ . '/../..' . '/classes/AccessControl/Exception/PermissionRestricted.php',
+        'ILIAS\\Plugin\\Proctorio\\AccessControl\\Handler\\Cached' => __DIR__ . '/../..' . '/classes/AccessControl/Handler/Cached.php',
+        'ILIAS\\Plugin\\Proctorio\\AccessControl\\Handler\\RoleBased' => __DIR__ . '/../..' . '/classes/AccessControl/Handler/RoleBased.php',
         'ILIAS\\Plugin\\Proctorio\\Administration\\Controller\\Base' => __DIR__ . '/../..' . '/classes/Administration/Controller/Base.php',
         'ILIAS\\Plugin\\Proctorio\\Administration\\GeneralSettings\\Settings' => __DIR__ . '/../..' . '/classes/Administration/GeneralSettings/Settings.php',
         'ILIAS\\Plugin\\Proctorio\\Administration\\GeneralSettings\\UI\\Form' => __DIR__ . '/../..' . '/classes/Administration/GeneralSettings/UI/Form.php',

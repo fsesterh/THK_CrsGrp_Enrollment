@@ -11,6 +11,7 @@ use ILIAS\Plugin\Proctorio\Webservice\Rest\Impl;
 use \ILIAS\UI\Factory;
 use \ILIAS\UI\Renderer;
 use \Psr\Http\Message\ServerRequestInterface;
+use ILIAS\Plugin\Proctorio\AccessControl\AccessHandler;
 
 /**
  * @author Michael Jansen <mjansen@databay.de>
@@ -35,6 +36,8 @@ abstract class Base
     protected $user;
     /** @var \ilAccessHandler */
     protected $coreAccessHandler;
+    /** @var AccessHandler */
+    protected $accessHandler;
     /** @var \ilErrorHandling */
     protected $errorHandler;
     /** @var \ilLanguage */
@@ -73,6 +76,7 @@ abstract class Base
         $this->errorHandler = $dic['ilErr'];
         $this->toolbar = $dic->toolbar();
         $this->globalProctorioSettings = $dic['plugin.proctorio.settings'];
+        $this->accessHandler = $dic['plugin.proctorio.accessHandler'];
         $this->proctorioApi = $dic['plugin.proctorio.api'];
         $this->service = $dic['plugin.proctorio.service'];
 

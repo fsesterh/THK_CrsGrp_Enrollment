@@ -4,6 +4,7 @@
 namespace ILIAS\Plugin\Proctorio\Frontend\ViewModifier;
 
 use ILIAS\DI\Container;
+use ILIAS\Plugin\Proctorio\AccessControl\AccessHandler;
 use ILIAS\Plugin\Proctorio\Frontend\HttpContext;
 use ILIAS\Plugin\Proctorio\Frontend\ViewModifier;
 use ILIAS\Plugin\Proctorio\Service\Proctorio\Impl;
@@ -48,6 +49,9 @@ abstract class Base implements ViewModifier
     protected $service;
     /** @var ServerRequestInterface */
     protected $httpRequest;
+    /** @var AccessHandler */
+    protected $accessHandler;
+    /** @var \ilAccessHandler */
 
     /**
      * Base constructor.
@@ -69,8 +73,9 @@ abstract class Base implements ViewModifier
         $this->user = $dic->user();
         $this->uiRenderer = $dic->ui()->renderer();
         $this->uiFactory = $dic->ui()->factory();
-        $this->coreAccessHandler = $dic->access();
         $this->errorHandler = $dic['ilErr'];
+        $this->coreAccessHandler = $dic->access();
+        $this->accessHandler = $dic['plugin.proctorio.accessHandler'];
         $this->toolbar = $dic->toolbar();
         $this->service = $dic['plugin.proctorio.service'];
     }

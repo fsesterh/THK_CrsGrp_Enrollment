@@ -24,6 +24,10 @@ abstract class Base extends \ilPluginConfigGUI
     protected $user;
     /** @var \ilProctorioPlugin */
     protected $plugin_object;
+    /** @var \ilRbacReview */
+    protected $rbacReview;
+    /** @var \ilObjectDataCache */
+    protected $objectCache;
 
     /**
      * Base constructor.
@@ -38,6 +42,8 @@ abstract class Base extends \ilPluginConfigGUI
         $this->pageTemplate = $DIC->ui()->mainTemplate();
         $this->user = $DIC->user();
         $this->plugin_object = $plugin_object;
+        $this->rbacReview = $DIC->rbac()->review();
+        $this->objectCache = $DIC['ilObjDataCache'];
     }
 
     /**

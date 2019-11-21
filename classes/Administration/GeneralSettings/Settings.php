@@ -3,6 +3,7 @@
 
 namespace ILIAS\Plugin\Proctorio\Administration\GeneralSettings;
 
+use ILIAS\Plugin\Proctorio\AccessControl\Acl;
 use ILIAS\Plugin\Proctorio\UI\Form\Bindable;
 
 /**
@@ -24,14 +25,20 @@ class Settings implements Bindable
     private $apiBaseUrl = '';
     /** @var string */
     private $apiLaunchAndReviewEndpoint = '';
+    /** @var Acl */
+    private $acl;
+    /** @var array */
+    protected $aclRoleToGlobalRoleMappings = [];
 
     /**
      * Settings constructor.
      * @param \ilSetting $settings
+     * @param Acl $settings
      */
-    public function __construct(\ilSetting $settings)
+    public function __construct(\ilSetting $settings, Acl $acl)
     {
         $this->settings = $settings;
+        $this->acl = $acl;
 
         $this->read();
     }
@@ -61,14 +68,6 @@ class Settings implements Bindable
     }
 
     /**
-     * @param string $apiKey
-     */
-    public function setApiKey(string $apiKey) : void
-    {
-        $this->apiKey = $apiKey;
-    }
-
-    /**
      * @return string
      */
     public function getApiSecret() : string
@@ -77,27 +76,11 @@ class Settings implements Bindable
     }
 
     /**
-     * @param string $apiSecret
-     */
-    public function setApiSecret(string $apiSecret) : void
-    {
-        $this->apiSecret = $apiSecret;
-    }
-
-    /**
      * @return string
      */
     public function getApiRegion() : string
     {
         return $this->apiRegion;
-    }
-
-    /**
-     * @param string $apiRegion
-     */
-    public function setApiRegion(string $apiRegion) : void
-    {
-        $this->apiRegion = $apiRegion;
     }
 
     /**
@@ -117,19 +100,11 @@ class Settings implements Bindable
     }
 
     /**
-     * @param string $apiLaunchAndReviewEndpoint
+     * @return array
      */
-    public function setApiLaunchAndReviewEndpoint(string $apiLaunchAndReviewEndpoint) : void
+    public function getAclRoleToGlobalRoleMappings() : array
     {
-        $this->apiLaunchAndReviewEndpoint = $apiLaunchAndReviewEndpoint;
-    }
-
-    /**
-     * @param string $apiBaseUrl
-     */
-    public function setApiBaseUrl(string $apiBaseUrl) : void
-    {
-        $this->apiBaseUrl = $apiBaseUrl;
+        return $this->aclRoleToGlobalRoleMappings;
     }
 
     protected function read()
@@ -139,6 +114,12 @@ class Settings implements Bindable
         $this->apiRegion = (string) $this->settings->get('api_region', '');
         $this->apiBaseUrl = (string) $this->settings->get('api_base_url', '');
         $this->apiLaunchAndReviewEndpoint = (string) $this->settings->get('api_launch_review_endpoint', '');
+        $this->aclRoleToGlobalRoleMappings = unserialize(
+            $this->settings->get('aclr_to_role_mapping', serialize([])),
+            [
+                'allowed_classes' => false
+            ]
+        );
     }
 
     /**
@@ -151,6 +132,14 @@ class Settings implements Bindable
         $this->apiRegion = (string) $form->getInput('api_region');
         $this->apiBaseUrl = (string) $form->getInput('api_base_url');
         $this->apiLaunchAndReviewEndpoint = (string) $form->getInput('api_launch_review_endpoint');
+        $mappingByRole = [];
+        foreach ($this->acl->getRoles() as $role) {
+            $mapping = array_filter(array_map('intval',
+                (array) $form->getInput('role_mapping_' . $role->getRoleId())
+            ));
+            $mappingByRole[$role->getRoleId()] = $mapping;
+        }
+        $this->aclRoleToGlobalRoleMappings = $mappingByRole;
     }
 
     /**
@@ -163,6 +152,7 @@ class Settings implements Bindable
         $this->settings->set('api_region', $this->getApiRegion());
         $this->settings->set('api_base_url', $this->getApiBaseUrl());
         $this->settings->set('api_launch_review_endpoint', $this->getApiLaunchAndReviewEndpoint());
+        $this->settings->set('aclr_to_role_mapping', serialize($this->aclRoleToGlobalRoleMappings));
     }
 
     /**
@@ -170,12 +160,21 @@ class Settings implements Bindable
      */
     public function toArray() : array
     {
-        return [
+        $data = [
             'api_key' => $this->getApiKey(),
             'api_secret' => $this->getApiSecret(),
             'api_region' => $this->getApiRegion(),
             'api_base_url' => $this->getApiBaseUrl(),
             'api_launch_review_endpoint' => $this->getApiLaunchAndReviewEndpoint(),
         ];
+
+        foreach ($this->acl->getRoles() as $role) {
+            $data['role_mapping_' . $role->getRoleId()] = [];
+            if (isset($this->aclRoleToGlobalRoleMappings[$role->getRoleId()])) {
+                $data['role_mapping_' . $role->getRoleId()] = $this->aclRoleToGlobalRoleMappings[$role->getRoleId()];
+            }
+        }
+        
+        return $data;
     }
 }

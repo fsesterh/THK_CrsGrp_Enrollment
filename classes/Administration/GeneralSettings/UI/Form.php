@@ -4,6 +4,7 @@
 namespace ILIAS\Plugin\Proctorio\Administration\GeneralSettings\UI;
 
 use ILIAS\Plugin\Proctorio\UI\Form\Bindable;
+use ILIAS\Plugin\Proctorio\AccessControl\Acl;
 
 /**
  * Class Form
@@ -18,6 +19,12 @@ class Form extends \ilPropertyFormGUI
     private $cmdObject;
     /** @var Bindable */
     private $generalSettings;
+    /** @var \ilObjectDataCache */
+    private $objectCache;
+    /** @var \ilRbacReview */
+    protected $rbacReview;
+    /** @var Acl */
+    private $acl;
 
     /**
      * Form constructor.
@@ -28,11 +35,17 @@ class Form extends \ilPropertyFormGUI
     public function __construct(
         \ilProctorioPlugin $plugin,
         $cmdObject,
-        Bindable $generalSettings
+        Bindable $generalSettings,
+        \ilObjectDataCache $objectCache,
+        \ilRbacReview $rbacReview,
+        Acl $acl
     ) {
         $this->plugin = $plugin;
         $this->cmdObject = $cmdObject;
         $this->generalSettings = $generalSettings;
+        $this->objectCache = $objectCache;
+        $this->rbacReview = $rbacReview;
+        $this->acl = $acl;
         parent::__construct();
 
         $this->initForm();
@@ -82,6 +95,28 @@ class Form extends \ilPropertyFormGUI
         $apiLaunchReviewEndpoint->setRequired(true);
         $apiLaunchReviewEndpoint->setValidationRegexp('/^(\/([\.A-Za-z0-9_-]+|\[[A-Za-z0-9_-]+\]))+$/');
         $this->addItem($apiLaunchReviewEndpoint);
+        
+        $accessControlSection = new \ilFormSectionHeaderGUI();
+        $accessControlSection->setTitle($this->plugin->txt('header_access_control'));
+        $this->addItem($accessControlSection);
+
+        $roles = [];
+        foreach ($this->rbacReview->getGlobalRoles() as $roleId) {
+            if ($roleId !== ANONYMOUS_ROLE_ID ) {
+                $roles[$roleId] = $this->objectCache->lookupTitle($roleId);
+            }
+        }
+        asort($roles);
+
+        foreach ($this->acl->getRoles() as $role) {
+            $roleMapping = new \ilMultiSelectInputGUI(
+                $this->plugin->txt('acl_role_' . $role->getRoleId()),
+                'role_mapping_' . $role->getRoleId()
+            );
+            $roleMapping->setInfo($this->plugin->txt('acl_role_info_' . $role->getRoleId()));
+            $roleMapping->setOptions($roles);
+            $this->addItem($roleMapping);
+        }
 
         $this->setValuesByArray($this->generalSettings->toArray());
     }

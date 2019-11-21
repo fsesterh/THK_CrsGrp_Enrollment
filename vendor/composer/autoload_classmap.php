@@ -6,6 +6,19 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'ILIAS\\Plugin\\Proctorio\\AccessControl\\AccessHandler' => $baseDir . '/classes/AccessControl/AccessHandler.php',
+    'ILIAS\\Plugin\\Proctorio\\AccessControl\\Acl' => $baseDir . '/classes/AccessControl/Acl.php',
+    'ILIAS\\Plugin\\Proctorio\\AccessControl\\Acl\\Exception\\InvalidArgument' => $baseDir . '/classes/AccessControl/Acl/Exception/PermissionDenied.php',
+    'ILIAS\\Plugin\\Proctorio\\AccessControl\\Acl\\Impl' => $baseDir . '/classes/AccessControl/Acl/Impl.php',
+    'ILIAS\\Plugin\\Proctorio\\AccessControl\\Acl\\Resource' => $baseDir . '/classes/AccessControl/Acl/Resource.php',
+    'ILIAS\\Plugin\\Proctorio\\AccessControl\\Acl\\Resource\\GenericResource' => $baseDir . '/classes/AccessControl/Acl/Resource/GenericResource.php',
+    'ILIAS\\Plugin\\Proctorio\\AccessControl\\Acl\\Role' => $baseDir . '/classes/AccessControl/Acl/Role.php',
+    'ILIAS\\Plugin\\Proctorio\\AccessControl\\Acl\\Role\\GenericRole' => $baseDir . '/classes/AccessControl/Acl/Role/GenericRole.php',
+    'ILIAS\\Plugin\\Proctorio\\AccessControl\\Acl\\Role\\Registry' => $baseDir . '/classes/AccessControl/Acl/Role/Registry.php',
+    'ILIAS\\Plugin\\Proctorio\\AccessControl\\Exception\\PermissionDenied' => $baseDir . '/classes/AccessControl/Exception/PermissionDenied.php',
+    'ILIAS\\Plugin\\Proctorio\\AccessControl\\Exception\\PermissionRestricted' => $baseDir . '/classes/AccessControl/Exception/PermissionRestricted.php',
+    'ILIAS\\Plugin\\Proctorio\\AccessControl\\Handler\\Cached' => $baseDir . '/classes/AccessControl/Handler/Cached.php',
+    'ILIAS\\Plugin\\Proctorio\\AccessControl\\Handler\\RoleBased' => $baseDir . '/classes/AccessControl/Handler/RoleBased.php',
     'ILIAS\\Plugin\\Proctorio\\Administration\\Controller\\Base' => $baseDir . '/classes/Administration/Controller/Base.php',
     'ILIAS\\Plugin\\Proctorio\\Administration\\GeneralSettings\\Settings' => $baseDir . '/classes/Administration/GeneralSettings/Settings.php',
     'ILIAS\\Plugin\\Proctorio\\Administration\\GeneralSettings\\UI\\Form' => $baseDir . '/classes/Administration/GeneralSettings/UI/Form.php',

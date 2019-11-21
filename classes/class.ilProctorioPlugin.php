@@ -4,6 +4,12 @@
 use ILIAS\DI\Container;
 use ILIAS\Plugin\Proctorio\Administration\GeneralSettings\Settings;
 use ILIAS\Plugin\Proctorio\Webservice\Rest\Impl;
+use ILIAS\Plugin\Proctorio\AccessControl\Acl\Impl as Acl;
+use ILIAS\Plugin\Proctorio\AccessControl\Acl\Resource\GenericResource;
+use ILIAS\Plugin\Proctorio\AccessControl\Acl\Role\GenericRole;
+use ILIAS\Plugin\Proctorio\AccessControl\Acl\Role\Registry;
+use ILIAS\Plugin\Proctorio\AccessControl\Handler\Cached;
+use ILIAS\Plugin\Proctorio\AccessControl\Handler\RoleBased;
 
 /**
  * Class ilProctorioPlugin
@@ -49,8 +55,36 @@ class ilProctorioPlugin extends ilUserInterfaceHookPlugin
 
             $GLOBALS['DIC']['plugin.proctorio.settings'] = function (Container $c) {
                 return new Settings(
-                    new \ilSetting($this->getId())
+                    new \ilSetting($this->getId()),
+                    $c['plugin.proctorio.acl']
                 );
+            };
+
+            $GLOBALS['DIC']['plugin.proctorio.accessHandler'] = function (Container $c) {
+                return new Cached(
+                    new RoleBased(
+                        $c->user(),
+                        $c['plugin.proctorio.settings'],
+                        $c->rbac()->review(),
+                        $c['plugin.proctorio.acl']
+                    )
+                );
+            };
+
+            $GLOBALS['DIC']['plugin.proctorio.acl'] = function (Container $c) {
+                $acl = new Acl(new Registry());
+
+                $acl
+                    ->addRole(new GenericRole('manager'))
+                    ->addRole(new GenericRole('reviewer'))
+                    ->addResource(new GenericResource('exam_review'))
+                    ->addResource(new GenericResource('exam_settings'))
+                    ->allow('reviewer', 'exam_review', 'read')
+                    ->allow('manager', 'exam_review', 'read')
+                    ->allow('manager', 'exam_settings', 'read')
+                    ->allow('manager', 'exam_settings', 'write');
+
+                return $acl;
             };
 
             $GLOBALS['DIC']['plugin.proctorio.api'] = function (Container $c) {
