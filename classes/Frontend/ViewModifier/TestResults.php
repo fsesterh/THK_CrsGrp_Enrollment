@@ -26,6 +26,10 @@ class TestResults extends Base
             return false;
         }
 
+        if (!$this->isObjectOfType('tst')) {
+            return false;
+        }
+
         if (
             !$this->coreAccessHandler->checkAccess('write', '', $this->getRefId()) &&
             !$this->coreAccessHandler->checkAccess('tst_results', '', $this->getRefId()) &&
