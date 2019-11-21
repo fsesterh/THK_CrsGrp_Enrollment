@@ -10,6 +10,10 @@ api_base_url_info#:#Bitte tragen Sie hier die von `Proctorio` bereitgestellte Ba
 api_launch_review_endpoint#:#API-Endpunkt
 api_launch_review_endpoint_info#:#Tragen Sie hier den Ressourcenpfad für Test-Start und Nachprüfung ein, z.B.: /6521ca945bd84cfc85d2767da06aa7c8 . 
 api_err_account_region_missing#:#Der Platzhalter "[ACCOUNT_REGION]" fehlt.
+restrict_activation#:#Aktivierung Beschränken
+restrict_activation_info#:#Falls aktiviert, kann die Nutzung von Proctorio in ILIAS-Tests eingeschränkt werden, 
+global_role_restriction#:#Globale Rollen
+global_role_restriction_info#:#Wählen Sie hier eine oder mehrere globale Rollen, die Proctorio in Tests verwalten und zugriff auf die Nachprüfung erhalten sollen.
 exam_tab_proctorio#:#Proctorio Einstellungen
 api_call_generic#:#Der Proctorio-Test kann nicht gestartet oder fortgesetzt werden. Bitte kontaktieren Sie Ihren Systemadministrator.
 api_call_unexcpected_response_with_code#:#Der Proctorio-Test kann nicht gestartet oder fortgesetzt werden, da der Fehler <strong>%s</strong> aufgetreten ist. Bitte kontaktieren Sie Ihren Systemadministrator.

@@ -10,6 +10,10 @@ api_base_url_info#:#Please enter the base API url provided by `Proctorio`. The e
 api_launch_review_endpoint#:#API Endpoint
 api_launch_review_endpoint_info#:#Please enter the resource path for launching and reviewing purposes provided by provided by `Proctorio`, e.g.: /6521ca945bd84cfc85d2767da06aa7c8 . 
 api_err_account_region_missing#:#The "[ACCOUNT_REGION]" placeholder is missing.
+restrict_activation#:#Restrict Activation
+restrict_activation_info#:#If enabled, the usage of Proctorio in ILIAS tests can be restricted. 
+global_role_restriction#:#Global Roles
+global_role_restriction_info#:#Select one or many global ILIAS roles which should be able to activate/manage Proctorio in ILIAS tests. These roles will also get access to the Proctorio review.
 exam_tab_proctorio#:#Proctorio Settings
 api_call_generic#:#The Proctorio test cannot be started or continue. Please contact your system administrator.
 api_call_unexcpected_response_with_code#:#The Proctorio test cannot be started or continue (Code: <strong>%s</strong>). Please contact your system administrator.
