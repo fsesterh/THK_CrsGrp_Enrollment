@@ -17,6 +17,9 @@ interface AccessHandler
     public function withActor(\ilObjUser $actor) : self;
 
     /** @return bool */
+    public function mayTakeTests(\ilObjTest $test) : bool;
+
+    /** @return bool */
     public function mayReadTestReviews(\ilObjTest $test) : bool;
 
     /** @return bool */

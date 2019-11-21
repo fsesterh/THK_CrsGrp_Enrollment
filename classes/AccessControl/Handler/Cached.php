@@ -44,6 +44,18 @@ class Cached implements AccessControl\AccessHandler
     /**
      * @inheritDoc
      */
+    public function mayTakeTests(\ilObjTest $test) : bool
+    {
+        if (isset($this->cache[__METHOD__])) {
+            return $this->cache[__METHOD__];
+        }
+
+        return ($this->cache[__METHOD__] = $this->origin->mayTakeTests($test));
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function mayReadTestReviews(\ilObjTest $test) : bool
     {
         if (isset($this->cache[__METHOD__])) {

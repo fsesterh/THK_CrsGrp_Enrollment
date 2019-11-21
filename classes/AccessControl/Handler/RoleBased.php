@@ -92,6 +92,14 @@ class RoleBased implements AccessHandler
     /**
      * @inheritDoc
      */
+    public function mayTakeTests(\ilObjTest $test) : bool
+    {
+        return !$this->isActorAnonymous();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function mayReadTestReviews(\ilObjTest $test) : bool
     {
         return !$this->isActorAnonymous() && $this->hasAccess('exam_review', 'read');

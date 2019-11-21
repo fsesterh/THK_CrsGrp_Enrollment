@@ -306,6 +306,11 @@ class TestLaunch extends Base
      */
     private function manipulateLaunchElement(\DOMDocument $doc, \DOMElement $elm) : void
     {
+        if (!$this->accessHandler->mayTakeTests($this->test)) {
+            $elm->parentNode->removeChild($elm);
+            return;
+        }
+
         $this->ctrl->setParameterByClass(
             get_class($this->getCoreController()),
             'ref_id',

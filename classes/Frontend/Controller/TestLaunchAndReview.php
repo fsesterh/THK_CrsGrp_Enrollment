@@ -228,6 +228,10 @@ class TestLaunchAndReview extends RepositoryObject
      */
     public function launchCmd() : string 
     {
+        if (!$this->accessHandler->mayTakeTests($this->test)) {
+            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
+        }
+        
         try {
             $this->ctrl->redirectToURL((new UriToString())->transform($this->proctorioApi->getLaunchUrl(
                 $this->test,
