@@ -57,7 +57,10 @@ class ilProctorioUIHookGUI extends ilUIHookPluginGUI
      */
     private function initModifiers() : void
     {
-        if (!isset($this->dic['tpl'])) {
+        if (
+            !isset($this->dic['tpl']) ||
+            !isset($this->dic['ilToolbar'])
+        ) {
             return;
         }
 
