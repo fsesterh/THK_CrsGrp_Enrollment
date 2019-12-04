@@ -157,7 +157,7 @@ class Impl implements Rest
 
         $finalLaunchUrl = ILIAS_HTTP_PATH . '/' . ltrim($testLaunchUrlString, '/');
 
-        $this->logger->debug(sprintf(
+        $this->logger->info(sprintf(
             "Effective Exam Settings: %s",
             implode(',', $this->service->getConfigurationForTest($test)['exam_settings'])
         ));
