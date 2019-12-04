@@ -155,16 +155,14 @@ class Impl implements Rest
 
         $testLaunchUrlString = (new UriToString())->transform($testLaunchUrl);
 
-        $finalLaunchUrl = ILIAS_HTTP_PATH . '/' . ltrim($testLaunchUrlString, '/');
-
         $this->logger->info(sprintf(
             "Effective Exam Settings: %s",
             implode(',', $this->service->getConfigurationForTest($test)['exam_settings'])
         ));
-        $this->logger->info(sprintf("Launch URL: %s", $finalLaunchUrl));
+        $this->logger->info(sprintf("Launch URL: %s", $testLaunchUrlString));
 
         $postParameters = [
-            'launch_url' => $finalLaunchUrl,
+            'launch_url' => $testLaunchUrlString,
             'user_id' => (string) $this->service->getActor()->getId(),
             'oauth_consumer_key' => $this->proctorioSettings->getApiKey(),
             'exam_start' => $regexQuotedBaseUrlWithScript . $startRegex,
