@@ -24,7 +24,7 @@ class TestLaunch extends Base
     private function isPreviewContext() : bool
     {
         return (
-            $this->isCommandClass('ilobjcoursegui') &&
+            $this->isCommandClass(\ilObjCourse::class) &&
             strtolower($this->ctrl->getCmd()) === strtolower('showItemIntro')
         );
     }
@@ -52,15 +52,15 @@ class TestLaunch extends Base
         ]);
         
         $isBaseClassInfoScreenRequest = (
-            $this->isBaseClass('ilObjTestGUI') &&
+            $this->isBaseClass(\ilObjTestGUI::class) &&
             in_array(strtolower($this->ctrl->getCmd()), $validInfoScreenCommands)
         );
 
         $isCmdClassInfoScreenRequest = (
-            $this->isCommandClass('ilInfoScreenGUI') &&
+            $this->isCommandClass(\ilInfoScreenGUI::class) &&
             in_array(strtolower($this->ctrl->getCmd()), $validInfoScreenCommands)
         ) || (
-            $this->isCommandClass('ilObjTestGUI') &&
+            $this->isCommandClass(\ilObjTestGUI::class) &&
             in_array(strtolower($this->ctrl->getCmd()), $validInfoScreenCommands)
          );
 

@@ -36,11 +36,11 @@ class TestSettings extends Base
         }
 
         if (
-            !$this->isCommandClass('ilobjtestsettingsgeneralgui') &&
-            !$this->isCommandClass('ilmarkschemagui') &&
-            !$this->isCommandClass('ilobjtestsettingsscoringresultsgui') &&
+            !$this->isCommandClass(\ilObjTestSettingsGeneralGUI::class) &&
+            !$this->isCommandClass(\ilMarkSchemaGUI::class) &&
+            !$this->isCommandClass(\ilObjTestSettingsScoringResultsGUI::class) &&
             !(
-                $this->isCommandClass('ilobjtestgui') &&
+                $this->isCommandClass(\ilObjTestGUI::class) &&
                 in_array($this->ctrl->getCmd(), ['defaults', 'addDefaults', 'deleteDefaults', 'applyDefaults'])
             ) &&
             !(

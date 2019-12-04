@@ -14,6 +14,14 @@ class TestResults extends Base
     private $test;
 
     /**
+     * @return bool
+     */
+    private function isResultContext() : bool
+    {
+        return $this->isCommandClass(\ilParticipantsTestResultsGUI::class);
+    }
+
+    /**
      * @inheritDoc
      */
     public function shouldModifyHtml(string $component, string $part, array $parameters) : bool
@@ -27,6 +35,10 @@ class TestResults extends Base
         }
 
         if (!$this->isObjectOfType('tst')) {
+            return false;
+        }
+
+        if (!$this->isResultContext()) {
             return false;
         }
 
