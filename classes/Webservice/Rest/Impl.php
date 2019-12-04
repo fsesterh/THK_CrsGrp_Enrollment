@@ -127,6 +127,10 @@ class Impl implements Rest
             'cmdClass',
         ];
 
+        $this->logger->info(sprintf(
+            "Initiating Proctorio API call ..."
+        ));
+
         $takeRegex = '(.*?([\?&]';
         $takeRegex .= '(' . implode('|', $parameterNames) . ')=(' . implode('|', $parameterValues) . ')';
         $takeRegex .= ')){2}';// 3
@@ -149,16 +153,15 @@ class Impl implements Rest
             strlen($regexQuotedBaseUrlWithScript . $endRegex)
         ));
 
-        $this->logger->debug(sprintf(
-            "Effective Exam Settings: %s",
-            implode(',', $this->service->getConfigurationForTest($test)['exam_settings'])
-        ));
-
         $testLaunchUrlString = (new UriToString())->transform($testLaunchUrl);
 
         $finalLaunchUrl = ILIAS_HTTP_PATH . '/' . ltrim($testLaunchUrlString, '/');
 
-        $this->logger->debug(sprintf("Launch URL: %s", $finalLaunchUrl));
+        $this->logger->debug(sprintf(
+            "Effective Exam Settings: %s",
+            implode(',', $this->service->getConfigurationForTest($test)['exam_settings'])
+        ));
+        $this->logger->info(sprintf("Launch URL: %s", $finalLaunchUrl));
 
         $postParameters = [
             'launch_url' => $finalLaunchUrl,
