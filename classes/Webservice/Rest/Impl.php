@@ -108,6 +108,11 @@ class Impl implements Rest
             $test->getRefId(),
         ];
 
+        // Because Proctorio does not support long regular expressions, we have to use a short/weak one
+        $parameterValues = [
+            $test->getRefId(),
+        ];
+
         $parameterValues[] = 'iltestsubmissionreviewgui';
         if ($test->isRandomTest()) {
             $parameterValues[] = 'iltestplayerrandomquestionsetgui';
@@ -116,15 +121,15 @@ class Impl implements Rest
         }
 
         $parameterNames = [
-            'cmd',
-            'fallbackCmd',
+            //'cmd',
+            //'fallbackCmd',
             'ref_id',
             'cmdClass',
         ];
 
         $takeRegex = '(.*?([\?&]';
         $takeRegex .= '(' . implode('|', $parameterNames) . ')=(' . implode('|', $parameterValues) . ')';
-        $takeRegex .= ')){3}';
+        $takeRegex .= ')){2}';// 3
 
         $endRegex = sprintf(
             '(.*?)(([\?&]cmdClass=iltestevaluationgui(.*?)&ref_id=%s)|([\?&]ref_id=%s(.*?)&cmdClass=iltestevaluationgui))',
