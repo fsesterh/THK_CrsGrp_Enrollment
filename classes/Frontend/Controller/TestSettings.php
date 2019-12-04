@@ -72,7 +72,6 @@ class TestSettings extends RepositoryObject
             $this,
             $this->getCoreController(),
             (
-                true||
                 !$this->service->isConfigurationChangeAllowed($this->test) ||
                 !$this->accessHandler->mayWriteTestSettings($this->test)
             ),
