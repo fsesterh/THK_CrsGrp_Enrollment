@@ -149,6 +149,11 @@ class Impl implements Rest
             strlen($regexQuotedBaseUrlWithScript . $endRegex)
         ));
 
+        $this->logger->debug(sprintf(
+            "Effective Exam Settings: %s",
+            implode(',', $this->service->getConfigurationForTest($test)['exam_settings'])
+        ));
+
         $testLaunchUrlString = (new UriToString())->transform($testLaunchUrl);
 
         $finalLaunchUrl = ILIAS_HTTP_PATH . '/' . ltrim($testLaunchUrlString, '/');
