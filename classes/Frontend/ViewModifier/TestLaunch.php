@@ -208,10 +208,10 @@ class TestLaunch extends Base
     private function hasReviewRbacAccess() : bool
     {
         return (
-            $this->coreAccessHandler->checkAccess('write', '', $this->getRefId()) ||
-            $this->coreAccessHandler->checkAccess('tst_results', '', $this->getRefId()) ||
-            $this->coreAccessHandler->checkPositionAccess(\ilOrgUnitOperation::OP_MANAGE_PARTICIPANTS, $this->getRefId()) ||
-            $this->coreAccessHandler->checkPositionAccess(\ilOrgUnitOperation::OP_ACCESS_RESULTS, $this->getRefId())
+            $this->coreAccessHandler->checkAccess('write', '', $this->getTestRefId()) ||
+            $this->coreAccessHandler->checkAccess('tst_results', '', $this->getTestRefId()) ||
+            $this->coreAccessHandler->checkPositionAccess(\ilOrgUnitOperation::OP_MANAGE_PARTICIPANTS, $this->getTestRefId()) ||
+            $this->coreAccessHandler->checkPositionAccess(\ilOrgUnitOperation::OP_ACCESS_RESULTS, $this->getTestRefId())
         );
     }
 
