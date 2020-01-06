@@ -24,6 +24,8 @@ class TestLaunchAndReview extends RepositoryObject
     private $testSession;
     /** @var string */
     private $testCommand = '';
+    /** @var \ilTestQuestionSetConfigFactory */
+    private $testQuestionSetConfigFactory;
 
     /**
      * @inheritdoc
@@ -97,6 +99,31 @@ class TestLaunchAndReview extends RepositoryObject
         }
 
         $this->drawHeader();
+
+        $this->testQuestionSetConfigFactory = new \ilTestQuestionSetConfigFactory(
+            $this->dic->repositoryTree(),
+            $this->dic->database(),
+            $this->dic['ilPluginAdmin'],
+            $this->test
+        );
+        $testSessionFactory = new \ilTestSessionFactory($this->test);
+        $this->testSession = $testSessionFactory->getSession();
+
+        $this->ensureInitialisedSessionLockString();
+
+        $this->testCommand = 'startPlayer';
+        if ($this->testSession->getActiveId() > 0) {
+            $testPassesSelector = new \ilTestPassesSelector($this->dic->database(), $this->test);
+            $testPassesSelector->setActiveId($this->testSession->getActiveId());
+            $testPassesSelector->setLastFinishedPass($this->testSession->getLastFinishedPass());
+
+            $closedPasses = $testPassesSelector->getClosedPasses();
+            $existingPasses = $testPassesSelector->getExistingPasses();
+
+            if ($existingPasses > $closedPasses) {
+                $this->testCommand = 'resumePlayer';
+            }
+        }
     }
 
     /**
@@ -175,18 +202,11 @@ class TestLaunchAndReview extends RepositoryObject
             $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
         }
 
-        $testQuestionSetConfigFactory = new \ilTestQuestionSetConfigFactory(
-            $this->dic->repositoryTree(),
-            $this->dic->database(),
-            $this->dic['ilPluginAdmin'],
-            $this->test
-        );
-        $testSessionFactory = new \ilTestSessionFactory($this->test);
-        $testQuestionSetConfig = $testQuestionSetConfigFactory->getQuestionSetConfig();
-        $this->testSession = $testSessionFactory->getSession();
+        if ($this->test->getOfflineStatus()) {
+            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
+        }
 
-        $this->ensureInitialisedSessionLockString();
-
+        $testQuestionSetConfig = $this->testQuestionSetConfigFactory->getQuestionSetConfig();
         $onlineAccess = false;
         if ($this->test->getFixedParticipants()) {
             $onlineAccessResult = \ilObjTestAccess::_lookupOnlineTestAccess(
@@ -198,38 +218,19 @@ class TestLaunchAndReview extends RepositoryObject
             }
         }
 
-        if ($this->test->getOfflineStatus()) {
+        if (!$this->test->isComplete($testQuestionSetConfig)) {
             $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
         }
 
-        if (!$this->test->isComplete($testQuestionSetConfig)) {
+        if ($this->test->getFixedParticipants() && !$onlineAccess) {
             $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
         }
 
         $executable = $this->test->isExecutable(
             $this->testSession, $this->testSession->getUserId(), true
         );
-
-        if ($this->test->getFixedParticipants() && !$onlineAccess) {
-            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
-        }
-
         if (!$executable['executable']) {
             $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
-        }
-
-        $this->testCommand = 'startPlayer';
-        if ($this->testSession->getActiveId() > 0) {
-            $testPassesSelector = new \ilTestPassesSelector($this->dic->database(), $this->test);
-            $testPassesSelector->setActiveId($this->testSession->getActiveId());
-            $testPassesSelector->setLastFinishedPass($this->testSession->getLastFinishedPass());
-
-            $closedPasses = $testPassesSelector->getClosedPasses();
-            $existingPasses = $testPassesSelector->getExistingPasses();
-
-            if ($existingPasses > $closedPasses) {
-                $this->testCommand = 'resumePlayer';
-            }
         }
 
         try {
