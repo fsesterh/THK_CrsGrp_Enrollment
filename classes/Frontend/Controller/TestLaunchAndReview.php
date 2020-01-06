@@ -97,63 +97,6 @@ class TestLaunchAndReview extends RepositoryObject
         }
 
         $this->drawHeader();
-
-        $testQuestionSetConfigFactory = new \ilTestQuestionSetConfigFactory(
-            $this->dic->repositoryTree(),
-            $this->dic->database(),
-            $this->dic['ilPluginAdmin'],
-            $this->test
-        );
-        $testSessionFactory = new \ilTestSessionFactory($this->test);
-        $testQuestionSetConfig = $testQuestionSetConfigFactory->getQuestionSetConfig();
-        $this->testSession = $testSessionFactory->getSession();
-
-        $this->ensureInitialisedSessionLockString();
-
-        $onlineAccess = false;
-        if ($this->test->getFixedParticipants()) {
-            $onlineAccessResult = \ilObjTestAccess::_lookupOnlineTestAccess(
-                $this->test->getId(),
-                $this->testSession->getUserId()
-            );
-            if (true === $onlineAccessResult) {
-                $onlineAccess = true;
-            }
-        }
-
-        if ($this->test->getOfflineStatus()) {
-            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
-        }
-
-        if (!$this->test->isComplete($testQuestionSetConfig)) {
-            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
-        }
-
-        $executable = $this->test->isExecutable(
-            $this->testSession, $this->testSession->getUserId(), true
-        );
-
-        if ($this->test->getFixedParticipants() && !$onlineAccess) {
-            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
-        }
-
-        if (!$executable['executable']) {
-            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
-        }
-
-        $this->testCommand = 'startPlayer';
-        if ($this->testSession->getActiveId() > 0) {
-            $testPassesSelector = new \ilTestPassesSelector($this->dic->database(), $this->test);
-            $testPassesSelector->setActiveId($this->testSession->getActiveId());
-            $testPassesSelector->setLastFinishedPass($this->testSession->getLastFinishedPass());
-
-            $closedPasses = $testPassesSelector->getClosedPasses();
-            $existingPasses = $testPassesSelector->getExistingPasses();
-
-            if ($existingPasses > $closedPasses) {
-                $this->testCommand = 'resumePlayer';
-            }
-        }
     }
 
     /**
@@ -231,7 +174,64 @@ class TestLaunchAndReview extends RepositoryObject
         if (!$this->accessHandler->mayTakeTests($this->test)) {
             $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
         }
-        
+
+        $testQuestionSetConfigFactory = new \ilTestQuestionSetConfigFactory(
+            $this->dic->repositoryTree(),
+            $this->dic->database(),
+            $this->dic['ilPluginAdmin'],
+            $this->test
+        );
+        $testSessionFactory = new \ilTestSessionFactory($this->test);
+        $testQuestionSetConfig = $testQuestionSetConfigFactory->getQuestionSetConfig();
+        $this->testSession = $testSessionFactory->getSession();
+
+        $this->ensureInitialisedSessionLockString();
+
+        $onlineAccess = false;
+        if ($this->test->getFixedParticipants()) {
+            $onlineAccessResult = \ilObjTestAccess::_lookupOnlineTestAccess(
+                $this->test->getId(),
+                $this->testSession->getUserId()
+            );
+            if (true === $onlineAccessResult) {
+                $onlineAccess = true;
+            }
+        }
+
+        if ($this->test->getOfflineStatus()) {
+            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
+        }
+
+        if (!$this->test->isComplete($testQuestionSetConfig)) {
+            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
+        }
+
+        $executable = $this->test->isExecutable(
+            $this->testSession, $this->testSession->getUserId(), true
+        );
+
+        if ($this->test->getFixedParticipants() && !$onlineAccess) {
+            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
+        }
+
+        if (!$executable['executable']) {
+            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
+        }
+
+        $this->testCommand = 'startPlayer';
+        if ($this->testSession->getActiveId() > 0) {
+            $testPassesSelector = new \ilTestPassesSelector($this->dic->database(), $this->test);
+            $testPassesSelector->setActiveId($this->testSession->getActiveId());
+            $testPassesSelector->setLastFinishedPass($this->testSession->getLastFinishedPass());
+
+            $closedPasses = $testPassesSelector->getClosedPasses();
+            $existingPasses = $testPassesSelector->getExistingPasses();
+
+            if ($existingPasses > $closedPasses) {
+                $this->testCommand = 'resumePlayer';
+            }
+        }
+
         try {
             $this->ctrl->redirectToURL((new UriToString())->transform($this->proctorioApi->getLaunchUrl(
                 $this->test,
