@@ -22,8 +22,15 @@ class ilProctorioConfigGUI extends Controller\Base
     public function __construct(\ilProctorioPlugin $plugin_object = null)
     {
         parent::__construct($plugin_object);
+    }
 
+    /**
+     * @param string $cmd
+     */
+    public function performCommand($cmd)
+    {
         $this->acl = $GLOBALS['DIC']['plugin.proctorio.acl'];
+        parent::performCommand($cmd);
     }
 
     /**
