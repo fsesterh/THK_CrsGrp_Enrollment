@@ -24,7 +24,7 @@ class TestLaunch extends Base
     private function isPreviewContext() : bool
     {
         return (
-            $this->isCommandClass(\ilObjCourse::class) &&
+            $this->isCommandClass(\ilObjCourseGUI::class) &&
             strtolower($this->ctrl->getCmd()) === strtolower('showItemIntro')
         );
     }
