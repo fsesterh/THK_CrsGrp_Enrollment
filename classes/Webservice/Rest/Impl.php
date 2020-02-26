@@ -154,6 +154,7 @@ class Impl implements Rest
         ));
 
         $testLaunchUrlString = (new UriToString())->transform($testLaunchUrl);
+        $testLaunchUrlString .= ('#' . $test->getId());
 
         $this->logger->info(sprintf(
             "Effective Exam Settings: %s",
@@ -162,7 +163,7 @@ class Impl implements Rest
         $this->logger->info(sprintf("Launch URL: %s", $testLaunchUrlString));
 
         $postParameters = [
-            'launch_url' => $testLaunchUrlString . '#' . $test->getId(),
+            'launch_url' => $testLaunchUrlString,
             'user_id' => (string) $this->service->getActor()->getId(),
             'oauth_consumer_key' => $this->proctorioSettings->getApiKey(),
             'exam_start' => $regexQuotedBaseUrlWithScript . $startRegex,
