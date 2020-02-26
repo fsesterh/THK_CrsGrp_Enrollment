@@ -140,6 +140,9 @@ class Impl implements Rest
             $refId, $refId
         );
 
+        // 2020-02-26: Set $startRegex = $takeRegex, because it MUST match the Launch URL according to the API 
+        $startRegex = $takeRegex;
+
         $this->logger->debug(sprintf(
             "Regular Expressions: Start Exam: %s / Take Exam: %s / End Exam: %s",
             $regexQuotedBaseUrlWithScript . $startRegex,
