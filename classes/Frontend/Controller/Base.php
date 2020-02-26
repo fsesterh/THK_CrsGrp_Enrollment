@@ -52,6 +52,8 @@ abstract class Base
     protected $service;
     /** @var ServerRequestInterface */
     protected $httpRequest;
+    /** @var \ilLogger */
+    protected $log;
 
     /**
      * Base constructor.
@@ -79,6 +81,7 @@ abstract class Base
         $this->accessHandler = $dic['plugin.proctorio.accessHandler'];
         $this->proctorioApi = $dic['plugin.proctorio.api'];
         $this->service = $dic['plugin.proctorio.service'];
+        $this->log = $dic->logger()->root();
 
         $this->init();
     }

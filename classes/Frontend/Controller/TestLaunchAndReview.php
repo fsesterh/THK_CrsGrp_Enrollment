@@ -178,6 +178,8 @@ class TestLaunchAndReview extends RepositoryObject
                 $this->getTestUrl()
             )));
         } catch (GuzzleException | Exception $e) {
+            $this->log->error($e->getMessage());
+
             return $this->uiRenderer->render([
                 $this->uiFactory->messageBox()->failure(
                     $this->getCoreController()->getPluginObject()->txt('api_call_generic')
@@ -240,6 +242,8 @@ class TestLaunchAndReview extends RepositoryObject
                 $this->getTestUrl()
             )));
         } catch (GuzzleException | Exception $e) {
+            $this->log->error($e->getMessage());
+
             return $this->uiRenderer->render([
                 $this->uiFactory->messageBox()->failure(
                     $this->getCoreController()->getPluginObject()->txt('api_call_generic')
