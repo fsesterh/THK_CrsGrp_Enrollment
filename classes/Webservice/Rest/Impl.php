@@ -162,7 +162,7 @@ class Impl implements Rest
         $this->logger->info(sprintf("Launch URL: %s", $testLaunchUrlString));
 
         $postParameters = [
-            'launch_url' => $testLaunchUrlString,
+            'launch_url' => $testLaunchUrlString . '#' . $test->getId(),
             'user_id' => (string) $this->service->getActor()->getId(),
             'oauth_consumer_key' => $this->proctorioSettings->getApiKey(),
             'exam_start' => $regexQuotedBaseUrlWithScript . $startRegex,
