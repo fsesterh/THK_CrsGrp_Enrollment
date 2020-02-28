@@ -58,87 +58,9 @@ class Impl implements Rest
         $baseUrlWithScript = $testUrl->schema() . '://' . $testUrl->host();
         $regexQuotedBaseUrlWithScript = preg_quote($baseUrlWithScript, '/');
 
-        $refId = $test->getRefId();
-
-        $startRegex = sprintf(
-            '(.*?)(([\?&]target=tst_%s)|(([\?&]cmd=infoScreen(.*?)&ref_id=%s)|([\?&]ref_id=%s(.*?)&cmd=infoScreen)))',
-            $refId, $refId, $refId
-        );
-
-        $parameterValues = [
-            \ilTestPlayerCommands::START_TEST,
-            \ilTestPlayerCommands::INIT_TEST,
-            \ilTestPlayerCommands::START_PLAYER,
-            \ilTestPlayerCommands::RESUME_PLAYER,
-            //\ilTestPlayerCommands::DISPLAY_ACCESS_CODE,
-            //\ilTestPlayerCommands::ACCESS_CODE_CONFIRMED,
-            \ilTestPlayerCommands::SHOW_QUESTION,
-            \ilTestPlayerCommands::PREVIOUS_QUESTION,
-            \ilTestPlayerCommands::NEXT_QUESTION,
-            \ilTestPlayerCommands::EDIT_SOLUTION,
-            //\ilTestPlayerCommands::MARK_QUESTION,
-            //\ilTestPlayerCommands::MARK_QUESTION_SAVE,
-            //\ilTestPlayerCommands::UNMARK_QUESTION,
-            //\ilTestPlayerCommands::UNMARK_QUESTION_SAVE,
-            \ilTestPlayerCommands::SUBMIT_INTERMEDIATE_SOLUTION,
-            \ilTestPlayerCommands::SUBMIT_SOLUTION,
-            \ilTestPlayerCommands::SUBMIT_SOLUTION_AND_NEXT,
-            \ilTestPlayerCommands::REVERT_CHANGES,
-            //\ilTestPlayerCommands::DETECT_CHANGES,
-            //\ilTestPlayerCommands::DISCARD_SOLUTION,
-            \ilTestPlayerCommands::SKIP_QUESTION,
-            \ilTestPlayerCommands::SHOW_INSTANT_RESPONSE,
-            //\ilTestPlayerCommands::CONFIRM_HINT_REQUEST,
-            //\ilTestPlayerCommands::SHOW_REQUESTED_HINTS_LIST,
-            \ilTestPlayerCommands::QUESTION_SUMMARY,
-            //\ilTestPlayerCommands::QUESTION_SUMMARY_INC_OBLIGATIONS,
-            //\ilTestPlayerCommands::QUESTION_SUMMARY_OBLIGATIONS_ONLY,
-            \ilTestPlayerCommands::TOGGLE_SIDE_LIST,
-            \ilTestPlayerCommands::SHOW_QUESTION_SELECTION,
-            //\ilTestPlayerCommands::UNFREEZE_ANSWERS,
-            //\ilTestPlayerCommands::AUTO_SAVE,
-            //\ilTestPlayerCommands::REDIRECT_ON_TIME_LIMIT,
-            \ilTestPlayerCommands::SUSPEND_TEST,
-            \ilTestPlayerCommands::FINISH_TEST,
-            \ilTestPlayerCommands::AFTER_TEST_PASS_FINISHED,
-            \ilTestPlayerCommands::SHOW_FINAL_STATMENT,
-            \ilTestPlayerCommands::BACK_TO_INFO_SCREEN,
-            \ilTestPlayerCommands::BACK_FROM_FINISHING,
-            'show',
-            $test->getRefId(),
-        ];
-
-        // Because Proctorio does not support long regular expressions, we have to use a short/weak one
-        $parameterValues = [
-            $test->getRefId(),
-        ];
-
-        $parameterValues[] = 'iltestsubmissionreviewgui';
-        if ($test->isRandomTest()) {
-            $parameterValues[] = 'iltestplayerrandomquestionsetgui';
-        } elseif ($test->isFixedTest()) {
-            $parameterValues[] = 'iltestplayerfixedquestionsetgui';
-        }
-
-        $parameterNames = [
-            //'cmd',
-            //'fallbackCmd',
-            'ref_id',
-            'cmdClass',
-        ];
-
-        $this->logger->info(sprintf(
-            "Initiating Proctorio API call ..."
-        ));
-
-        $takeRegex = '(.*?([\?&]';
-        $takeRegex .= '(' . implode('|', $parameterNames) . ')=(' . implode('|', $parameterValues) . ')';
-        $takeRegex .= ')){2}';// 3
-
-        $endRegex = sprintf(
-            '(.*?)(([\?&]cmdClass=iltestevaluationgui(.*?)&ref_id=%s)|([\?&]ref_id=%s(.*?)&cmdClass=iltestevaluationgui))',
-            $refId, $refId
-        );
+        $startRegex = $this->buildExamStartRegex($test);
+        $takeRegex = $this->buildExamTakeRegex($test);
+        $endRegex = $this->buildExamEndRegex($test);
 
         // 2020-02-26: Set $startRegex = $takeRegex, because it MUST match the Launch URL according to the API 
         $startRegex = $takeRegex;
@@ -308,5 +230,168 @@ class Impl implements Rest
         }
 
         $this->handleResponseException($responseBody);
+    }
+
+    /**
+     * @param \ilObjTest $test
+     * @return string
+     */
+    private function buildExamStartRegex(\ilObjTest $test) : string
+    {
+        $startRegex = sprintf(
+            '(.*?)(([\?&]target=tst_%s)|(([\?&]cmd=infoScreen(.*?)&ref_id=%s)|([\?&]ref_id=%s(.*?)&cmd=infoScreen)))',
+            $test->getRefId(), $test->getRefId(), $test->getRefId()
+        );
+
+        return $startRegex;
+    }
+
+    /**
+     * @param \ilObjTest $test
+     * @return string
+     */
+    private function buildExamTakeRegex(\ilObjTest $test) : string
+    {
+        $parameterValues = [
+            \ilTestPlayerCommands::START_TEST,
+            \ilTestPlayerCommands::INIT_TEST,
+            \ilTestPlayerCommands::START_PLAYER,
+            \ilTestPlayerCommands::RESUME_PLAYER,
+            //\ilTestPlayerCommands::DISPLAY_ACCESS_CODE,
+            //\ilTestPlayerCommands::ACCESS_CODE_CONFIRMED,
+            \ilTestPlayerCommands::SHOW_QUESTION,
+            \ilTestPlayerCommands::PREVIOUS_QUESTION,
+            \ilTestPlayerCommands::NEXT_QUESTION,
+            \ilTestPlayerCommands::EDIT_SOLUTION,
+            //\ilTestPlayerCommands::MARK_QUESTION,
+            //\ilTestPlayerCommands::MARK_QUESTION_SAVE,
+            //\ilTestPlayerCommands::UNMARK_QUESTION,
+            //\ilTestPlayerCommands::UNMARK_QUESTION_SAVE,
+            \ilTestPlayerCommands::SUBMIT_INTERMEDIATE_SOLUTION,
+            \ilTestPlayerCommands::SUBMIT_SOLUTION,
+            \ilTestPlayerCommands::SUBMIT_SOLUTION_AND_NEXT,
+            \ilTestPlayerCommands::REVERT_CHANGES,
+            //\ilTestPlayerCommands::DETECT_CHANGES,
+            //\ilTestPlayerCommands::DISCARD_SOLUTION,
+            \ilTestPlayerCommands::SKIP_QUESTION,
+            \ilTestPlayerCommands::SHOW_INSTANT_RESPONSE,
+            //\ilTestPlayerCommands::CONFIRM_HINT_REQUEST,
+            //\ilTestPlayerCommands::SHOW_REQUESTED_HINTS_LIST,
+            \ilTestPlayerCommands::QUESTION_SUMMARY,
+            //\ilTestPlayerCommands::QUESTION_SUMMARY_INC_OBLIGATIONS,
+            //\ilTestPlayerCommands::QUESTION_SUMMARY_OBLIGATIONS_ONLY,
+            \ilTestPlayerCommands::TOGGLE_SIDE_LIST,
+            \ilTestPlayerCommands::SHOW_QUESTION_SELECTION,
+            //\ilTestPlayerCommands::UNFREEZE_ANSWERS,
+            //\ilTestPlayerCommands::AUTO_SAVE,
+            //\ilTestPlayerCommands::REDIRECT_ON_TIME_LIMIT,
+            \ilTestPlayerCommands::SUSPEND_TEST,
+            \ilTestPlayerCommands::FINISH_TEST,
+            \ilTestPlayerCommands::AFTER_TEST_PASS_FINISHED,
+            \ilTestPlayerCommands::SHOW_FINAL_STATMENT,
+            \ilTestPlayerCommands::BACK_TO_INFO_SCREEN,
+            \ilTestPlayerCommands::BACK_FROM_FINISHING,
+            'show',
+            $test->getRefId(),
+        ];
+
+        // Because Proctorio does not support long regular expressions, we have to use a short/weak one
+        $parameterValues = [
+            $test->getRefId(),
+        ];
+
+        $parameterValues[] = 'iltestsubmissionreviewgui';
+        if ($test->isRandomTest()) {
+            $parameterValues[] = 'iltestplayerrandomquestionsetgui';
+        } elseif ($test->isFixedTest()) {
+            $parameterValues[] = 'iltestplayerfixedquestionsetgui';
+        }
+
+        $parameterNames = [
+            //'cmd',
+            //'fallbackCmd',
+            'ref_id',
+            'cmdClass',
+        ];
+
+        $this->logger->info(sprintf(
+            "Initiating Proctorio API call ..."
+        ));
+
+        $takeRegex = '(.*?([\?&]';
+        $takeRegex .= '(' . implode('|', $parameterNames) . ')=(' . implode('|', $parameterValues) . ')';
+        $takeRegex .= ')){2}';// 3
+
+        return $takeRegex;
+    }
+
+
+
+    /**
+     * @param \ilObjTest $test
+     * @return string
+     */
+    private function buildExamEndRegex(\ilObjTest $test) : string
+    {
+        $evaluationParameterNames = ['ref_id', 'cmdClass'];
+        $evaluationParameterValues = [$test->getRefId(), 'iltestevaluationgui'];
+        $endRegexEval = '((.*?([\?&]';
+        $endRegexEval .= '(' . implode('|', $evaluationParameterNames) . ')=(' . implode('|', $evaluationParameterValues) . ')';
+        $endRegexEval .= ')){2})';
+
+        $infoParameterNames = ['ref_id', 'cmdClass', 'cmd'];
+        $infoParameterValues = [$test->getRefId(), 'ilobjtestgui', 'redirectToInfoScreen'];
+        $endRegexInfo = '((.*?([\?&]';
+        $endRegexInfo .= '(' . implode('|', $infoParameterNames) . ')=(' . implode('|', $infoParameterValues) . ')';
+        $endRegexInfo .= ')){3})';
+
+        $endRegexParts = [
+            $endRegexEval,
+            $endRegexInfo,
+        ];
+
+        $this->appendRedirectUrlToExamEndRegex($test, $endRegexParts);
+
+        $endRegex = implode('|', $endRegexParts);
+
+        return $endRegex;
+    }
+
+    /**
+     * @param \ilObjTest $test
+     * @param array $endRegexParts
+     */
+    private function appendRedirectUrlToExamEndRegex(\ilObjTest $test, array &$endRegexParts) : void
+    {
+        $redirectMode = (int) $test->getRedirectionMode();
+        $redirectUrl = $test->getRedirectionUrl();
+
+        if (
+            is_string($redirectUrl) &&
+            strlen($redirectUrl) > 0
+            && in_array($redirectMode, [REDIRECT_ALWAYS, REDIRECT_KIOSK])
+        ) {
+            $doAppend = false;
+
+            if ($redirectMode == REDIRECT_KIOSK) {
+                if ($test->getKioskMode()) {
+                    $doAppend = true;
+                }
+            } else {
+                $doAppend = true;
+            }
+
+            if ($doAppend) {
+                $urlParts = parse_url($redirectUrl);
+
+                if (is_string($urlParts['query']) && strlen($urlParts['query']) > 0) {
+                    $endRegexParts[] = '(.*?' . preg_quote($urlParts['query'], '/') . ')';
+                } elseif (is_string($urlParts['path']) && strlen($urlParts['path']) > 0) {
+                    $endRegexParts[] = '(.*?' . preg_quote($urlParts['path'], '/') . ')';
+                } else {
+                    $endRegexParts[] = '(.*?' . preg_quote($urlParts['host'], '/') . ')';
+                }
+            }
+        }
     }
 }
