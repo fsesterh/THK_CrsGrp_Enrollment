@@ -276,6 +276,7 @@ class TestLaunchAndReview extends RepositoryObject
             $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
         }
 
+        \iljQueryUtil::initjQuery($this->pageTemplate);
         $this->pageTemplate->addCss('Modules/Test/templates/default/ta.css');
         $this->pageTemplate->addCss(
             $this->getCoreController()->getPluginObject()->getDirectory() . '/assets/css/styles.css'
