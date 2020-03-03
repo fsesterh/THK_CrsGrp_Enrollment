@@ -129,6 +129,7 @@ class TestLaunchAndReview extends RepositoryObject
      */
     private function getLaunchUrl() : URI
     {
+        $this->ctrl->setParameterByClass(get_class($this->getCoreController()), 'ref_id', $this->test->getRefId());
         $startAndLauncHUrl = $this->ctrl->getLinkTargetByClass(
             ['ilUIPluginRouterGUI', get_class($this->getCoreController())],
             $this->getControllerName() . '.start',
