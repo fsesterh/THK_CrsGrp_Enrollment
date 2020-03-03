@@ -172,7 +172,6 @@ class TestLaunchAndReview extends RepositoryObject
      */
     public function launchCmd() : string
     {
-        return $this->startExamCmd();
         $this->pageTemplate->getStandardTemplate();
 
         $this->drawHeader();
