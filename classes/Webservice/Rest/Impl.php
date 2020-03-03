@@ -238,10 +238,11 @@ class Impl implements Rest
      */
     private function buildExamStartRegex(\ilObjTest $test) : string
     {
-        $startRegex = sprintf(
-            '(.*?)(([\?&]target=tst_%s)|(([\?&]cmd=infoScreen(.*?)&ref_id=%s)|([\?&]ref_id=%s(.*?)&cmd=infoScreen)))',
-            $test->getRefId(), $test->getRefId(), $test->getRefId()
-        );
+        $startParameterNames = ['ref_id', 'cmd'];
+        $startParameterValues = [$test->getRefId(), 'TestLaunchAndReview\.launch'];
+        $startRegex = '((.*?([\?&]';
+        $startRegex .= '(' . implode('|', $startParameterNames) . ')=(' . implode('|', $startParameterValues) . ')';
+        $startRegex .= ')){2})';
 
         return $startRegex;
     }
@@ -324,8 +325,6 @@ class Impl implements Rest
 
         return $takeRegex;
     }
-
-
 
     /**
      * @param \ilObjTest $test

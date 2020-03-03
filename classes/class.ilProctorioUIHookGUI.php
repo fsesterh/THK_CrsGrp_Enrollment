@@ -36,8 +36,6 @@ class ilProctorioUIHookGUI extends ilUIHookPluginGUI
     {
         $this->setPluginObject(ilProctorioPlugin::getInstance());
 
-        $this->dic->ui()->mainTemplate()->getStandardTemplate();
-
         $nextClass = $this->dic->ctrl()->getNextClass();
         switch (strtolower($nextClass)) {
             default:

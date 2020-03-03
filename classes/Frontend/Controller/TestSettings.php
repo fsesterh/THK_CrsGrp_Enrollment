@@ -36,6 +36,8 @@ class TestSettings extends RepositoryObject
      */
     protected function init() : void
     {
+        $this->pageTemplate->getStandardTemplate();
+
         parent::init();
 
         if (0 === $this->getRefId() || !$this->coreAccessHandler->checkAccess('write', '', $this->getRefId())) {

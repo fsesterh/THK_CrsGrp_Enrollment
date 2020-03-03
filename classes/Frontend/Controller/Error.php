@@ -19,6 +19,15 @@ class Error extends Base
     }
 
     /**
+     * @inheritDoc
+     */
+    public function init() : void
+    {
+        $this->pageTemplate->getStandardTemplate();
+        parent::init();
+    }
+
+    /**
      * @return string
      */
     public function showCmd() : string
