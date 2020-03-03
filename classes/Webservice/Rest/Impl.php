@@ -239,7 +239,7 @@ class Impl implements Rest
     private function buildExamStartRegex(\ilObjTest $test) : string
     {
         $startParameterNames = ['ref_id', 'cmd'];
-        $startParameterValues = [$test->getRefId(), 'TestLaunchAndReview\.launch'];
+        $startParameterValues = [$test->getRefId(), 'TestLaunchAndReview\.start'];
         $startRegex = '((.*?([\?&]';
         $startRegex .= '(' . implode('|', $startParameterNames) . ')=(' . implode('|', $startParameterValues) . ')';
         $startRegex .= ')){2})';

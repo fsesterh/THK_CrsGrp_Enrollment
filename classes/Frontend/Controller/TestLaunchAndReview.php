@@ -127,7 +127,23 @@ class TestLaunchAndReview extends RepositoryObject
     /**
      * @return URI
      */
-    private function getLaunchUrl() : URI 
+    private function getLaunchUrl() : URI
+    {
+        $startAndLauncHUrl = $this->ctrl->getLinkTargetByClass(
+            ['ilUIPluginRouterGUI', get_class($this->getCoreController())],
+            $this->getControllerName() . '.start',
+            '',
+            false,
+            false
+        );
+
+        return new URI(ILIAS_HTTP_PATH . '/' . $startAndLauncHUrl);
+    }
+
+    /**
+     * @return URI
+     */
+    private function getTakeUrl() : URI 
     {
         $testPlayerFactory = new \ilTestPlayerFactory($this->test);
         $playerGui = $testPlayerFactory->getPlayerGUI();
@@ -264,7 +280,7 @@ class TestLaunchAndReview extends RepositoryObject
         $this->pageTemplate->setAddFooter(FALSE);
 
         $btn = \ilLinkButton::getInstance();
-        $btn->setUrl((new UriToString())->transform($this->getLaunchUrl()));
+        $btn->setUrl((new UriToString())->transform($this->getTakeUrl()));
         $btn->setCaption($this->getCoreController()->getPluginObject()->txt('btn_label_continue_proctorio_exam'), false);
 
         $this->pageTemplate->addBlockfile(
