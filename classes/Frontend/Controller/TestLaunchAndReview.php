@@ -305,6 +305,10 @@ class TestLaunchAndReview extends RepositoryObject
      */
     public function reviewCmd() : string 
     {
+        $this->pageTemplate->getStandardTemplate();
+
+        $this->drawHeader();
+
         if (
             !$this->coreAccessHandler->checkAccess('write', '', $this->getRefId()) &&
             !$this->coreAccessHandler->checkAccess('tst_results', '', $this->getRefId()) &&

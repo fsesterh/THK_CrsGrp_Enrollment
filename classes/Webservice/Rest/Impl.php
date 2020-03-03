@@ -58,19 +58,19 @@ class Impl implements Rest
         $baseUrlWithScript = $testUrl->schema() . '://' . $testUrl->host();
         $regexQuotedBaseUrlWithScript = preg_quote($baseUrlWithScript, '/');
 
-        $startRegex = $this->buildExamStartRegex($test);
+        $startRegexWithBaseUrl = $this->buildExamStartRegex($test, $testLaunchUrl);
         $takeRegex = $this->buildExamTakeRegex($test);
         $endRegex = $this->buildExamEndRegex($test);
 
         $this->logger->debug(sprintf(
             "Regular Expressions: Start Exam: %s / Take Exam: %s / End Exam: %s",
-            $regexQuotedBaseUrlWithScript . $startRegex,
+            $startRegexWithBaseUrl,
             $regexQuotedBaseUrlWithScript . $takeRegex,
             $regexQuotedBaseUrlWithScript . $endRegex
         ));
         $this->logger->debug(sprintf(
             "Parameter lengths: Start Exam: %s / Take Exam: %s / End Exam: %s",
-            strlen($regexQuotedBaseUrlWithScript . $startRegex),
+            strlen($startRegexWithBaseUrl),
             strlen($regexQuotedBaseUrlWithScript . $takeRegex),
             strlen($regexQuotedBaseUrlWithScript . $endRegex)
         ));
@@ -88,7 +88,7 @@ class Impl implements Rest
             'launch_url' => $testLaunchUrlString,
             'user_id' => (string) $this->service->getActor()->getId(),
             'oauth_consumer_key' => $this->proctorioSettings->getApiKey(),
-            'exam_start' => $regexQuotedBaseUrlWithScript . $startRegex,
+            'exam_start' => $startRegexWithBaseUrl,
             'exam_take' => $regexQuotedBaseUrlWithScript . $takeRegex,
             'exam_end' => $regexQuotedBaseUrlWithScript . $endRegex,
             'exam_settings' => implode(',', $this->service->getConfigurationForTest($test)['exam_settings']),
@@ -231,17 +231,12 @@ class Impl implements Rest
 
     /**
      * @param \ilObjTest $test
+     * @param URI $testLaunchUrl
      * @return string
      */
-    private function buildExamStartRegex(\ilObjTest $test) : string
+    private function buildExamStartRegex(\ilObjTest $test, URI $testLaunchUrl) : string
     {
-        $startParameterNames = ['ref_id', 'cmd'];
-        $startParameterValues = [$test->getRefId(), 'TestLaunchAndReview\.start'];
-        $startRegex = '((.*?([\?&]';
-        $startRegex .= '(' . implode('|', $startParameterNames) . ')=(' . implode('|', $startParameterValues) . ')';
-        $startRegex .= ')){2})';
-
-        return $startRegex;
+        return preg_quote((new UriToString())->transform($testLaunchUrl), '/');
     }
 
     /**
