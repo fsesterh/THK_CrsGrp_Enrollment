@@ -239,7 +239,7 @@ class TestLaunchAndReview extends RepositoryObject
     /**
      * @return string
      */
-    public function startExamCmd() : string
+    public function startCmd() : string
     {
         if (!$this->accessHandler->mayTakeTests($this->test)) {
             $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
