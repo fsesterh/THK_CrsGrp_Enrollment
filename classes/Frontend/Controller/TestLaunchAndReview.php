@@ -172,6 +172,7 @@ class TestLaunchAndReview extends RepositoryObject
      */
     public function launchCmd() : string
     {
+        return $this->startExamCmd();
         $this->pageTemplate->getStandardTemplate();
 
         $this->drawHeader();
@@ -276,6 +277,9 @@ class TestLaunchAndReview extends RepositoryObject
         }
 
         $this->pageTemplate->addCss('Modules/Test/templates/default/ta.css');
+        $this->pageTemplate->addCss(
+            $this->getCoreController()->getPluginObject()->getDirectory() . '/assets/css/styles.css'
+        );
         $this->pageTemplate->setBodyClass('kiosk');
         $this->pageTemplate->setAddFooter(FALSE);
 
@@ -290,46 +294,8 @@ class TestLaunchAndReview extends RepositoryObject
 
         $template = $this->getCoreController()->getPluginObject()->getTemplate('tpl.tst_start.html', true, true);
 
-        $template->setVariable('KIOSK_HEAD', $this->getKioskHead());
         $template->setVariable('TEST_TAKE_BUTTON', $btn->render());
         $template->setVariable('INTRODUCTION_TXT', $this->getCoreController()->getPluginObject()->txt('proctorio_start_screen_info'));
-
-        return $template->get();
-    }
-
-    /**
-     * @return string
-     */
-    private function getKioskHead() : string
-    {
-        $template = new \ilTemplate('tpl.il_as_tst_kiosk_head.html', true, true, 'Modules/Test');
-
-        if ($this->test->getShowKioskModeTitle()) {
-            $template->setCurrentBlock("kiosk_show_title");
-            $template->setVariable("TEST_TITLE", $this->test->getTitle());
-            $template->parseCurrentBlock();
-        }
-
-        if ($this->test->getShowKioskModeParticipant()) {
-            $template->setCurrentBlock("kiosk_show_participant");
-            $template->setVariable("PARTICIPANT_NAME_TXT", $this->lng->txt("login_as"));
-            $template->setVariable("PARTICIPANT_NAME", $this->user->getFullname());
-            $template->setVariable("PARTICIPANT_LOGIN", $this->user->getLogin());
-            $template->setVariable("PARTICIPANT_MATRICULATION", $this->user->getMatriculation());
-            $template->setVariable("PARTICIPANT_EMAIL", $this->user->getEmail());
-            $template->parseCurrentBlock();
-        }
-
-        if ($this->test->isShowExamIdInTestPassEnabled()) {
-            $exam_id = \ilObjTest::buildExamId(
-                $this->testSession->getActiveId(), $this->testSession->getPass(), $this->test->getId()
-            );
-
-            $template->setCurrentBlock("kiosk_show_exam_id");
-            $template->setVariable("EXAM_ID_TXT", $this->lng->txt("exam_id"));
-            $template->setVariable("EXAM_ID", $exam_id);
-            $template->parseCurrentBlock();
-        }
 
         return $template->get();
     }
