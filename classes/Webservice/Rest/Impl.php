@@ -58,7 +58,7 @@ class Impl implements Rest
         $baseUrlWithScript = $testUrl->schema() . '://' . $testUrl->host();
         $regexQuotedBaseUrlWithScript = preg_quote($baseUrlWithScript, '/');
 
-        $startRegexWithBaseUrl = $this->buildExamStartRegex($test, $testLaunchUrl);
+        $startRegexWithBaseUrl = $this->buildExamStartRegex($test, $regexQuotedBaseUrlWithScript, $testLaunchUrl);
         $takeRegex = $this->buildExamTakeRegex($test);
         $endRegex = $this->buildExamEndRegex($test);
 
@@ -231,12 +231,19 @@ class Impl implements Rest
 
     /**
      * @param \ilObjTest $test
+     * @param string $regexQuotedBaseUrlWithScript
      * @param URI $testLaunchUrl
      * @return string
      */
-    private function buildExamStartRegex(\ilObjTest $test, URI $testLaunchUrl) : string
+    private function buildExamStartRegex(\ilObjTest $test, string $regexQuotedBaseUrlWithScript, URI $testLaunchUrl) : string
     {
-        return preg_quote((new UriToString())->transform($testLaunchUrl), '/');
+        $startParameterNames = ['ref_id', 'cmd'];
+        $startParameterValues = [$test->getRefId(), 'TestLaunchAndReview\.start'];
+        $startRegex = '((.*?([\?&]';
+        $startRegex .= '(' . implode('|', $startParameterNames) . ')=(' . implode('|', $startParameterValues) . ')';
+        $startRegex .= ')){2})';
+
+        return $regexQuotedBaseUrlWithScript . $startRegex;
     }
 
     /**
