@@ -276,6 +276,14 @@ class TestLaunchAndReview extends RepositoryObject
             $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
         }
 
+        $this->ctrl->redirectToURL((new UriToString())->transform($this->getTakeUrl()));
+
+        /*
+            For a "launch_url" request (which MUST match the "exam_start" regex)
+            the LMS MUST NOT respond with a HTTP 200 and a HTML document!
+            Instead the LMS has to respond with a 302 HTTP redirect to an URL matching the "exam_take" regex.  
+        */
+
         \iljQueryUtil::initjQuery($this->pageTemplate);
         $this->pageTemplate->addCss('Modules/Test/templates/default/ta.css');
         $this->pageTemplate->addCss(
