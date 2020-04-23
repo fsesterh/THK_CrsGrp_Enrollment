@@ -28,9 +28,6 @@ The files MUST be saved in the following directory:
 Correct file and folder permissions MUST be
 ensured by the responsible system administrator.
 
-The plugin's files and folder SHOULD NOT be created, 
-as root.
-
 ## License
 
 See LICENSE file in this repository.
