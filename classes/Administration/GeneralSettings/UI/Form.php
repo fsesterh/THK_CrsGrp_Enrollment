@@ -61,35 +61,40 @@ class Form extends \ilPropertyFormGUI
         $this->setTitle($this->lng->txt('settings'));
         
         $apiKey = new \ilTextInputGUI(
-            $this->plugin->txt('api_key'), 'api_key'
+            $this->plugin->txt('api_key'),
+            'api_key'
         );
         $apiKey->setInfo($this->plugin->txt('api_key_info'));
         $apiKey->setRequired(true);
         $this->addItem($apiKey);
 
         $apiSecret = new \ilTextInputGUI(
-            $this->plugin->txt('api_secret'), 'api_secret'
+            $this->plugin->txt('api_secret'),
+            'api_secret'
         );
         $apiSecret->setInfo($this->plugin->txt('api_secret_info'));
         $apiSecret->setRequired(true);
         $this->addItem($apiSecret);
 
         $apiAccountRegion = new \ilTextInputGUI(
-            $this->plugin->txt('api_region'), 'api_region'
+            $this->plugin->txt('api_region'),
+            'api_region'
         );
         $apiAccountRegion->setInfo($this->plugin->txt('api_region_info'));
         $apiAccountRegion->setRequired(true);
         $this->addItem($apiAccountRegion);
 
         $apiBaseUrl = new \ilTextInputGUI(
-            $this->plugin->txt('api_base_url'), 'api_base_url'
+            $this->plugin->txt('api_base_url'),
+            'api_base_url'
         );
         $apiBaseUrl->setInfo($this->plugin->txt('api_base_url_info'));
         $apiBaseUrl->setRequired(true);
         $this->addItem($apiBaseUrl);
 
         $apiLaunchReviewEndpoint = new \ilTextInputGUI(
-            $this->plugin->txt('api_launch_review_endpoint'), 'api_launch_review_endpoint'
+            $this->plugin->txt('api_launch_review_endpoint'),
+            'api_launch_review_endpoint'
         );
         $apiLaunchReviewEndpoint->setInfo($this->plugin->txt('api_launch_review_endpoint_info'));
         $apiLaunchReviewEndpoint->setRequired(true);
@@ -102,7 +107,7 @@ class Form extends \ilPropertyFormGUI
 
         $roles = [];
         foreach ($this->rbacReview->getGlobalRoles() as $roleId) {
-            if ($roleId !== ANONYMOUS_ROLE_ID ) {
+            if ($roleId !== ANONYMOUS_ROLE_ID) {
                 $roles[$roleId] = $this->objectCache->lookupTitle($roleId);
             }
         }

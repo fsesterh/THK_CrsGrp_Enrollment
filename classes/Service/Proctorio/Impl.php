@@ -67,7 +67,7 @@ class Impl
      * @param \ilObjTest $test
      * @return array
      */
-    public function getConfigurationForTest(\ilObjTest $test) : array 
+    public function getConfigurationForTest(\ilObjTest $test) : array
     {
         return [
             'status' => $this->globalSettings->getSettings()->get($this->getTestSettingsPrefix($test) . '_status', false),

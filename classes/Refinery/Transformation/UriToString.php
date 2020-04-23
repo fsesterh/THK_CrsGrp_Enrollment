@@ -28,7 +28,7 @@ class UriToString implements Transformation
         /** @var URI $from */
         $result = $from->baseURI();
 
-        $query  = $from->query();
+        $query = $from->query();
         if (null !== $query) {
             $query = '?' . $query;
         }
@@ -38,7 +38,7 @@ class UriToString implements Transformation
         if (null !== $fragment) {
             $fragment = '#' . $fragment;
         }
-        $result   .= $fragment;
+        $result .= $fragment;
 
         return $result;
     }

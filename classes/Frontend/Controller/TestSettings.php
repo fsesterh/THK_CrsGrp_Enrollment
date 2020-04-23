@@ -69,7 +69,7 @@ class TestSettings extends RepositoryObject
      */
     private function buildForm() : TestSettingsForm
     {
-        $form  = new TestSettingsForm(
+        $form = new TestSettingsForm(
             $this->getCoreController()->getPluginObject(),
             $this,
             $this->getCoreController(),

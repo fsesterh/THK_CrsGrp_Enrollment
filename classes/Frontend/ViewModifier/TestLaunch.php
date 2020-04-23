@@ -15,7 +15,7 @@ class TestLaunch extends Base
     
     /** @var \ilObjTest */
     private $test;
-        /** @var bool */
+    /** @var bool */
     private $reviewButtonRendered = false;
 
     /**
@@ -62,7 +62,7 @@ class TestLaunch extends Base
         ) || (
             $this->isCommandClass(\ilObjTestGUI::class) &&
             in_array(strtolower($this->ctrl->getCmd()), $validInfoScreenCommands)
-         );
+        );
 
         $isGotoRequest = (
             preg_match('/^tst_\d+$/', (string) $this->httpRequest->getQueryParams()['target'] ?? '')
@@ -128,7 +128,7 @@ class TestLaunch extends Base
 
         $this->test = \ilObjectFactory::getInstanceByRefId($this->getTestRefId());
         if (!$this->service->isTestSupported($this->test)) {
-           return false;
+            return false;
         }
 
         if (!$this->service->getConfigurationForTest($this->test)['status']) {
@@ -218,7 +218,7 @@ class TestLaunch extends Base
     /**
      * @param \DOMDocument $doc
      */
-    private function addReviewButton(\DOMDocument $doc) : void 
+    private function addReviewButton(\DOMDocument $doc) : void
     {
         if ($this->reviewButtonRendered) {
             return;

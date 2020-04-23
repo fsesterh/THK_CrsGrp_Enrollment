@@ -10,19 +10,19 @@ namespace ILIAS\Plugin\Proctorio\UI\Form;
  */
 interface Bindable
 {
-	/**
-	 * @param \ilPropertyFormGUI $form
-	 */
-	public function bindForm(\ilPropertyFormGUI $form);
+    /**
+     * @param \ilPropertyFormGUI $form
+     */
+    public function bindForm(\ilPropertyFormGUI $form);
 
-	/**
-	 * 
-	 */
-	public function onFormSaved();
+    /**
+     *
+     */
+    public function onFormSaved();
 
-	/**
-	 * A key value map of form values mapped to the respective element name 
-	 * @return array
-	 */
-	public function toArray() : array;
+    /**
+     * A key value map of form values mapped to the respective element name
+     * @return array
+     */
+    public function toArray() : array;
 }

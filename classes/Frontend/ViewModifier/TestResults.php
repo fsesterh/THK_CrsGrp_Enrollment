@@ -44,7 +44,7 @@ class TestResults extends Base
 
         $this->test = \ilObjectFactory::getInstanceByRefId($this->getRefId());
         if (!$this->service->isTestSupported($this->test)) {
-           return false;
+            return false;
         }
 
         // We do not check any RBAC permissions here, since this is already done by the ILIAS core when rendering this view

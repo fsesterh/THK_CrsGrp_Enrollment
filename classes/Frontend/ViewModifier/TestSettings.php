@@ -77,7 +77,10 @@ class TestSettings extends Base
             $this->ctrl->setParameterByClass('ilObjTestSettingsGeneralGUI', 'ref_id', $this->getRefId());
             $tstSettingsUrl = $this->ctrl->getLinkTargetByClass(
                 ['ilRepositoryGUI', 'ilObjTestGUI', 'ilObjTestSettingsGeneralGUI'],
-                '', '', false, false
+                '',
+                '',
+                false,
+                false
             );
             $tabs->setBackTarget($this->lng->txt('back'), $tstSettingsUrl);
         } else {

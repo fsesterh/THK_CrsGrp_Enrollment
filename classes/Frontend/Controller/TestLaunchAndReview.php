@@ -44,7 +44,7 @@ class TestLaunchAndReview extends RepositoryObject
     }
 
     /**
-     * 
+     *
      */
     private function ensureInitialisedSessionLockString() : void
     {
@@ -144,7 +144,7 @@ class TestLaunchAndReview extends RepositoryObject
     /**
      * @return URI
      */
-    private function getTakeUrl() : URI 
+    private function getTakeUrl() : URI
     {
         $testPlayerFactory = new \ilTestPlayerFactory($this->test);
         $playerGui = $testPlayerFactory->getPlayerGUI();
@@ -206,7 +206,9 @@ class TestLaunchAndReview extends RepositoryObject
         }
 
         $executable = $this->test->isExecutable(
-            $this->testSession, $this->testSession->getUserId(), true
+            $this->testSession,
+            $this->testSession->getUserId(),
+            true
         );
         if (!$executable['executable']) {
             $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
@@ -270,7 +272,9 @@ class TestLaunchAndReview extends RepositoryObject
         }
 
         $executable = $this->test->isExecutable(
-            $this->testSession, $this->testSession->getUserId(), true
+            $this->testSession,
+            $this->testSession->getUserId(),
+            true
         );
         if (!$executable['executable']) {
             $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
@@ -281,7 +285,7 @@ class TestLaunchAndReview extends RepositoryObject
         /*
             For a "launch_url" request (which MUST match the "exam_start" regex)
             the LMS MUST NOT respond with a HTTP 200 and a HTML document!
-            Instead the LMS has to respond with a 302 HTTP redirect to an URL matching the "exam_take" regex.  
+            Instead the LMS has to respond with a 302 HTTP redirect to an URL matching the "exam_take" regex.
         */
 
         \iljQueryUtil::initjQuery($this->pageTemplate);
@@ -290,7 +294,7 @@ class TestLaunchAndReview extends RepositoryObject
             $this->getCoreController()->getPluginObject()->getDirectory() . '/assets/css/styles.css'
         );
         $this->pageTemplate->setBodyClass('kiosk');
-        $this->pageTemplate->setAddFooter(FALSE);
+        $this->pageTemplate->setAddFooter(false);
 
         $btn = \ilLinkButton::getInstance();
         $btn->setUrl((new UriToString())->transform($this->getTakeUrl()));
@@ -299,7 +303,8 @@ class TestLaunchAndReview extends RepositoryObject
         $this->pageTemplate->addBlockfile(
             'CONTENT',
             'content',
-            $this->getCoreController()->getPluginObject()->getDirectory() . '/templates/tpl.tst_start_container.html');
+            $this->getCoreController()->getPluginObject()->getDirectory() . '/templates/tpl.tst_start_container.html'
+        );
 
         $template = $this->getCoreController()->getPluginObject()->getTemplate('tpl.tst_start.html', true, true);
 
@@ -312,7 +317,7 @@ class TestLaunchAndReview extends RepositoryObject
     /**
      * @return string
      */
-    public function reviewCmd() : string 
+    public function reviewCmd() : string
     {
         $this->pageTemplate->getStandardTemplate();
 

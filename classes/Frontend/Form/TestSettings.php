@@ -69,7 +69,8 @@ class TestSettings extends \ilPropertyFormGUI
         $this->setDescription($this->plugin->txt('exam_settings_info_test_started'));
         
         $activationStatus = new \ilCheckboxInputGUI(
-            $this->plugin->txt('exam_setting_label_status'), 'status'
+            $this->plugin->txt('exam_setting_label_status'),
+            'status'
         );
         $activationStatus->setInfo($this->plugin->txt('exam_setting_label_status_info'));
         $activationStatus->setValue(1);

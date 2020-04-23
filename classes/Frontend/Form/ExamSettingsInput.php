@@ -146,7 +146,7 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
     }
 
     /**
-     * 
+     *
      */
     protected function init() : void
     {
@@ -237,11 +237,11 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
             if (!is_string($value)) {
                 $this->setAlert($this->plugin->txt('err_wrong_format_for_selection'));
                 $this->wasValidationError = true;
-                return false; 
+                return false;
             }
         }
 
-        $_POST[$this->getPostVar()] = array_map(function($value) {
+        $_POST[$this->getPostVar()] = array_map(function ($value) {
             return trim((string) \ilUtil::stripSlashesRecursive($value));
         }, $_POST[$this->getPostVar()]);
 
@@ -372,7 +372,8 @@ class ExamSettingsInput extends \ilSubEnabledFormPropertyGUI
      * @return string
      * @throws \ilTemplateException
      */
-    private function renderSettings(string $section) : string {
+    private function renderSettings(string $section) : string
+    {
         $deckCardRowTemplate = $this->plugin->getTemplate('tpl.settings_deck_row.html', true, true);
         $deckCardTemplate = $this->plugin->getTemplate('tpl.settings_deck_card.html', true, true);
 

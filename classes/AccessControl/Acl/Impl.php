@@ -35,7 +35,7 @@ class Impl implements Acl
         'allResources' => [
             'allRoles' => [
                 'allPrivileges' => [
-                    'type'   => self::TYPE_DENY,
+                    'type' => self::TYPE_DENY,
                     'assert' => null
                 ],
                 'byPrivilegeId' => []
@@ -160,17 +160,17 @@ class Impl implements Acl
         string $resource,
         string $privilege
     ) : Impl {
-        $roleObj     = $this->roleRegistry->get($role);
+        $roleObj = $this->roleRegistry->get($role);
         $resourceObj = $this->getResource($resource);
 
         switch ($operation) {
             case self::OP_ADD:
-                $rules                                      =& $this->getRules($resourceObj, $roleObj, true);
+                $rules = &$this->getRules($resourceObj, $roleObj, true);
                 $rules['byPrivilegeId'][$privilege]['type'] = $type;
                 break;
 
             case self::OP_REMOVE:
-                $rules =& $this->getRules($resourceObj, $roleObj, true);
+                $rules = &$this->getRules($resourceObj, $roleObj, true);
 
                 if (
                     isset($rules['byPrivilegeId'][$privilege]) &&
@@ -196,12 +196,12 @@ class Impl implements Acl
         Role $role = null,
         $create = false
     ) : array {
-        $null    = null;
-        $nullRef =& $null;
+        $null = null;
+        $nullRef = &$null;
 
         do {
             if (null === $resource) {
-                $visitor =& $this->rules['allResources'];
+                $visitor = &$this->rules['allResources'];
                 break;
             }
 
@@ -215,7 +215,7 @@ class Impl implements Acl
                 $this->rules['byResourceId'][$resourceId] = [];
             }
 
-            $visitor =& $this->rules['byResourceId'][$resourceId];
+            $visitor = &$this->rules['byResourceId'][$resourceId];
         } while (false);
 
         if (null === $role) {
@@ -247,7 +247,7 @@ class Impl implements Acl
      */
     public function isAllowed(string $role, string $resource, string $privilege) : bool
     {
-        $role     = $this->roleRegistry->get($role);
+        $role = $this->roleRegistry->get($role);
         $resource = $this->getResource($resource);
         if (!isset($this->rules['byResourceId'][$resource->getResourceId()])) {
             return false;

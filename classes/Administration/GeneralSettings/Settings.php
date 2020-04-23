@@ -134,7 +134,8 @@ class Settings implements Bindable
         $this->apiLaunchAndReviewEndpoint = (string) $form->getInput('api_launch_review_endpoint');
         $mappingByRole = [];
         foreach ($this->acl->getRoles() as $role) {
-            $mapping = array_filter(array_map('intval',
+            $mapping = array_filter(array_map(
+                'intval',
                 (array) $form->getInput('role_mapping_' . $role->getRoleId())
             ));
             $mappingByRole[$role->getRoleId()] = $mapping;
