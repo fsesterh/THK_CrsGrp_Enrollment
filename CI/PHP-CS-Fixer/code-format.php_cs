@@ -2,7 +2,9 @@
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-$finder = PhpCsFixer\Finder::create();
+$finder = PhpCsFixer\Finder::create()
+    ->exclude([__DIR__ .  '/../../vendor'])
+    ->in([__DIR__ .  '/../../']);
 
 return PhpCsFixer\Config::create()
     ->setRules([
