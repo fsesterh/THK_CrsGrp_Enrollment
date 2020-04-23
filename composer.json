@@ -1,5 +1,6 @@
 {
   "require": {
+    "php": "^7.2.0",
     "guzzlehttp/guzzle": "^6.4"
   },
   "autoload": {
@@ -8,6 +9,7 @@
     "exclude-from-classmap": []
   },
   "require-dev": {
-    "captainhook/plugin-composer": "^4.0"
+    "captainhook/plugin-composer": "^5.1",
+    "friendsofphp/php-cs-fixer": "^2.16"
   }
 }
