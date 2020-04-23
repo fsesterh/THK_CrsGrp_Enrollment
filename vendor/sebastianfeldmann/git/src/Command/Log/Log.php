@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of SebastianFeldmann\Git.
  *
@@ -7,6 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianFeldmann\Git\Command\Log;
 
 use SebastianFeldmann\Git\Command\Base;
@@ -41,7 +43,7 @@ abstract class Log extends Base
      * Shorten commit hashes.
      * --abbrev-commit
      *
-     * @var bool
+     * @var string
      */
     protected $abbrev = ' --abbrev-commit';
 

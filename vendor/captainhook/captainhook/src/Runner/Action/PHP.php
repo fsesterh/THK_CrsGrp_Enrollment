@@ -1,19 +1,23 @@
 <?php
+
 /**
- * This file is part of CaptainHook.
+ * This file is part of CaptainHook
  *
- * (c) Sebastian Feldmann <sf@sebastian.feldmann.info>
+ * (c) Sebastian Feldmann <sf@sebastian-feldmann.info>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace CaptainHook\App\Runner\Action;
 
 use CaptainHook\App\Config;
 use CaptainHook\App\Console\IO;
 use CaptainHook\App\Exception\ActionFailed;
 use CaptainHook\App\Hook\Action;
-use CaptainHook\App\Hook\ActionFactory;
+use CaptainHook\App\Hook\Constrained;
+use Exception;
+use RuntimeException;
 use SebastianFeldmann\Git\Repository;
 
 /**
@@ -27,6 +31,23 @@ use SebastianFeldmann\Git\Repository;
 class PHP
 {
     /**
+     * Name of the currently executed hook
+     *
+     * @var string
+     */
+    private $hook;
+
+    /**
+     * PHP constructor.
+     *
+     * @param string $hook Name of the currently executed hook
+     */
+    public function __construct(string $hook)
+    {
+        $this->hook = $hook;
+    }
+
+    /**
      * Execute the configured action
      *
      * @param  \CaptainHook\App\Config           $config
@@ -36,19 +57,28 @@ class PHP
      * @return void
      * @throws \CaptainHook\App\Exception\ActionFailed
      */
-    public function execute(Config $config, IO $io, Repository $repository, Config\Action $action) : void
+    public function execute(Config $config, IO $io, Repository $repository, Config\Action $action): void
     {
         $class = $action->getAction();
 
         try {
+            // if the configured action is a static php method display the captured output and exit
             if ($this->isStaticMethodCall($class)) {
                 $io->write($this->executeStatic($class));
                 return;
             }
 
+            // if not static it has to be an 'Action' so let's instantiate
             $exe = $this->createAction($class);
+            // check for any given restrictions
+            if (!$this->isApplicable($exe)) {
+                $io->write('Action skipped due to hook constraint', true, IO::VERBOSE);
+                return;
+            }
+
+            // no restrictions run it!
             $exe->execute($config, $io, $repository, $action);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new ActionFailed(
                 'Execution failed: ' . PHP_EOL .
                 $e->getMessage() . ' in ' . $e->getFile() . ' line ' . $e->getLine()
@@ -64,14 +94,14 @@ class PHP
      * @param  string $class
      * @return string
      */
-    protected function executeStatic(string $class) : string
+    private function executeStatic(string $class): string
     {
-        list($class, $method) = explode('::', $class);
+        [$class, $method] = explode('::', $class);
         if (!class_exists($class)) {
-            throw new \RuntimeException('could not find class: ' . $class);
+            throw new RuntimeException('could not find class: ' . $class);
         }
         if (!method_exists($class, $method)) {
-            throw new \RuntimeException('could not find method in class: ' . $method);
+            throw new RuntimeException('could not find method in class: ' . $method);
         }
         ob_start();
         $class::$method();
@@ -85,7 +115,7 @@ class PHP
      * @return \CaptainHook\App\Hook\Action
      * @throws \CaptainHook\App\Exception\ActionFailed
      */
-    protected function createAction(string $class) : Action
+    private function createAction(string $class): Action
     {
         $action = new $class();
         if (!$action instanceof Action) {
@@ -102,8 +132,23 @@ class PHP
      * @param  string $class
      * @return bool
      */
-    protected function isStaticMethodCall(string $class) : bool
+    private function isStaticMethodCall(string $class): bool
     {
         return (bool)preg_match('#^\\\\.+::.+$#i', $class);
+    }
+
+    /**
+     * Make sure the action can be used during this hook
+     *
+     * @param  \CaptainHook\App\Hook\Action $action
+     * @return bool
+     */
+    private function isApplicable(Action $action)
+    {
+        if ($action instanceof Constrained) {
+            /** @var \CaptainHook\App\Hook\Constrained $action */
+            return $action->getRestriction()->isApplicableFor($this->hook);
+        }
+        return true;
     }
 }

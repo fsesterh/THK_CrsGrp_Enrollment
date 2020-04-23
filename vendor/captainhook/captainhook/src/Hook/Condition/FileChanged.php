@@ -1,16 +1,21 @@
 <?php
+
 /**
- * This file is part of CaptainHook.
+ * This file is part of CaptainHook
  *
- * (c) Sebastian Feldmann <sf@sebastian.feldmann.info>
+ * (c) Sebastian Feldmann <sf@sebastian-feldmann.info>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace CaptainHook\App\Hook\Condition;
 
 use CaptainHook\App\Console\IO;
 use CaptainHook\App\Hook\Condition;
+use CaptainHook\App\Hook\Constrained;
+use CaptainHook\App\Hook\Restriction;
+use CaptainHook\App\Hooks;
 use SebastianFeldmann\Git\Repository;
 
 /**
@@ -21,23 +26,33 @@ use SebastianFeldmann\Git\Repository;
  * @link    https://github.com/captainhookphp/captainhook
  * @since   Class available since Release 4.2.0
  */
-abstract class FileChanged implements Condition
+abstract class FileChanged implements Condition, Constrained
 {
     /**
      * List of file to watch
      *
-     * @var string[]
+     * @var array<string>
      */
     protected $filesToWatch;
 
     /**
      * FileChange constructor
      *
-     * @param string[] $files
+     * @param array<string> $files
      */
     public function __construct(array $files)
     {
         $this->filesToWatch = $files;
+    }
+
+    /**
+     * Return the hook restriction information
+     *
+     * @return \CaptainHook\App\Hook\Restriction
+     */
+    public static function getRestriction(): Restriction
+    {
+        return Restriction::fromArray([Hooks::POST_CHECKOUT, Hooks::POST_MERGE]);
     }
 
     /**
@@ -59,7 +74,7 @@ abstract class FileChanged implements Condition
      *
      * @param  \CaptainHook\App\Console\IO       $io
      * @param  \SebastianFeldmann\Git\Repository $repository
-     * @return array|string[]
+     * @return array<string>
      */
     protected function getChangedFiles(IO $io, Repository $repository)
     {
@@ -67,5 +82,22 @@ abstract class FileChanged implements Condition
         $newHash = $io->getArgument('newHead', 'HEAD');
 
         return $repository->getDiffOperator()->getChangedFiles($oldHash, $newHash);
+    }
+
+    /**
+     * Check if a file matching a `fnmatch` pattern was changed
+     *
+     * @param  array<string> $changedFiles
+     * @param  string        $pattern
+     * @return bool
+     */
+    protected function didMatchingFileChange(array $changedFiles, string $pattern): bool
+    {
+        foreach ($changedFiles as $file) {
+            if (fnmatch($pattern, $file)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

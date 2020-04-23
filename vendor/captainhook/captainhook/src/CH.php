@@ -1,12 +1,16 @@
 <?php
+
 /**
- * This file is part of CaptainHook.
+ * This file is part of CaptainHook
  *
- * (c) Sebastian Feldmann <sf@sebastian.feldmann.info>
+ * (c) Sebastian Feldmann <sf@sebastian-feldmann.info>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+declare(strict_types=1);
+
 namespace CaptainHook\App;
 
 /**
@@ -19,8 +23,7 @@ namespace CaptainHook\App;
  */
 final class CH
 {
-    const VERSION           = '4.5.2';
-    const RELEASE_DATE      = '2019-08-26';
-    const CONFIG            = 'captainhook.json';
-    const COMPOSER_CONFIG   = 'captainhook-config';
+    public const VERSION      = '5.1.3';
+    public const RELEASE_DATE = '2020-04-21';
+    public const CONFIG       = 'captainhook.json';
 }

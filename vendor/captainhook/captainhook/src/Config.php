@@ -1,15 +1,18 @@
 <?php
+
 /**
- * This file is part of CaptainHook.
+ * This file is part of CaptainHook
  *
- * (c) Sebastian Feldmann <sf@sebastian.feldmann.info>
+ * (c) Sebastian Feldmann <sf@sebastian-feldmann.info>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace CaptainHook\App;
 
 use InvalidArgumentException;
+use SebastianFeldmann\Camino\Check;
 
 /**
  * Class Config
@@ -22,14 +25,15 @@ use InvalidArgumentException;
  */
 class Config
 {
-    const SETTING_VENDOR_DIR     = 'vendor-directory';
-    const SETTING_GIT_DIR        = 'git-directory';
-    const SETTING_VERBOSITY      = 'verbosity';
-    const SETTING_COLORS         = 'ansi-colors';
-    const SETTING_INCLUDES       = 'includes';
-    const SETTING_INCLUDES_LEVEL = 'includes-level';
-    const SETTING_RUN_MODE       = 'run-mode';
-    const SETTING_RUN_EXEC       = 'run-exec';
+    public const SETTING_BOOTSTRAP      = 'bootstrap';
+    public const SETTING_COLORS         = 'ansi-colors';
+    public const SETTING_GIT_DIR        = 'git-directory';
+    public const SETTING_INCLUDES       = 'includes';
+    public const SETTING_INCLUDES_LEVEL = 'includes-level';
+    public const SETTING_RUN_EXEC       = 'run-exec';
+    public const SETTING_RUN_MODE       = 'run-mode';
+    public const SETTING_RUN_PATH       = 'run-path';
+    public const SETTING_VERBOSITY      = 'verbosity';
 
     /**
      * Path to the config file
@@ -48,14 +52,14 @@ class Config
     /**
      * CaptainHook settings
      *
-     * @var array
+     * @var array<string, string>
      */
     private $settings;
 
     /**
      * List of hook configs
      *
-     * @var \CaptainHook\App\Config\Hook[]
+     * @var array<string, \CaptainHook\App\Config\Hook>
      */
     private $hooks = [];
 
@@ -82,7 +86,7 @@ class Config
      *
      * @return bool
      */
-    public function isLoadedFromFile() : bool
+    public function isLoadedFromFile(): bool
     {
         return $this->fileExists;
     }
@@ -92,7 +96,7 @@ class Config
      *
      * @return string
      */
-    public function getPath() : string
+    public function getPath(): string
     {
         return $this->path;
     }
@@ -102,28 +106,28 @@ class Config
      *
      * @return string
      */
-    public function getGitDirectory() : string
+    public function getGitDirectory(): string
     {
         if (empty($this->settings[self::SETTING_GIT_DIR])) {
-            return getcwd() . DIRECTORY_SEPARATOR . '.git';
+            return getcwd() . '/.git';
         }
 
         // if repo path is absolute use it otherwise create an absolute path relative to the configuration file
-        return substr($this->settings[self::SETTING_GIT_DIR], 0, 1) === DIRECTORY_SEPARATOR
+        return Check::isAbsolutePath($this->settings[self::SETTING_GIT_DIR])
             ? $this->settings[self::SETTING_GIT_DIR]
-            : dirname($this->path) . DIRECTORY_SEPARATOR . $this->settings[self::SETTING_GIT_DIR];
+            : \dirname($this->path) . '/' . $this->settings[self::SETTING_GIT_DIR];
     }
 
     /**
-     * Return composer vendor directory path if configured, CWD/vendor if not
+     * Return bootstrap file if configured, CWD/vendor/autoload.php by default
      *
      * @return string
      */
-    public function getVendorDirectory() : string
+    public function getBootstrap(): string
     {
-        return !empty($this->settings[self::SETTING_VENDOR_DIR])
-            ? dirname($this->path) . DIRECTORY_SEPARATOR . $this->settings[self::SETTING_VENDOR_DIR]
-            : getcwd() . DIRECTORY_SEPARATOR . 'vendor';
+        return !empty($this->settings[self::SETTING_BOOTSTRAP])
+            ? $this->settings[self::SETTING_BOOTSTRAP]
+            : 'vendor/autoload.php';
     }
 
     /**
@@ -131,11 +135,11 @@ class Config
      *
      * @return string
      */
-    public function getVerbosity() : string
+    public function getVerbosity(): string
     {
         return !empty($this->settings[self::SETTING_VERBOSITY])
             ? $this->settings[self::SETTING_VERBOSITY]
-            : 'verbose';
+            : 'normal';
     }
 
     /**
@@ -143,7 +147,7 @@ class Config
      *
      * @return bool
      */
-    public function useAnsiColors() : bool
+    public function useAnsiColors(): bool
     {
         return (bool) ($this->settings[self::SETTING_COLORS] ?? true);
     }
@@ -153,7 +157,7 @@ class Config
      *
      * @return string
      */
-    public function getRunMode() : string
+    public function getRunMode(): string
     {
         return (string) ($this->settings[self::SETTING_RUN_MODE] ?? 'local');
     }
@@ -163,9 +167,19 @@ class Config
      *
      * @return string
      */
-    public function getRunExec() : string
+    public function getRunExec(): string
     {
         return (string) ($this->settings[self::SETTING_RUN_EXEC] ?? '');
+    }
+
+    /**
+     * Get configured run-path
+     *
+     * @return string
+     */
+    public function getRunPath(): string
+    {
+        return (string) ($this->settings[self::SETTING_RUN_PATH] ?? '');
     }
 
     /**
@@ -175,7 +189,7 @@ class Config
      * @return \CaptainHook\App\Config\Hook
      * @throws \InvalidArgumentException
      */
-    public function getHookConfig(string $hook) : Config\Hook
+    public function getHookConfig(string $hook): Config\Hook
     {
         if (!Hook\Util::isValid($hook)) {
             throw new InvalidArgumentException('Invalid hook name: ' . $hook);
@@ -188,7 +202,7 @@ class Config
      *
      * @return array
      */
-    public function getJsonData() : array
+    public function getJsonData(): array
     {
         $data = [];
         // only append config settings if at least one setting is present

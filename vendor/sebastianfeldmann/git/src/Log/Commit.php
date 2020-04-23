@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of SebastianFeldmann\Git.
  *
@@ -7,6 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianFeldmann\Git\Log;
 
 /**
@@ -32,7 +34,12 @@ class Commit
     /**
      * @var string
      */
-    private $description;
+    private $subject;
+
+    /**
+     * @var string
+     */
+    private $body;
 
     /**
      * @var \DateTimeImmutable
@@ -49,23 +56,25 @@ class Commit
      *
      * @param string             $hash
      * @param array              $names
-     * @param string             $description
+     * @param string             $subject
+     * @param string             $body
      * @param \DateTimeImmutable $date
      * @param string             $author
      */
     public function __construct(
         string $hash,
         array $names,
-        string $description,
+        string $subject,
+        string $body,
         \DateTimeImmutable $date,
         string $author
-    )
-    {
-        $this->hash        = $hash;
-        $this->names       = $names;
-        $this->description = $description;
-        $this->date        = $date;
-        $this->author      = $author;
+    ) {
+        $this->hash    = $hash;
+        $this->names   = $names;
+        $this->subject = $subject;
+        $this->body    = $body;
+        $this->date    = $date;
+        $this->author  = $author;
     }
 
     /**
@@ -101,11 +110,33 @@ class Commit
     /**
      * Description getter.
      *
+     * @deprecated
+     *
      * @return string
      */
     public function getDescription(): string
     {
-        return $this->description;
+        return $this->getSubject();
+    }
+
+    /**
+     * Subject getter.
+     *
+     * @return string
+     */
+    public function getSubject(): string
+    {
+        return $this->subject;
+    }
+
+    /**
+     * Body getter.
+     *
+     * @return string
+     */
+    public function getBody(): string
+    {
+        return $this->body;
     }
 
     /**

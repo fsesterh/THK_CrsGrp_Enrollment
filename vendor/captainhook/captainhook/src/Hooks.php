@@ -1,12 +1,16 @@
-<?php declare(strict_types=1);
+<?php
+
 /**
- * This file is part of CaptainHook.
+ * This file is part of CaptainHook
  *
- * (c) Sebastian Feldmann <sf@sebastian.feldmann.info>
+ * (c) Sebastian Feldmann <sf@sebastian-feldmann.info>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+declare(strict_types=1);
+
 namespace CaptainHook\App;
 
 /**
@@ -38,9 +42,9 @@ final class Hooks
     /**
      * Returns the list of valid hooks
      *
-     * @return array
+     * @return array<string>
      */
-    public static function getValidHooks() : array
+    public static function getValidHooks(): array
     {
         return [
             self::COMMIT_MSG         => 'CommitMsg',
@@ -51,5 +55,25 @@ final class Hooks
             self::POST_MERGE         => 'PostMerge',
             self::POST_CHECKOUT      => 'PostCheckout',
         ];
+    }
+
+    /**
+     * Returns the argument placeholders for a given hook
+     *
+     * @param  string $hook
+     * @return string
+     */
+    public static function getOriginalHookArguments(string $hook): string
+    {
+        static $arguments = [
+            Hooks::COMMIT_MSG         => ' {$FILE}',
+            Hooks::POST_MERGE         => ' {$SQUASH}',
+            Hooks::PRE_COMMIT         => '',
+            Hooks::PRE_PUSH           => ' {$TARGET} {$URL}',
+            Hooks::PREPARE_COMMIT_MSG => ' {$FILE} {$MODE} {$HASH}',
+            Hooks::POST_CHECKOUT      => ' {$PREVIOUSHEAD} {$NEWHEAD} {$MODE}',
+        ];
+
+        return $arguments[$hook];
     }
 }

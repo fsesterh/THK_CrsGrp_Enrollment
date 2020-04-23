@@ -27,14 +27,12 @@
   "require": {
     "php": "^7.1",
     "ext-json": "*",
-    "sebastianfeldmann/cli": "^3.0.0"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "^7.5"
+    "ext-xml": "*",
+    "sebastianfeldmann/cli": "^3.0"
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "2.3.x-dev"
+      "dev-master": "4.0.x-dev"
     }
   }
 }

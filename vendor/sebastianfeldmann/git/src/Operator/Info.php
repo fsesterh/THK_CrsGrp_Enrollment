@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of SebastianFeldmann\Git.
  *
@@ -7,9 +8,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianFeldmann\Git\Operator;
 
 use SebastianFeldmann\Git\Command\Describe\GetCurrentTag;
+use SebastianFeldmann\Git\Command\Describe\GetMostRecentTag;
 use SebastianFeldmann\Git\Command\RevParse\GetBranch;
 use SebastianFeldmann\Git\Command\RevParse\GetCommitHash;
 use SebastianFeldmann\Git\Command\Tag\GetTags;
@@ -29,9 +32,43 @@ class Info extends Base
      *
      * @return string
      */
-    public function getCurrentTag() : string
+    public function getCurrentTag(): string
     {
         $cmd    = new GetCurrentTag($this->repo->getRoot());
+        $result = $this->runner->run($cmd);
+
+        return trim($result->getStdOut());
+    }
+
+    /**
+     * Returns the most recent tag
+     *
+     * @param  string $ignore Unix glob to ignore tags e.g. **-RC*
+     * @return string
+     */
+    public function getMostRecentTag(string $ignore = ''): string
+    {
+        $cmd = new GetMostRecentTag($this->repo->getRoot());
+        $cmd->ignore($ignore);
+
+        $result = $this->runner->run($cmd);
+
+        return trim($result->getStdOut());
+    }
+
+    /**
+     * Returns the most recent tag before the given commit
+     *
+     * @param  string $hash
+     * @param  string $ignore Unix glob to ignore tags e.g. **-RC*
+     * @return string
+     */
+    public function getMostRecentTagBefore(string $hash, string $ignore = ''): string
+    {
+        $cmd = new GetMostRecentTag($this->repo->getRoot());
+        $cmd->ignore($ignore);
+        $cmd->before($hash);
+
         $result = $this->runner->run($cmd);
 
         return trim($result->getStdOut());
@@ -58,7 +95,7 @@ class Info extends Base
      *
      * @return string
      */
-    public function getCurrentCommitHash() : string
+    public function getCurrentCommitHash(): string
     {
         $cmd    = new GetCommitHash($this->repo->getRoot());
         $result = $this->runner->run($cmd);
@@ -71,7 +108,7 @@ class Info extends Base
      *
      * @return string
      */
-    public function getCurrentBranch() : string
+    public function getCurrentBranch(): string
     {
         $cmd    = new GetBranch($this->repo->getRoot());
         $result = $this->runner->run($cmd);

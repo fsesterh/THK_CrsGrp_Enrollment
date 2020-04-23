@@ -1,12 +1,14 @@
 <?php
+
 /**
- * This file is part of CaptainHook.
+ * This file is part of CaptainHook
  *
- * (c) Sebastian Feldmann <sf@sebastian.feldmann.info>
+ * (c) Sebastian Feldmann <sf@sebastian-feldmann.info>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace CaptainHook\App\Hook\Message\Action;
 
 use CaptainHook\App\Config;
@@ -14,7 +16,10 @@ use CaptainHook\App\Console\IO;
 use CaptainHook\App\Console\IOUtil;
 use CaptainHook\App\Exception\ActionFailed;
 use CaptainHook\App\Hook\Action;
+use CaptainHook\App\Hook\Constrained;
 use CaptainHook\App\Hook\Message\RuleBook;
+use CaptainHook\App\Hook\Restriction;
+use CaptainHook\App\Hooks;
 use SebastianFeldmann\Cli\Output\Util as OutputUtil;
 use SebastianFeldmann\Git\Repository;
 
@@ -26,8 +31,18 @@ use SebastianFeldmann\Git\Repository;
  * @link    https://github.com/captainhookphp/captainhook
  * @since   Class available since Release 0.9.0
  */
-abstract class Book implements Action
+abstract class Book implements Action, Constrained
 {
+    /**
+     * Returns a list of applicable hooks
+     *
+     * @return \CaptainHook\App\Hook\Restriction
+     */
+    public static function getRestriction(): Restriction
+    {
+        return Restriction::fromArray([Hooks::COMMIT_MSG]);
+    }
+
     /**
      * Execute the configured action
      *
@@ -38,7 +53,7 @@ abstract class Book implements Action
      * @return void
      * @throws \Exception
      */
-    abstract public function execute(Config $config, IO $io, Repository $repository, Config\Action $action) : void;
+    abstract public function execute(Config $config, IO $io, Repository $repository, Config\Action $action): void;
 
     /**
      * Validate the message
@@ -49,7 +64,7 @@ abstract class Book implements Action
      * @return void
      * @throws \CaptainHook\App\Exception\ActionFailed
      */
-    protected function validate(RuleBook $ruleBook, Repository $repository, IO $io) : void
+    protected function validate(RuleBook $ruleBook, Repository $repository, IO $io): void
     {
         // if this is a merge commit skip enforcing message rules
         if ($repository->isMerging()) {
@@ -68,11 +83,11 @@ abstract class Book implements Action
     /**
      * Format the error output
      *
-     * @param  array                             $problems
+     * @param  array<string>                     $problems
      * @param  \SebastianFeldmann\Git\Repository $repository
      * @return string
      */
-    private function getErrorOutput(array $problems, Repository $repository) : string
+    private function getErrorOutput(array $problems, Repository $repository): string
     {
         $err  = count($problems);
         $head = [
@@ -98,7 +113,7 @@ abstract class Book implements Action
      * @param  string $problem
      * @return string
      */
-    private function formatProblem(string $problem) : string
+    private function formatProblem(string $problem): string
     {
         $lines  = explode(PHP_EOL, $problem);
         $amount = count($lines);

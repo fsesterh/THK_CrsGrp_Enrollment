@@ -43,15 +43,23 @@ class ProcOpen implements Processor
         if (!is_resource($process)) {
             throw new RuntimeException('can\'t execute \'proc_open\'');
         }
-        fclose($pipes[0]);
 
+        // Loop on process until it exits normally.
+        do {
+            $status = proc_get_status($process);
+        } while ($status && $status['running']);
+
+        $code   = $status['exitcode'] ?? -1;
         $stdOut = stream_get_contents($pipes[1]);
-        fclose($pipes[1]);
-
         $stdErr = stream_get_contents($pipes[2]);
-        fclose($pipes[2]);
 
-        $code = proc_close($process);
+        // make sure all pipes are closed before calling proc_close
+        foreach ($pipes as $index => $pipe) {
+            fclose($pipe);
+            unset($pipes[$index]);
+        }
+
+        proc_close($process);
         error_reporting($old);
 
         return new Result($cmd, $code, $stdOut, $stdErr, '', $acceptableExitCodes);

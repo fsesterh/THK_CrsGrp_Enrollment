@@ -185,7 +185,7 @@ class Result
      */
     private function textToBuffer() : array
     {
-        return OutputUtil::trimEmptyLines(explode(PHP_EOL, $this->stdOut));
+        return OutputUtil::trimEmptyLines(explode("\n", OutputUtil::normalizeLineEndings($this->stdOut)));
     }
 
     /**

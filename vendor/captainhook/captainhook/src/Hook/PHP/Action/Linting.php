@@ -1,12 +1,14 @@
 <?php
+
 /**
- * This file is part of CaptainHook.
+ * This file is part of CaptainHook
  *
- * (c) Sebastian Feldmann <sf@sebastian.feldmann.info>
+ * (c) Sebastian Feldmann <sf@sebastian-feldmann.info>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace CaptainHook\App\Hook\PHP\Action;
 
 use CaptainHook\App\Config;
@@ -36,7 +38,7 @@ class Linting implements Action
      * @return void
      * @throws \Exception
      */
-    public function execute(Config $config, IO $io, Repository $repository, Config\Action $action) : void
+    public function execute(Config $config, IO $io, Repository $repository, Config\Action $action): void
     {
         $changedPHPFiles = $repository->getIndexOperator()->getStagedFilesOfType('php');
 
@@ -44,7 +46,8 @@ class Linting implements Action
         foreach ($changedPHPFiles as $file) {
             $io->write('  - ' . $file, true, IO::VERBOSE);
             if ($this->hasSyntaxErrors($file)) {
-                throw new ActionFailed('syntax errors in file: ' . $file);
+                $io->write('    syntax error detected in ' . $file, true, IO::VERBOSE);
+                throw new ActionFailed('linting failed: PHP syntax errors in ' . $file);
             }
         }
         $io->write('<info>No syntax errors detected</info>');
@@ -56,7 +59,7 @@ class Linting implements Action
      * @param  string $file
      * @return bool
      */
-    protected function hasSyntaxErrors($file) : bool
+    protected function hasSyntaxErrors($file): bool
     {
         $process = new Processor();
         $result  = $process->run('php -l ' . escapeshellarg($file));

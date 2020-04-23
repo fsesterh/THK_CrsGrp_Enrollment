@@ -1,19 +1,19 @@
 <?php
+
 /**
- * This file is part of CaptainHook.
+ * This file is part of CaptainHook
  *
- * (c) Sebastian Feldmann <sf@sebastian.feldmann.info>
+ * (c) Sebastian Feldmann <sf@sebastian-feldmann.info>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace CaptainHook\App\Runner;
 
 use CaptainHook\App\Config;
-use CaptainHook\App\Config\Options;
 use CaptainHook\App\Console\IO;
 use CaptainHook\App\Console\IOUtil;
-use SebastianFeldmann\Git\Repository;
 use RuntimeException;
 
 /**
@@ -38,7 +38,7 @@ abstract class Hook extends RepositoryAware
      *
      * @return void
      */
-    public function beforeHook() : void
+    public function beforeHook(): void
     {
         // empty template method
     }
@@ -48,7 +48,7 @@ abstract class Hook extends RepositoryAware
      *
      * @return void
      */
-    public function beforeAction() : void
+    public function beforeAction(): void
     {
         // empty template method
     }
@@ -58,7 +58,7 @@ abstract class Hook extends RepositoryAware
      *
      * @return void
      */
-    public function afterAction() : void
+    public function afterAction(): void
     {
         //empty template method
     }
@@ -68,7 +68,7 @@ abstract class Hook extends RepositoryAware
      *
      * @return void
      */
-    public function afterHook() : void
+    public function afterHook(): void
     {
         // empty template method
     }
@@ -79,7 +79,7 @@ abstract class Hook extends RepositoryAware
      * @return void
      * @throws \Exception
      */
-    public function run() : void
+    public function run(): void
     {
         /** @var \CaptainHook\App\Config\Hook $hookConfig */
         $hookConfig = $this->config->getHookConfig($this->hook);
@@ -90,13 +90,14 @@ abstract class Hook extends RepositoryAware
             $this->io->write($this->formatHookHeadline('Skip'), true, IO::VERBOSE);
             return;
         }
+
+        $this->io->write($this->formatHookHeadline('Execute'), true, IO::VERBOSE);
+
         // if no actions are configured do nothing
         if (count($actions) === 0) {
             $this->io->write(['', '<info>No actions to execute</info>'], true, IO::VERBOSE);
             return;
         }
-
-        $this->io->write($this->formatHookHeadline('Execute'), true, IO::VERBOSE);
         $this->beforeHook();
         foreach ($actions as $action) {
             $this->handleAction($action);
@@ -111,7 +112,7 @@ abstract class Hook extends RepositoryAware
      * @return void
      * @throws \Exception
      */
-    protected function handleAction(Config\Action $action) : void
+    protected function handleAction(Config\Action $action): void
     {
         $this->io->write(['', 'Action: <comment>' . $action->getAction() . '</comment>'], true, IO::VERBOSE);
 
@@ -135,10 +136,10 @@ abstract class Hook extends RepositoryAware
      * @return void
      * @throws \CaptainHook\App\Exception\ActionFailed
      */
-    protected function executePhpAction(Config\Action $action) : void
+    protected function executePhpAction(Config\Action $action): void
     {
         $this->beforeAction();
-        $runner = new Action\PHP();
+        $runner = new Action\PHP($this->hook);
         $runner->execute($this->config, $this->io, $this->repository, $action);
         $this->afterAction();
     }
@@ -150,13 +151,13 @@ abstract class Hook extends RepositoryAware
      * @return void
      * @throws \CaptainHook\App\Exception\ActionFailed
      */
-    protected function executeCliAction(Config\Action $action) : void
+    protected function executeCliAction(Config\Action $action): void
     {
         // since the cli has no straight way to communicate back to php
         // cli hooks have to handle sync stuff by them self
         // so no 'beforeAction' or 'afterAction' is called here
         $runner = new Action\Cli();
-        $runner->execute($this->io, $action);
+        $runner->execute($this->io, $this->repository, $action);
     }
 
     /**
@@ -165,7 +166,7 @@ abstract class Hook extends RepositoryAware
      * @param  string $type
      * @return string
      */
-    public static function getExecMethod(string $type) : string
+    public static function getExecMethod(string $type): string
     {
         $valid = ['php' => 'executePhpAction', 'cli' => 'executeCliAction'];
 
@@ -181,9 +182,9 @@ abstract class Hook extends RepositoryAware
      * @param  \CaptainHook\App\Config\Condition[] $conditions
      * @return bool
      */
-    private function doConditionsApply(array $conditions) : bool
+    private function doConditionsApply(array $conditions): bool
     {
-        $conditionRunner = new Condition($this->io, $this->repository);
+        $conditionRunner = new Condition($this->io, $this->repository, $this->hook);
         foreach ($conditions as $config) {
             if (!$conditionRunner->doesConditionApply($config)) {
                 return false;
@@ -198,7 +199,7 @@ abstract class Hook extends RepositoryAware
      * @param  string $mode
      * @return string[]
      */
-    private function formatHookHeadline(string $mode) : array
+    private function formatHookHeadline(string $mode): array
     {
         $headline = ' ' . $mode . ' hook: <comment>' . $this->hook . '</comment> ';
         return [

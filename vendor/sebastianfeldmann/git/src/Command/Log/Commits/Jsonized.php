@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of SebastianFeldmann\Git.
  *
@@ -7,6 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianFeldmann\Git\Command\Log\Commits;
 
 use SebastianFeldmann\Cli\Command\OutputFormatter;
@@ -27,7 +29,7 @@ class Jsonized implements OutputFormatter
      *
      * @var string
      */
-    const FORMAT = '{"hash": "%h", "names": "%d", "description": "%s", "date": "%ci", "author": "%an"}';
+    public const FORMAT = '{"hash": "%h", "names": "%d", "subject": "%s", "date": "%ci", "author": "%an"}';
 
     /**
      * Format the output.
@@ -58,6 +60,6 @@ class Jsonized implements OutputFormatter
         $date  = new \DateTimeImmutable($std->date);
         $names = array_map('trim', explode(',', str_replace(['(', ')'], '', $std->names)));
 
-        return new Commit($std->hash, $names, $std->description, $date, $std->author);
+        return new Commit($std->hash, $names, $std->subject, '', $date, $std->author);
     }
 }

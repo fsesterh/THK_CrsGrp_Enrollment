@@ -1,16 +1,19 @@
 <?php
+
 /**
- * This file is part of CaptainHook.
+ * This file is part of CaptainHook
  *
- * (c) Sebastian Feldmann <sf@sebastian.feldmann.info>
+ * (c) Sebastian Feldmann <sf@sebastian-feldmann.info>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace CaptainHook\App\Runner\Config;
 
 use CaptainHook\App\Config;
 use CaptainHook\App\Runner;
+use RuntimeException;
 
 /**
  * Class Configurator
@@ -44,11 +47,18 @@ class Creator extends Runner
     private $advanced;
 
     /**
+     * Path to the currently executed 'binary'
+     *
+     * @var string
+     */
+    protected $executable;
+
+    /**
      * Execute the configurator
      *
      * @return void
      */
-    public function run() : void
+    public function run(): void
     {
         $config = $this->getConfigToManipulate();
         $setup  = $this->getHookSetup();
@@ -59,7 +69,7 @@ class Creator extends Runner
         $this->io->write(
             [
                 '<info>Configuration created successfully</info>',
-                'Run <comment>\'vendor/bin/captainhook install\'</comment> to activate your hook configuration',
+                'Run <comment>\'' . $this->getExecutable() . ' install\'</comment> to activate your hook configuration',
             ]
         );
     }
@@ -70,7 +80,7 @@ class Creator extends Runner
      * @param  bool $force
      * @return \CaptainHook\App\Runner\Config\Creator
      */
-    public function force(bool $force) : Creator
+    public function force(bool $force): Creator
     {
         $this->force = $force;
         return $this;
@@ -82,7 +92,7 @@ class Creator extends Runner
      * @param  bool $extend
      * @return \CaptainHook\App\Runner\Config\Creator
      */
-    public function extend(bool $extend) : Creator
+    public function extend(bool $extend): Creator
     {
         $this->mode = $extend ? 'extend' : 'create';
         return $this;
@@ -94,9 +104,21 @@ class Creator extends Runner
      * @param  bool $advanced
      * @return \CaptainHook\App\Runner\Config\Creator
      */
-    public function advanced(bool $advanced) : Creator
+    public function advanced(bool $advanced): Creator
     {
         $this->advanced = $advanced;
+        return $this;
+    }
+
+    /**
+     * Set the currently executed 'binary'
+     *
+     * @param  string $executable
+     * @return \CaptainHook\App\Runner\Config\Creator
+     */
+    public function setExecutable(string $executable): Creator
+    {
+        $this->executable = $executable;
         return $this;
     }
 
@@ -105,7 +127,7 @@ class Creator extends Runner
      *
      * @return \CaptainHook\App\Config
      */
-    public function getConfigToManipulate() : Config
+    public function getConfigToManipulate(): Config
     {
         if (!$this->isExtending()) {
             // make sure the force option is set if the configuration file exists
@@ -121,7 +143,7 @@ class Creator extends Runner
      *
      * @return \CaptainHook\App\Runner\Config\Setup
      */
-    private function getHookSetup() : Setup
+    private function getHookSetup(): Setup
     {
         return $this->advanced
             ? new Setup\Advanced($this->io)
@@ -133,7 +155,7 @@ class Creator extends Runner
      *
      * @return bool
      */
-    private function isExtending() : bool
+    private function isExtending(): bool
     {
         return 'extend' === $this->mode;
     }
@@ -144,10 +166,20 @@ class Creator extends Runner
      * @return void
      * @throws \RuntimeException
      */
-    private function ensureForce() : void
+    private function ensureForce(): void
     {
         if ($this->config->isLoadedFromFile() && !$this->force) {
-            throw new \RuntimeException('Configuration file exists, use -f to overwrite, or -e to extend');
+            throw new RuntimeException('Configuration file exists, use -f to overwrite, or -e to extend');
         }
+    }
+
+    /**
+     * Return path to currently executed 'binary'
+     *
+     * @return string
+     */
+    private function getExecutable()
+    {
+        return $this->executable ?? 'vendor/bin/captainhook';
     }
 }

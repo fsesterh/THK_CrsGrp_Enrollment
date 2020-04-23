@@ -1,18 +1,22 @@
 <?php
+
 /**
- * This file is part of CaptainHook.
+ * This file is part of CaptainHook
  *
- * (c) Sebastian Feldmann <sf@sebastian.feldmann.info>
+ * (c) Sebastian Feldmann <sf@sebastian-feldmann.info>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace CaptainHook\App\Runner\Action;
 
 use CaptainHook\App\Config;
 use CaptainHook\App\Console\IO;
 use CaptainHook\App\Exception;
-use SebastianFeldmann\Cli\Processor\ProcOpen as Processor;
+use CaptainHook\App\Runner\Action\Cli\Command\Formatter;
+use SebastianFeldmann\Cli\Processor\Symfony as Processor;
+use SebastianFeldmann\Git\Repository;
 
 /**
  * Class Cli
@@ -27,16 +31,24 @@ class Cli
     /**
      * Execute the configured action
      *
-     * @param  \CaptainHook\App\Console\IO     $io
-     * @param  \CaptainHook\App\Config\Action  $action
+     * @param  \CaptainHook\App\Console\IO       $io
+     * @param  \SebastianFeldmann\Git\Repository $repository
+     * @param  \CaptainHook\App\Config\Action    $action
      * @return void
      * @throws \CaptainHook\App\Exception\ActionFailed
      */
-    public function execute(IO $io, Config\Action $action) : void
+    public function execute(IO $io, Repository $repository, Config\Action $action): void
     {
-        $processor = new Processor();
-        $result    = $processor->run($this->formatCommand($action->getAction(), $io->getArguments()));
+        $processor    = new Processor();
+        $cmdOriginal  = $action->getAction();
+        $cmdFormatted = $this->formatCommand($repository, $cmdOriginal, $io->getArguments());
 
+        // if any placeholders got replaced output the finally executed command
+        if ($cmdFormatted !== $cmdOriginal) {
+            $io->write('Execute: <comment>' . $cmdFormatted . '</comment>', true, IO::VERBOSE);
+        }
+
+        $result = $processor->run($cmdFormatted);
         if (!$result->isSuccessful()) {
             throw new Exception\ActionFailed($result->getStdOut() . PHP_EOL . $result->getStdErr());
         }
@@ -46,7 +58,7 @@ class Cli
     /**
      * Replace argument placeholder with their original values
      *
-     * This replaces the hook argument placeholder.
+     * This replaces the hook argument and other placeholders
      *  - prepare-commit-msg => FILE, MODE, HASH
      *  - commit-msg         => FILE
      *  - pre-push           => TARGET, URL
@@ -54,15 +66,14 @@ class Cli
      *  - post-checkout      => PREVIOUSHEAD, NEWHEAD, MODE
      *  - post-merge         => SQUASH
      *
-     * @param  string $command
-     * @param  array  $args
+     * @param  \SebastianFeldmann\Git\Repository $repository
+     * @param  string                            $command
+     * @param  array<string>                     $args
      * @return string
      */
-    protected function formatCommand(string $command, array $args) : string
+    protected function formatCommand(Repository $repository, string $command, array $args): string
     {
-        foreach ($args as $key => $value) {
-            $command = str_replace('{' . strtoupper($key) . '}', $value, $command);
-        }
-        return $command;
+        $formatter = new Formatter($repository, $args);
+        return $formatter->format($command);
     }
 }

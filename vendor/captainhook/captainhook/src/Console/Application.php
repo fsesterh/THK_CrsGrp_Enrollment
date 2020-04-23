@@ -1,15 +1,19 @@
 <?php
+
 /**
- * This file is part of CaptainHook.
+ * This file is part of CaptainHook
  *
- * (c) Sebastian Feldmann <sf@sebastian.feldmann.info>
+ * (c) Sebastian Feldmann <sf@sebastian-feldmann.info>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace CaptainHook\App\Console;
 
 use CaptainHook\App\CH;
+use CaptainHook\App\Console\Command as Cmd;
+use CaptainHook\App\Console\Runtime\Resolver;
 use Symfony\Component\Console\Application as SymfonyApplication;
 
 /**
@@ -23,81 +27,53 @@ use Symfony\Component\Console\Application as SymfonyApplication;
 class Application extends SymfonyApplication
 {
     /**
-     * @var \CaptainHook\App\Config
-     */
-    protected $config;
-
-    /**
+     * Path to captainhook binary
+     *
      * @var string
      */
-    private static $logo = '   .oooooo.                            .              o8o              
-  d8P\'  `Y8b                         .o8              `"\'              
- 888           .oooo.   oo.ooooo.  .o888oo  .oooo.   oooo  ooo. .oo.   
- 888          `P  )88b   888\' `88b   888   `P  )88b  `888  `888P"Y88b  
- 888           .oP"888   888   888   888    .oP"888   888   888   888  
- `88b    ooo  d8(  888   888   888   888 . d8(  888   888   888   888  
-  `Y8bood8P\'  `Y888""8o  888bod8P\'   "888" `Y888""8o o888o o888o o888o 
-                         888                                           
-                        o888o
-      
-                         .ed"""" """$$$$be.                     
-                       -"           ^""**$$$e.                  
-                     ."                   \'$$$c                 
-                    /                      "4$$b                
-                   d  3                     $$$$                
-                   $  *                   .$$$$$$               
-                  .$  ^c           $$$$$e$$$$$$$$.              
-                  d$L  4.         4$$$$$$$$$$$$$$b              
-                  $$$$b ^ceeeee.  4$$ECL.F*$$$$$$$              
-      e$""=.      $$$$P d$$$$F $ $$$$$$$$$- $$$$$$              
-     z$$b. ^c     3$$$F "$$$$b   $"$$$$$$$  $$$$*"      .=""$c  
-    4$$$$L   \     $$P"  "$$b   .$ $$$$$...e$$        .=  e$$$. 
-    ^*$$$$$c  %..   *c    ..    $$ 3$$$$$$$$$$eF     zP  d$$$$$ 
-      "**$$$ec   "\   %ce""    $$$  $$$$$$$$$$*    .r" =$$$$P"" 
-            "*$b.  "c  *$e.    *** d$$$$$"L$$    .d"  e$$***"   
-              ^*$$c ^$c $$$      4J$$$$$% $$$ .e*".eeP"         
-                 "$$$$$$"\'$=e....$*$$**$cz$$" "..d$*"           
-                   "*$$$  *=%4.$ L L$ P3$$$F $$$P"              
-                      "$   "%*ebJLzb$e$$$$$b $P"                
-                        %..      4$$$$$$$$$$ "                  
-                         $$$e   z$$$$$$$$$$%                    
-                          "*$c  "$$$$$$$P"                      
-                           ."""*$$$$$$$$bc                      
-                        .-"    .$***$$$"""*e.                   
-                     .-"    .e$"     "*$c  ^*b.                 
-              .=*""""    .e$*"          "*bc  "*$e..            
-            .$"        .z*"               ^*$e.   "*****e.      
-            $$ee$c   .d"                     "*$.        3.     
-            ^*$E")$..$"                         *   .ee==d%     
-               $.d$$$*                           *  J$$$e*      
-                """""                             "$$$"
-
-             ooooo   ooooo                     oooo        
-             `888\'   `888\'                     `888        
-              888     888   .ooooo.   .ooooo.   888  oooo  
-              888ooooo888  d88\' `88b d88\' `88b  888 .8P\'   
-              888     888  888   888 888   888  888888.    
-              888     888  888   888 888   888  888 `88b.  
-             o888o   o888o `Y8bod8P\' `Y8bod8P\' o888o o888o 
-
-';
+    protected $executable;
 
     /**
-     * Input output interface
+     * Cli constructor.
      *
-     * @var \CaptainHook\App\Console\IO
+     * @param string $executable
      */
-    protected $io;
-
-    /**
-     * Application constructor
-     */
-    public function __construct()
+    public function __construct(string $executable)
     {
+        $this->executable = $executable;
+
         parent::__construct('CaptainHook', CH::VERSION);
 
-        $this->setDefaultCommand('help');
+        $this->setDefaultCommand('list');
         $this->silenceXDebug();
+    }
+
+    /**
+     * Initializes all the CaptainHook commands
+     *
+     * @return \Symfony\Component\Console\Command\Command[]
+     */
+    public function getDefaultCommands(): array
+    {
+        $resolver = new Resolver($this->executable);
+
+        return array_merge(
+            parent::getDefaultCommands(),
+            [
+                new Cmd\Install($resolver),
+                new Cmd\Configuration($resolver),
+                new Cmd\Add($resolver),
+                new Cmd\Disable($resolver),
+                new Cmd\Enable($resolver),
+                new Cmd\Hook\CommitMsg($resolver),
+                new Cmd\Hook\PostCheckout($resolver),
+                new Cmd\Hook\PostCommit($resolver),
+                new Cmd\Hook\PostMerge($resolver),
+                new Cmd\Hook\PreCommit($resolver),
+                new Cmd\Hook\PrepareCommitMsg($resolver),
+                new Cmd\Hook\PrePush($resolver),
+            ]
+        );
     }
 
     /**
@@ -105,7 +81,7 @@ class Application extends SymfonyApplication
      *
      * @return string
      */
-    public function getLongVersion() : string
+    public function getLongVersion(): string
     {
         return sprintf(
             '<info>%s</info> version <comment>%s</comment> %s',
@@ -116,25 +92,15 @@ class Application extends SymfonyApplication
     }
 
     /**
-     * Prepend help with logo.
-     *
-     * @return string
-     */
-    public function getHelp() : string
-    {
-        return self::$logo . parent::getHelp();
-    }
-
-    /**
      * Make sure X-Debug does not interfere with the exception handling
      *
      * @return void
      */
-    public function silenceXDebug(): void
+    private function silenceXDebug(): void
     {
         if (function_exists('ini_set') && extension_loaded('xdebug')) {
-            ini_set('xdebug.show_exception_trace', false);
-            ini_set('xdebug.scream', false);
+            ini_set('xdebug.show_exception_trace', '0');
+            ini_set('xdebug.scream', '0');
         }
     }
 }

@@ -1,18 +1,23 @@
 <?php
+
 /**
- * This file is part of CaptainHook.
+ * This file is part of CaptainHook
  *
- * (c) Sebastian Feldmann <sf@sebastian.feldmann.info>
+ * (c) Sebastian Feldmann <sf@sebastian-feldmann.info>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace CaptainHook\App\Hook\Message\Action;
 
 use CaptainHook\App\Config;
 use CaptainHook\App\Console\IO;
 use CaptainHook\App\Exception\ActionFailed;
 use CaptainHook\App\Hook\Action;
+use CaptainHook\App\Hook\Constrained;
+use CaptainHook\App\Hook\Restriction;
+use CaptainHook\App\Hooks;
 use SebastianFeldmann\Git\Repository;
 
 /**
@@ -23,8 +28,18 @@ use SebastianFeldmann\Git\Repository;
  * @link    https://github.com/captainhookphp/captainhook
  * @since   Class available since Release 1.0.0
  */
-class Regex implements Action
+class Regex implements Action, Constrained
 {
+    /**
+     * Return hook restriction
+     *
+     * @return \CaptainHook\App\Hook\Restriction
+     */
+    public static function getRestriction(): Restriction
+    {
+        return Restriction::fromArray([Hooks::COMMIT_MSG]);
+    }
+
     /**
      * Execute the configured action
      *
@@ -35,7 +50,7 @@ class Regex implements Action
      * @return void
      * @throws \Exception
      */
-    public function execute(Config $config, IO $io, Repository $repository, Config\Action $action) : void
+    public function execute(Config $config, IO $io, Repository $repository, Config\Action $action): void
     {
         $regex      = $this->getRegex($action->getOptions());
         $errorMsg   = $this->getErrorMessage($action->getOptions());
@@ -60,7 +75,7 @@ class Regex implements Action
      * @return string
      * @throws \CaptainHook\App\Exception\ActionFailed
      */
-    protected function getRegex(Config\Options $options) : string
+    protected function getRegex(Config\Options $options): string
     {
         $regex = $options->get('regex');
         if (empty($regex)) {
@@ -75,7 +90,7 @@ class Regex implements Action
      * @param  \CaptainHook\App\Config\Options $options
      * @return string
      */
-    protected function getErrorMessage(Config\Options $options) : string
+    protected function getErrorMessage(Config\Options $options): string
     {
         return $options->get('error') ?? 'Commit message did not match regex: %s';
     }
@@ -86,7 +101,7 @@ class Regex implements Action
      * @param  \CaptainHook\App\Config\Options $options
      * @return string
      */
-    protected function getSuccessMessage(Config\Options $options) : string
+    protected function getSuccessMessage(Config\Options $options): string
     {
         return $options->get('success') ?? 'Found matching pattern: %s';
     }

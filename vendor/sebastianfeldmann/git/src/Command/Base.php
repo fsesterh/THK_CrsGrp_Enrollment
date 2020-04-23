@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of SebastianFeldmann\Git.
  *
@@ -110,5 +111,5 @@ abstract class Base implements Command
      * @return string
      * @throws \RuntimeException
      */
-    protected abstract function getGitCommand(): string;
+    abstract protected function getGitCommand(): string;
 }
