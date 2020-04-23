@@ -7,8 +7,14 @@ in this document are to be interpreted as described in
 
 **Table of Contents**
 
+* [Requirements](#requirements)
 * [Install](#install)
 * [License](#license)
+
+## Requirements
+
+* PHP: [![Minimum PHP Version](https://img.shields.io/badge/Minimum_PHP-7.2.x-blue.svg)](https://php.net/) [![Maximum PHP Version](https://img.shields.io/badge/Maximum_PHP-7.2.x-blue.svg)](https://php.net/)
+* ILIAS: [![Minimum ILIAS Version](https://img.shields.io/badge/Minimum_ILIAS-5.4.0-orange.svg)](https://ilias.de/) [![Maximum ILIAS Version](https://img.shields.io/badge/Maximum_ILIAS-5.4.999-orange.svg)](https://ilias.de/)
 
 ## Install
 
