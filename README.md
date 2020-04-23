@@ -8,7 +8,8 @@ in this document are to be interpreted as described in
 **Table of Contents**
 
 * [Requirements](#requirements)
-* [Install](#install)
+* [Installation](#installation)
+    * [Composer](#composer)
 * [License](#license)
 
 ## Requirements
@@ -16,7 +17,7 @@ in this document are to be interpreted as described in
 * PHP: [![Minimum PHP Version](https://img.shields.io/badge/Minimum_PHP-7.2.x-blue.svg)](https://php.net/) [![Maximum PHP Version](https://img.shields.io/badge/Maximum_PHP-7.2.x-blue.svg)](https://php.net/)
 * ILIAS: [![Minimum ILIAS Version](https://img.shields.io/badge/Minimum_ILIAS-5.4.0-orange.svg)](https://ilias.de/) [![Maximum ILIAS Version](https://img.shields.io/badge/Maximum_ILIAS-5.4.999-orange.svg)](https://ilias.de/)
 
-## Install
+## Installation
 
 This plugin MUST be installed as a
 [User Interface Plugin](https://www.ilias.de/docu/goto_docu_pg_39405_42.html).
@@ -27,6 +28,16 @@ The files MUST be saved in the following directory:
 
 Correct file and folder permissions MUST be
 ensured by the responsible system administrator.
+
+### Composer
+
+After the plugin files have been installed as described above,
+please install the [`composer`](https://getcomposer.org/) dependencies:
+
+```bash
+cd Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/Proctorio
+composer install --no-dev
+```
 
 ## License
 
