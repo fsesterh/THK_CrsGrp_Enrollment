@@ -2,17 +2,10 @@
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-$finder = PhpCsFixer\Finder::create()
-	->exclude(array(
-		__DIR__ . '/../../sql'
-	))
-	->in([
-		__DIR__ .  '/../../classes'
-	])
-;
+$finder = PhpCsFixer\Finder::create();
 
 return PhpCsFixer\Config::create()
-	->setRules([
+    ->setRules([
         '@PSR2' => true,
         'strict_param' => false,
         'cast_spaces' => true,
@@ -21,5 +14,5 @@ return PhpCsFixer\Config::create()
         'function_typehint_space' => true,
         'return_type_declaration' => ['space_before' => 'one'],
         'binary_operator_spaces' => true
-	])
-	->setFinder($finder);
+    ])
+    ->setFinder($finder);
