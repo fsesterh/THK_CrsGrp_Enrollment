@@ -47,14 +47,18 @@ composer install --no-dev
 If the plugin is not working after the Proctorio pre-checks and the HTML
 document does not show any progress, this might be caused by missing
 cookies in the initial HTTP request when ILIAS is embedded in the Proctorio
-document via `<iframe>`.
+document via an HTML `<iframe>`.
+
+Please check your HTTP server (Nginx, Apache) logs and check if the ILIAS
+cookies (primarily PHPSESSID and CLIENT_ID) are passed in the HTTP requests.
+You should at least check all HTTP request where `TestLaunchAndReview.start`
+is part of the HTTP request URL.
 
 This is related to the [*SameSite*](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite)
 cookie policy of modern browsers.
 
 As long as the ILIAS core does not support the configuration of this cookie
 flag you'll have to patch the code fragments where ILIAS sets cookie parameters:
-
 
 \ilInitialisation::setSessionCookieParams:
 ```php
