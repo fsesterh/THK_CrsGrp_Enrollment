@@ -301,6 +301,7 @@ class Impl implements Rest
         ];
 
         $parameterValues[] = 'iltestsubmissionreviewgui';
+        $parameterValues[] = 'iltestpasswordprotectiongui';
         if ($test->isRandomTest()) {
             $parameterValues[] = 'iltestplayerrandomquestionsetgui';
         } elseif ($test->isFixedTest()) {
