@@ -4,6 +4,7 @@
 namespace ILIAS\Plugin\Proctorio\Refinery\Transformation;
 
 use ILIAS\Data\URI;
+use ILIAS\Plugin\Proctorio\Data\TrustedURI;
 use ILIAS\Transformation\Transformation;
 
 /**
@@ -23,6 +24,10 @@ class UriToString implements Transformation
                 sprintf('The value MUST be of type "%s"', URI::class),
                 'not_uri_object'
             );
+        }
+
+        if ($from instanceof TrustedURI) {
+            return $from->getUri();
         }
 
         /** @var URI $from */

@@ -5,6 +5,7 @@ namespace ILIAS\Plugin\Proctorio\Webservice\Rest;
 
 use ILIAS\Data\URI;
 use ILIAS\Plugin\Proctorio\Administration\GeneralSettings\Settings;
+use ILIAS\Plugin\Proctorio\Data\TrustedURI;
 use ILIAS\Plugin\Proctorio\Refinery\Transformation\UriToString;
 use ILIAS\Plugin\Proctorio\Service\Proctorio\Impl as ProctorioService;
 use ILIAS\Plugin\Proctorio\Webservice\Exception;
@@ -198,7 +199,7 @@ class Impl implements Rest
             $responseArray = json_decode($responseBody, true);
             $isLaunchApiSuccess = is_array($responseArray) && isset($responseArray[0]) && is_string($responseArray[0]) && strlen($responseArray[0]) > 0;
             if ($isLaunchApiSuccess) {
-                return new URI($responseArray[0]);
+                return new TrustedURI($responseArray[0]);
             }
         }
 
@@ -222,7 +223,7 @@ class Impl implements Rest
             $responseArray = json_decode($responseBody, true);
             $isReviewApiSuccess = is_array($responseArray) && isset($responseArray[1]) && is_string($responseArray[1]) && strlen($responseArray[1]) > 0;
             if ($isReviewApiSuccess) {
-                return new URI($responseArray[1]);
+                return new TrustedURI($responseArray[1]);
             }
         }
 
