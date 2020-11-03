@@ -289,7 +289,6 @@ class Impl implements Rest
             \ilTestPlayerCommands::SUSPEND_TEST,
             \ilTestPlayerCommands::FINISH_TEST,
             \ilTestPlayerCommands::AFTER_TEST_PASS_FINISHED,
-            \ilTestPlayerCommands::SHOW_FINAL_STATMENT,
             \ilTestPlayerCommands::BACK_TO_INFO_SCREEN,
             \ilTestPlayerCommands::BACK_FROM_FINISHING,
             'show',
@@ -345,9 +344,21 @@ class Impl implements Rest
         $endRegexInfo .= '(' . implode('|', $infoParameterNames) . ')=(' . implode('|', $infoParameterValues) . ')';
         $endRegexInfo .= ')){3})';
 
+        $finalStatementAndItemIntroParameterNames = ['cmd'];
+        $finalStatementAndItemIntroValues = ['showItemIntro',];
+        if ($test->getShowFinalStatement()) {
+            $finalStatementAndItemIntroValues[] = \ilTestPlayerCommands::SHOW_FINAL_STATMENT;
+        }
+        $endRegexFinalStatementAndItemIntro = '((.*?([\?&]';
+        $endRegexFinalStatementAndItemIntro .= '(' . implode('|',
+                $finalStatementAndItemIntroParameterNames) . ')=(' . implode('|',
+                $finalStatementAndItemIntroValues) . ')';
+        $endRegexFinalStatementAndItemIntro .= ')){1})';
+
         $endRegexParts = [
             $endRegexEval,
             $endRegexInfo,
+            $endRegexFinalStatementAndItemIntro,
         ];
 
         $this->appendRedirectUrlToExamEndRegex($test, $endRegexParts);
