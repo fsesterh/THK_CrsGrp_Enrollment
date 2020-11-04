@@ -344,23 +344,12 @@ class Impl implements Rest
         $endRegexInfo .= '(' . implode('|', $infoParameterNames) . ')=(' . implode('|', $infoParameterValues) . ')';
         $endRegexInfo .= ')){3})';
 
-        $finalStatementAndItemIntroParameterNames = ['cmd'];
-        $finalStatementAndItemIntroValues = ['showItemIntro',];
-        if ($test->getShowFinalStatement()) {
-            $finalStatementAndItemIntroValues[] = \ilTestPlayerCommands::SHOW_FINAL_STATMENT;
-        }
-        $endRegexFinalStatementAndItemIntro = '((.*?([\?&]';
-        $endRegexFinalStatementAndItemIntro .= '(' . implode('|',
-                $finalStatementAndItemIntroParameterNames) . ')=(' . implode('|',
-                $finalStatementAndItemIntroValues) . ')';
-        $endRegexFinalStatementAndItemIntro .= ')){1})';
-
         $endRegexParts = [
             $endRegexEval,
             $endRegexInfo,
-            $endRegexFinalStatementAndItemIntro,
         ];
 
+        $this->appendFinalStatementUrlToExamEndRegex($test, $endRegexParts);
         $this->appendRedirectUrlToExamEndRegex($test, $endRegexParts);
 
         $endRegex = implode('|', $endRegexParts);
@@ -403,6 +392,25 @@ class Impl implements Rest
                     $endRegexParts[] = '(.*?' . preg_quote($urlParts['host'], '/') . ')';
                 }
             }
+        }
+    }
+
+    /**
+     * @param \ilObjTest $test
+     * @param array $endRegexParts
+     */
+    private function appendFinalStatementUrlToExamEndRegex(\ilObjTest $test, array &$endRegexParts)
+    {
+        if ($test->getShowFinalStatement()) {
+            $finalStatementAndItemIntroParameterNames = ['cmd'];
+            $finalStatementAndItemIntroValues = [\ilTestPlayerCommands::SHOW_FINAL_STATMENT];
+            $endRegexFinalStatementAndItemIntro = '((.*?([\?&]';
+            $endRegexFinalStatementAndItemIntro .= '(' . implode('|',
+                    $finalStatementAndItemIntroParameterNames) . ')=(' . implode('|',
+                    $finalStatementAndItemIntroValues) . ')';
+            $endRegexFinalStatementAndItemIntro .= ')){1})';
+
+            $endRegexParts[] = $endRegexFinalStatementAndItemIntro;
         }
     }
 }
