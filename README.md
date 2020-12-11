@@ -63,20 +63,39 @@ flag you'll have to patch the code fragments where ILIAS sets cookie parameters:
 \ilInitialisation::setSessionCookieParams:
 ```php
 // [...]
-$path = IL_COOKIE_PATH . '; samesite=None'; // With PHP >= 7.3 this could be done via the options array
-session_set_cookie_params(
-    IL_COOKIE_EXPIRE,
-    $path,
-    IL_COOKIE_DOMAIN,
-    IL_COOKIE_SECURE,
-    IL_COOKIE_HTTPONLY
-);
+protected static function setSessionCookieParams()
+{
+    global $ilSetting;
+
+    if (!defined('IL_COOKIE_SECURE')) {
+        // If this code is executed, we can assume that \ilHTTPS::enableSecureCookies was NOT called before
+        // \ilHTTPS::enableSecureCookies already executes session_set_cookie_params()
+
+        include_once './Services/Http/classes/class.ilHTTPS.php';
+        $cookie_secure = !$ilSetting->get('https', 0) && ilHTTPS::getInstance()->isDetected();
+        define('IL_COOKIE_SECURE', $cookie_secure); // Default Value
+        // proctorio-patch: begin
+        $path = IL_COOKIE_PATH . '; samesite=None'; // With PHP >= 7.3 this could be done via the options array
+        session_set_cookie_params(
+            IL_COOKIE_EXPIRE,
+            $path,
+            IL_COOKIE_DOMAIN,
+            IL_COOKIE_SECURE,
+            IL_COOKIE_HTTPONLY
+        );
+        // proctorio-patch: end
+    }
+    // proctorio-patch: begin
+    ilUtil::setCookie('ilClientId', CLIENT_ID);
+    // proctorio-patch: end
+}
 // [...]
 ```
 
 \ilUtil::setCookie:
 ```php
 // [...]
+// proctorio-patch: begin
 $path = IL_COOKIE_PATH . '; samesite=None'; // With PHP >= 7.3 this could be done via the options array
 setcookie(
     $a_cookie_name,
@@ -87,6 +106,38 @@ setcookie(
     $secure,
     IL_COOKIE_HTTPONLY
 );
+// proctorio-patch: end
+// [...]
+```
+
+\ilAuthSession::init:
+```php
+// [...]
+public function init()
+{
+    session_start();
+    // proctorio-patch: begin
+    ilUtil::setCookie(session_name(), session_id());
+    // proctorio-patch: end
+    $this->setId(session_id());
+    
+    $user_id = (int) ilSession::get(self::SESSION_AUTH_USER_ID);
+
+    if ($user_id) {
+        $this->getLogger()->debug('Resuming old session for user: ' . $user_id);
+        $this->setUserId(ilSession::get(self::SESSION_AUTH_USER_ID));
+        $this->expired = (int) ilSession::get(self::SESSION_AUTH_EXPIRED);
+        $this->authenticated = (int) ilSession::get(self::SESSION_AUTH_AUTHENTICATED);
+        
+        $this->validateExpiration();
+    } else {
+        $this->getLogger()->debug('Started new session.');
+        $this->setUserId(0);
+        $this->expired = false;
+        $this->authenticated = false;
+    }
+    return true;
+}
 // [...]
 ```
 
