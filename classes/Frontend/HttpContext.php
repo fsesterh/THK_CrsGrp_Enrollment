@@ -1,14 +1,14 @@
 <?php declare(strict_types=1);
-/* Copyright (c) 1998-2019 ILIAS open source, Extended GPL, see docs/LICENSE */
+/* Copyright (c) 1998-2021 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-namespace ILIAS\Plugin\Proctorio\Frontend;
+namespace ILIAS\Plugin\CrsGrpEnrollement\Frontend;
 
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Trait HttpContext
- * @package ILIAS\Plugin\Proctorio\Frontend
- * @author Michael Jansen <mjansen@databay.de>
+ * @package ILIAS\Plugin\CrsGrpEnrollement\Frontend
+ * @author Timo Müller <timomueller@databay.de>
  */
 trait HttpContext
 {

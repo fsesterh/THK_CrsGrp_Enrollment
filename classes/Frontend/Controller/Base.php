@@ -1,20 +1,20 @@
 <?php declare(strict_types=1);
-/* Copyright (c) 1998-2019 ILIAS open source, Extended GPL, see docs/LICENSE */
+/* Copyright (c) 1998-2021 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-namespace ILIAS\Plugin\Proctorio\Frontend\Controller;
+namespace ILIAS\Plugin\CrsGrpEnrollement\Frontend\Controller;
 
 use \ILIAS\DI\Container;
-use ILIAS\Plugin\Proctorio\Administration\GeneralSettings\Settings;
-use ILIAS\Plugin\Proctorio\Frontend\HttpContext;
-use ILIAS\Plugin\Proctorio\Service\Proctorio\Impl as ProctorioService;
-use ILIAS\Plugin\Proctorio\Webservice\Rest\Impl;
+use ILIAS\Plugin\CrsGrpEnrollement\Administration\GeneralSettings\Settings;
+use ILIAS\Plugin\CrsGrpEnrollement\Frontend\HttpContext;
+use ILIAS\Plugin\CrsGrpEnrollement\Service\CrsGrpEnrollement\Impl as CrsGrpEnrollementService;
+use ILIAS\Plugin\CrsGrpEnrollement\Webservice\Rest\Impl;
 use \ILIAS\UI\Factory;
 use \ILIAS\UI\Renderer;
 use \Psr\Http\Message\ServerRequestInterface;
-use ILIAS\Plugin\Proctorio\AccessControl\AccessHandler;
+use ILIAS\Plugin\CrsGrpEnrollement\AccessControl\AccessHandler;
 
 /**
- * @author Michael Jansen <mjansen@databay.de>
+ * @author Timo Müller <timomueller@databay.de>
  */
 abstract class Base
 {
@@ -42,13 +42,13 @@ abstract class Base
     protected $errorHandler;
     /** @var \ilLanguage */
     public $lng;
-    /** @var \ilProctorioUIHookGUI */
+    /** @var \ilCrsGrpEnrollementUIHookGUI */
     public $coreController;
     /** @var Settings */
-    protected $globalProctorioSettings;
+    protected $globalCrsGrpEnrollementSettings;
     /** @var Impl */
     protected $proctorioApi;
-    /** @var ProctorioService */
+    /** @var CrsGrpEnrollementService */
     protected $service;
     /** @var ServerRequestInterface */
     protected $httpRequest;
@@ -57,10 +57,10 @@ abstract class Base
 
     /**
      * Base constructor.
-     * @param \ilProctorioUIHookGUI $controller
+     * @param \ilCrsGrpEnrollementUIHookGUI $controller
      * @param Container $dic
      */
-    final public function __construct(\ilProctorioUIHookGUI $controller, Container $dic)
+    final public function __construct(\ilCrsGrpEnrollementUIHookGUI $controller, Container $dic)
     {
         $this->coreController = $controller;
         $this->dic = $dic;
@@ -77,7 +77,7 @@ abstract class Base
         $this->coreAccessHandler = $dic->access();
         $this->errorHandler = $dic['ilErr'];
         $this->toolbar = $dic->toolbar();
-        $this->globalProctorioSettings = $dic['plugin.proctorio.settings'];
+        $this->globalCrsGrpEnrollementSettings = $dic['plugin.proctorio.settings'];
         $this->accessHandler = $dic['plugin.proctorio.accessHandler'];
         $this->proctorioApi = $dic['plugin.proctorio.api'];
         $this->service = $dic['plugin.proctorio.service'];
@@ -112,9 +112,9 @@ abstract class Base
     abstract public function getDefaultCommand() : string;
 
     /**
-     * @return \ilProctorioUIHookGUI
+     * @return \ilCrsGrpEnrollementUIHookGUI
      */
-    public function getCoreController() : \ilProctorioUIHookGUI
+    public function getCoreController() : \ilCrsGrpEnrollementUIHookGUI
     {
         return $this->coreController;
     }

@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 /* Copyright (c) 1998-2016 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-namespace ILIAS\Plugin\Proctorio\Frontend\Controller;
+namespace ILIAS\Plugin\CrsGrpEnrollement\Frontend\Controller;
 
 /**
  * Class Course
- * @package ILIAS\Plugin\Proctorio\Frontend\Controller
- * @author Michael Jansen <mjansen@databay.de>
+ * @package ILIAS\Plugin\CrsGrpEnrollement\Frontend\Controller
+ * @author Timo Müller <timomueller@databay.de>
  */
 abstract class RepositoryObject extends Base
 {

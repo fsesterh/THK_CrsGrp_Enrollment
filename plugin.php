@@ -1,12 +1,12 @@
 <?php
-/* Copyright (c) 1998-2019 ILIAS open source, Extended GPL, see docs/LICENSE */
+/* Copyright (c) 1998-2021 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 /**
- * @author Michael Jansen <mjansen@databay.de>
+ * @author Timo Müller <timomueller@databay.de>
  */
-$id = 'proctorio';
+$id = 'course_group_enrollement';
 $version = '1.0.0';
 $ilias_min_version = '5.4.0';
-$ilias_max_version = '5.4.999';
-$responsible = 'Michael Jansen';
-$responsible_mail = 'mjansen@databay.de';
+$ilias_max_version = '6.999';
+$responsible = 'Timo Müller';
+$responsible_mail = 'timomueller@databay.de';

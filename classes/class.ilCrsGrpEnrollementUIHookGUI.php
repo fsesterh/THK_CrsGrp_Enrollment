@@ -1,18 +1,18 @@
 <?php declare(strict_types=1);
-/* Copyright (c) 1998-2019 ILIAS open source, Extended GPL, see docs/LICENSE */
+/* Copyright (c) 1998-2021 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 use ILIAS\DI\Container;
-use ILIAS\Plugin\Proctorio\Frontend;
-use ILIAS\Plugin\Proctorio\Frontend\ViewModifier;
-use ILIAS\Plugin\Proctorio\Frontend\ViewModifier\TestLaunch;
-use ILIAS\Plugin\Proctorio\Frontend\ViewModifier\TestResults;
-use ILIAS\Plugin\Proctorio\Frontend\ViewModifier\TestSettings;
+use ILIAS\Plugin\CrsGrpEnrollement\Frontend;
+use ILIAS\Plugin\CrsGrpEnrollement\Frontend\ViewModifier;
+use ILIAS\Plugin\CrsGrpEnrollement\Frontend\ViewModifier\TestLaunch;
+use ILIAS\Plugin\CrsGrpEnrollement\Frontend\ViewModifier\TestResults;
+use ILIAS\Plugin\CrsGrpEnrollement\Frontend\ViewModifier\TestSettings;
 
 /**
- * @author            Michael Jansen <mjansen@databay.de>
- * @ilCtrl_isCalledBy ilProctorioUIHookGUI: ilUIPluginRouterGUI
+ * @author            Timo Müller <timomueller@databay.de>
+ * @ilCtrl_isCalledBy ilCrsGrpEnrollementUIHookGUI: ilUIPluginRouterGUI
  */
-class ilProctorioUIHookGUI extends ilUIHookPluginGUI
+class ilCrsGrpEnrollementUIHookGUI extends ilUIHookPluginGUI
 {
     /** @var Container */
     protected $dic;
@@ -20,7 +20,7 @@ class ilProctorioUIHookGUI extends ilUIHookPluginGUI
     protected static $modifiers = null;
 
     /**
-     * ilProctorioUIHookGUI constructor.
+     * ilCrsGrpEnrollementUIHookGUI constructor.
      */
     public function __construct()
     {
@@ -34,7 +34,7 @@ class ilProctorioUIHookGUI extends ilUIHookPluginGUI
      */
     public function executeCommand() : void
     {
-        $this->setPluginObject(ilProctorioPlugin::getInstance());
+        $this->setPluginObject(ilCrsGrpEnrollementPlugin::getInstance());
 
         $nextClass = $this->dic->ctrl()->getNextClass();
         switch (strtolower($nextClass)) {
@@ -87,8 +87,6 @@ class ilProctorioUIHookGUI extends ilUIHookPluginGUI
 
         self::$modifiers = [
             new TestSettings($this, $this->dic),
-            new TestLaunch($this, $this->dic),
-            new TestResults($this, $this->dic),
         ];
     }
 

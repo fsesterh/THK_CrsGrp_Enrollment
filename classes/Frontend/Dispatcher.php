@@ -1,21 +1,21 @@
 <?php declare(strict_types=1);
-/* Copyright (c) 1998-2019 ILIAS open source, Extended GPL, see docs/LICENSE */
+/* Copyright (c) 1998-2021 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-namespace ILIAS\Plugin\Proctorio\Frontend;
+namespace ILIAS\Plugin\CrsGrpEnrollement\Frontend;
 
 use \ILIAS\DI\Container;
-use \ILIAS\Plugin\Proctorio\Frontend\Controller\Base;
+use \ILIAS\Plugin\CrsGrpEnrollement\Frontend\Controller\Base;
 
 /**
  * Class Dispatcher
- * @package ILIAS\Plugin\Proctorio\Frontend
- * @author  Michael Jansen <mjansen@databay.de>
+ * @package ILIAS\Plugin\CrsGrpEnrollement\Frontend
+ * @author  Timo Müller <timomueller@databay.de>
  */
 class Dispatcher
 {
     /** @var self */
     private static $instance = null;
-    /** @var \ilProctorioUIHookGUI */
+    /** @var \ilCrsGrpEnrollementUIHookGUI */
     private $coreController;
     /** @var string */
     private $defaultController = '';
@@ -31,10 +31,10 @@ class Dispatcher
 
     /**
      * Dispatcher constructor.
-     * @param \ilProctorioUIHookGUI $baseController
+     * @param \ilCrsGrpEnrollementUIHookGUI $baseController
      * @param string $defaultController
      */
-    private function __construct(\ilProctorioUIHookGUI $baseController, string $defaultController = '')
+    private function __construct(\ilCrsGrpEnrollementUIHookGUI $baseController, string $defaultController = '')
     {
         $this->coreController = $baseController;
         $this->defaultController = $defaultController;
@@ -49,10 +49,10 @@ class Dispatcher
     }
 
     /**
-     * @param \ilProctorioUIHookGUI $baseController
+     * @param \ilCrsGrpEnrollementUIHookGUI $baseController
      * @return self
      */
-    public static function getInstance(\ilProctorioUIHookGUI $baseController) : self
+    public static function getInstance(\ilCrsGrpEnrollementUIHookGUI $baseController) : self
     {
         if (self::$instance === null) {
             self::$instance = new self($baseController);
@@ -112,7 +112,7 @@ class Dispatcher
      */
     protected function instantiateController(string $controller) : Base
     {
-        $class = "ILIAS\\Plugin\\Proctorio\\Frontend\\Controller\\$controller";
+        $class = "ILIAS\\Plugin\\CrsGrpEnrollement\\Frontend\\Controller\\$controller";
 
         return new $class($this->getCoreController(), $this->dic);
     }
@@ -143,17 +143,17 @@ class Dispatcher
     }
 
     /**
-     * @return \ilProctorioUIHookGUI
+     * @return \ilCrsGrpEnrollementUIHookGUI
      */
-    public function getCoreController() : \ilProctorioUIHookGUI
+    public function getCoreController() : \ilCrsGrpEnrollementUIHookGUI
     {
         return $this->coreController;
     }
 
     /**
-     * @param \ilProctorioUIHookGUI $coreController
+     * @param \ilCrsGrpEnrollementUIHookGUI $coreController
      */
-    public function setCoreController(\ilProctorioUIHookGUI $coreController) : void
+    public function setCoreController(\ilCrsGrpEnrollementUIHookGUI $coreController) : void
     {
         $this->coreController = $coreController;
     }

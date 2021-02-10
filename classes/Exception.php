@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
-/* Copyright (c) 1998-2019 ILIAS open source, Extended GPL, see docs/LICENSE */
+/* Copyright (c) 1998-2021 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-namespace ILIAS\Plugin\Proctorio;
+namespace ILIAS\Plugin\CrsGrpEnrollement;
 
 /**
  * Class Exception
- * @package ILIAS\Plugin\Proctorio
- * @author Michael Jansen <mjansen@databay.de>
+ * @package ILIAS\Plugin\CrsGrpEnrollement
+ * @author Timo Müller <timomueller@databay.de>
  */
 class Exception extends \ilException
 {
