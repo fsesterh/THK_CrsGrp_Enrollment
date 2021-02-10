@@ -3,6 +3,9 @@
 
 namespace ILIAS\Plugin\CrsGrpEnrollement\Frontend\Controller;
 
+use ilObjCourseGUI;
+use ilObjGroupGUI;
+
 /**
  * Class CourseGroupEnrollment
  * @package ILIAS\Plugin\CrsGrpEnrollement\Frontend\Controller
@@ -23,7 +26,11 @@ class CourseGroupEnrollment extends RepositoryObject
      */
     public function getObjectGuiClass() : string
     {
-        return \ilObjCourseGUI::class;
+        if ($this->isObjectOfType('crs')) {
+            return ilObjCourseGUI::class;
+        }
+
+        return ilObjGroupGUI::class;
     }
 
     /**
@@ -39,9 +46,15 @@ class CourseGroupEnrollment extends RepositoryObject
 
         parent::init();
 
+        // TODO: Check if we are really in a course or group
+
+        $this->drawHeader();
+
         if (0 === $this->getRefId() || !$this->coreAccessHandler->checkAccess('write', '', $this->getRefId())) {
             $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
         }
+        
+        // TODO: Add back link tab ilTabsGUI::setBackTarget ($DIC->tabs()->setBackTarget(...));
     }
 
     /**
