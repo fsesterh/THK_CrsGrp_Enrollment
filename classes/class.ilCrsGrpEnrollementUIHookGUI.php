@@ -6,7 +6,7 @@ use ILIAS\Plugin\CrsGrpEnrollement\Frontend;
 use ILIAS\Plugin\CrsGrpEnrollement\Frontend\ViewModifier;
 use ILIAS\Plugin\CrsGrpEnrollement\Frontend\ViewModifier\TestLaunch;
 use ILIAS\Plugin\CrsGrpEnrollement\Frontend\ViewModifier\TestResults;
-use ILIAS\Plugin\CrsGrpEnrollement\Frontend\ViewModifier\TestSettings;
+use ILIAS\Plugin\CrsGrpEnrollement\Frontend\ViewModifier\CourseGroupTabs;
 
 /**
  * @author            Timo Müller <timomueller@databay.de>
@@ -56,6 +56,7 @@ class ilCrsGrpEnrollementUIHookGUI extends ilUIHookPluginGUI
     private function initModifiers() : void
     {
         if (
+            !isset($this->dic['refinery']) ||
             !isset($this->dic['tpl']) ||
             !isset($this->dic['ilToolbar'])
         ) {
@@ -86,7 +87,7 @@ class ilCrsGrpEnrollementUIHookGUI extends ilUIHookPluginGUI
         }
 
         self::$modifiers = [
-            new TestSettings($this, $this->dic),
+            new CourseGroupTabs($this, $this->dic),
         ];
     }
 

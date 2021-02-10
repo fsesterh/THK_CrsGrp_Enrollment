@@ -49,9 +49,6 @@ abstract class Base implements ViewModifier
     protected $service;
     /** @var ServerRequestInterface */
     protected $httpRequest;
-    /** @var AccessHandler */
-    protected $accessHandler;
-    /** @var \ilAccessHandler */
 
     /**
      * Base constructor.
@@ -75,9 +72,7 @@ abstract class Base implements ViewModifier
         $this->uiFactory = $dic->ui()->factory();
         $this->errorHandler = $dic['ilErr'];
         $this->coreAccessHandler = $dic->access();
-        $this->accessHandler = $dic['plugin.proctorio.accessHandler'];
         $this->toolbar = $dic->toolbar();
-        $this->service = $dic['plugin.proctorio.service'];
     }
 
     /**

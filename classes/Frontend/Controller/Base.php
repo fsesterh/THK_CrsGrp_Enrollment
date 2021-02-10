@@ -44,12 +44,6 @@ abstract class Base
     public $lng;
     /** @var \ilCrsGrpEnrollementUIHookGUI */
     public $coreController;
-    /** @var Settings */
-    protected $globalCrsGrpEnrollementSettings;
-    /** @var Impl */
-    protected $proctorioApi;
-    /** @var CrsGrpEnrollementService */
-    protected $service;
     /** @var ServerRequestInterface */
     protected $httpRequest;
     /** @var \ilLogger */
@@ -77,10 +71,6 @@ abstract class Base
         $this->coreAccessHandler = $dic->access();
         $this->errorHandler = $dic['ilErr'];
         $this->toolbar = $dic->toolbar();
-        $this->globalCrsGrpEnrollementSettings = $dic['plugin.proctorio.settings'];
-        $this->accessHandler = $dic['plugin.proctorio.accessHandler'];
-        $this->proctorioApi = $dic['plugin.proctorio.api'];
-        $this->service = $dic['plugin.proctorio.service'];
         $this->log = $dic->logger()->root();
 
         $this->init();

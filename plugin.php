@@ -4,7 +4,7 @@
 /**
  * @author Timo Müller <timomueller@databay.de>
  */
-$id = 'course_group_enrollement';
+$id = 'crs_grp_enrol';
 $version = '1.0.0';
 $ilias_min_version = '5.4.0';
 $ilias_max_version = '6.999';

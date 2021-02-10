@@ -4,11 +4,11 @@
 namespace ILIAS\Plugin\CrsGrpEnrollement\Frontend\ViewModifier;
 
 /**
- * Class TestSettings
+ * Class CourseGroupTabs
  * @package ILIAS\Plugin\CrsGrpEnrollement\Frontend\Controller
  * @author Timo Müller <timomueller@databay.de>
  */
-class TestSettings extends Base
+class CourseGroupTabs extends Base
 {
     /**
      * @inheritDoc
@@ -57,7 +57,8 @@ class TestSettings extends Base
     {
         /** @var \ilTabsGUI $tabs */
 
-        $this->ctrl->setParameterByClass(get_class($this->getCoreController()),'object_type');
+        //ToDo: RefId mitgeben
+        $this->ctrl->setParameterByClass(get_class($this->getCoreController()), 'ref_id', $this->getRefId());
 
         $tabs = $parameters['tabs'];
 
