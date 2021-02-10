@@ -2,15 +2,15 @@
 /* Copyright (c) 1998-2021 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 use ILIAS\DI\Container;
-use ILIAS\Plugin\CrsGrpEnrollement\Frontend;
-use ILIAS\Plugin\CrsGrpEnrollement\Frontend\ViewModifier;
-use ILIAS\Plugin\CrsGrpEnrollement\Frontend\ViewModifier\CourseGroupTabs;
+use ILIAS\Plugin\CrsGrpEnrollment\Frontend;
+use ILIAS\Plugin\CrsGrpEnrollment\Frontend\ViewModifier;
+use ILIAS\Plugin\CrsGrpEnrollment\Frontend\ViewModifier\CourseGroupTabs;
 
 /**
  * @author            Timo Müller <timomueller@databay.de>
- * @ilCtrl_isCalledBy ilCrsGrpEnrollementUIHookGUI: ilUIPluginRouterGUI
+ * @ilCtrl_isCalledBy ilCrsGrpEnrollmentUIHookGUI: ilUIPluginRouterGUI
  */
-class ilCrsGrpEnrollementUIHookGUI extends ilUIHookPluginGUI
+class ilCrsGrpEnrollmentUIHookGUI extends ilUIHookPluginGUI
 {
     /** @var Container */
     protected $dic;
@@ -18,7 +18,7 @@ class ilCrsGrpEnrollementUIHookGUI extends ilUIHookPluginGUI
     protected static $modifiers = null;
 
     /**
-     * ilCrsGrpEnrollementUIHookGUI constructor.
+     * ilCrsGrpEnrollmentUIHookGUI constructor.
      */
     public function __construct()
     {
@@ -32,7 +32,7 @@ class ilCrsGrpEnrollementUIHookGUI extends ilUIHookPluginGUI
      */
     public function executeCommand() : void
     {
-        $this->setPluginObject(ilCrsGrpEnrollementPlugin::getInstance());
+        $this->setPluginObject(ilCrsGrpEnrollmentPlugin::getInstance());
 
         $nextClass = $this->dic->ctrl()->getNextClass();
         switch (strtolower($nextClass)) {

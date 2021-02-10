@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 /* Copyright (c) 1998-2021 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-namespace ILIAS\Plugin\CrsGrpEnrollement\Frontend;
+namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend;
 
 /**
  * Interface ViewModifier
- * @package ILIAS\Plugin\CrsGrpEnrollement\Frontend
+ * @package ILIAS\Plugin\CrsGrpEnrollment\Frontend
  * @author Timo Müller <timomueller@databay.de>
  */
 interface ViewModifier

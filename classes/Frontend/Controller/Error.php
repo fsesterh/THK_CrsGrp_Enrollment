@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 /* Copyright (c) 1998-2021 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-namespace ILIAS\Plugin\CrsGrpEnrollement\Frontend\Controller;
+namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller;
 
 /**
  * Class Error
- * @package ILIAS\Plugin\CrsGrpEnrollement\Frontend\Controller
+ * @package ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller
  * @author Timo Müller <timomueller@databay.de>
  */
 class Error extends Base

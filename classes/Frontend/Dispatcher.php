@@ -1,21 +1,21 @@
 <?php declare(strict_types=1);
 /* Copyright (c) 1998-2021 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-namespace ILIAS\Plugin\CrsGrpEnrollement\Frontend;
+namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend;
 
 use \ILIAS\DI\Container;
-use \ILIAS\Plugin\CrsGrpEnrollement\Frontend\Controller\Base;
+use \ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller\Base;
 
 /**
  * Class Dispatcher
- * @package ILIAS\Plugin\CrsGrpEnrollement\Frontend
+ * @package ILIAS\Plugin\CrsGrpEnrollment\Frontend
  * @author  Timo Müller <timomueller@databay.de>
  */
 class Dispatcher
 {
     /** @var self */
     private static $instance = null;
-    /** @var \ilCrsGrpEnrollementUIHookGUI */
+    /** @var \ilCrsGrpEnrollmentUIHookGUI */
     private $coreController;
     /** @var string */
     private $defaultController = '';
@@ -31,10 +31,10 @@ class Dispatcher
 
     /**
      * Dispatcher constructor.
-     * @param \ilCrsGrpEnrollementUIHookGUI $baseController
+     * @param \ilCrsGrpEnrollmentUIHookGUI $baseController
      * @param string $defaultController
      */
-    private function __construct(\ilCrsGrpEnrollementUIHookGUI $baseController, string $defaultController = '')
+    private function __construct(\ilCrsGrpEnrollmentUIHookGUI $baseController, string $defaultController = '')
     {
         $this->coreController = $baseController;
         $this->defaultController = $defaultController;
@@ -49,10 +49,10 @@ class Dispatcher
     }
 
     /**
-     * @param \ilCrsGrpEnrollementUIHookGUI $baseController
+     * @param \ilCrsGrpEnrollmentUIHookGUI $baseController
      * @return self
      */
-    public static function getInstance(\ilCrsGrpEnrollementUIHookGUI $baseController) : self
+    public static function getInstance(\ilCrsGrpEnrollmentUIHookGUI $baseController) : self
     {
         if (self::$instance === null) {
             self::$instance = new self($baseController);
@@ -112,7 +112,7 @@ class Dispatcher
      */
     protected function instantiateController(string $controller) : Base
     {
-        $class = "ILIAS\\Plugin\\CrsGrpEnrollement\\Frontend\\Controller\\$controller";
+        $class = "ILIAS\\Plugin\\CrsGrpEnrollment\\Frontend\\Controller\\$controller";
 
         return new $class($this->getCoreController(), $this->dic);
     }
@@ -143,17 +143,17 @@ class Dispatcher
     }
 
     /**
-     * @return \ilCrsGrpEnrollementUIHookGUI
+     * @return \ilCrsGrpEnrollmentUIHookGUI
      */
-    public function getCoreController() : \ilCrsGrpEnrollementUIHookGUI
+    public function getCoreController() : \ilCrsGrpEnrollmentUIHookGUI
     {
         return $this->coreController;
     }
 
     /**
-     * @param \ilCrsGrpEnrollementUIHookGUI $coreController
+     * @param \ilCrsGrpEnrollmentUIHookGUI $coreController
      */
-    public function setCoreController(\ilCrsGrpEnrollementUIHookGUI $coreController) : void
+    public function setCoreController(\ilCrsGrpEnrollmentUIHookGUI $coreController) : void
     {
         $this->coreController = $coreController;
     }

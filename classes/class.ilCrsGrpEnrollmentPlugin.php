@@ -1,21 +1,11 @@
 <?php declare(strict_types=1);
 /* Copyright (c) 1998-2021 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-use ILIAS\DI\Container;
-use ILIAS\Plugin\CrsGrpEnrollement\Administration\GeneralSettings\Settings;
-use ILIAS\Plugin\CrsGrpEnrollement\Webservice\Rest\Impl;
-use ILIAS\Plugin\CrsGrpEnrollement\AccessControl\Acl\Impl as Acl;
-use ILIAS\Plugin\CrsGrpEnrollement\AccessControl\Acl\Resource\GenericResource;
-use ILIAS\Plugin\CrsGrpEnrollement\AccessControl\Acl\Role\GenericRole;
-use ILIAS\Plugin\CrsGrpEnrollement\AccessControl\Acl\Role\Registry;
-use ILIAS\Plugin\CrsGrpEnrollement\AccessControl\Handler\Cached;
-use ILIAS\Plugin\CrsGrpEnrollement\AccessControl\Handler\RoleBased;
-
 /**
- * Class ilCrsGrpEnrollementPlugin
+ * Class ilCrsGrpEnrollmentPlugin
  * @author Timo Müller <timomueller@databay.de>
  */
-class ilCrsGrpEnrollementPlugin extends ilUserInterfaceHookPlugin
+class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
 {
     /** @var string */
     const CTYPE = 'Services';
@@ -24,7 +14,7 @@ class ilCrsGrpEnrollementPlugin extends ilUserInterfaceHookPlugin
     /** @var string */
     const SLOT_ID = 'uihk';
     /** @var string */
-    const PNAME = 'CrsGrpEnrollement';
+    const PNAME = 'CrsGrpEnrollment';
     /** @var self */
     private static $instance = null;
     /** @var bool */

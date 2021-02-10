@@ -1,14 +1,14 @@
 <?php declare(strict_types=1);
 /* Copyright (c) 1998-2021 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-namespace ILIAS\Plugin\CrsGrpEnrollement\Frontend\ViewModifier;
+namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend\ViewModifier;
 
 use ilTabsGUI;
 use ilUIPluginRouterGUI;
 
 /**
  * Class CourseGroupTabs
- * @package ILIAS\Plugin\CrsGrpEnrollement\Frontend\Controller
+ * @package ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller
  * @author Timo Müller <timomueller@databay.de>
  */
 class CourseGroupTabs extends Base
@@ -54,6 +54,7 @@ class CourseGroupTabs extends Base
      */
     public function modifyGUI(string $component, string $part, array $parameters) : void
     {
+        global $DIC;
         /** @var ilTabsGUI $tabs */
         $tabs = $parameters['tabs'];
 

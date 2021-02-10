@@ -1,20 +1,20 @@
 <?php declare(strict_types=1);
 /* Copyright (c) 1998-2021 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-namespace ILIAS\Plugin\CrsGrpEnrollement\Frontend\ViewModifier;
+namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend\ViewModifier;
 
 use ILIAS\DI\Container;
-use ILIAS\Plugin\CrsGrpEnrollement\AccessControl\AccessHandler;
-use ILIAS\Plugin\CrsGrpEnrollement\Frontend\HttpContext;
-use ILIAS\Plugin\CrsGrpEnrollement\Frontend\ViewModifier;
-use ILIAS\Plugin\CrsGrpEnrollement\Service\CrsGrpEnrollement\Impl;
+use ILIAS\Plugin\CrsGrpEnrollment\AccessControl\AccessHandler;
+use ILIAS\Plugin\CrsGrpEnrollment\Frontend\HttpContext;
+use ILIAS\Plugin\CrsGrpEnrollment\Frontend\ViewModifier;
+use ILIAS\Plugin\CrsGrpEnrollment\Service\CrsGrpEnrollment\Impl;
 use ILIAS\UI\Factory;
 use ILIAS\UI\Renderer;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class ViewModifier
- * @package ILIAS\Plugin\CrsGrpEnrollement\Frontend\ViewModifier
+ * @package ILIAS\Plugin\CrsGrpEnrollment\Frontend\ViewModifier
  * @author Timo Müller <timomueller@databay.de>
  */
 abstract class Base implements ViewModifier
@@ -41,7 +41,7 @@ abstract class Base implements ViewModifier
     protected $errorHandler;
     /** @var \ilLanguage */
     protected $lng;
-    /** @var \ilCrsGrpEnrollementUIHookGUI */
+    /** @var \ilCrsGrpEnrollmentUIHookGUI */
     public $coreController;
     /** @var \ilTemplate */
     protected $mainTemplate;
@@ -52,10 +52,10 @@ abstract class Base implements ViewModifier
 
     /**
      * Base constructor.
-     * @param \ilCrsGrpEnrollementUIHookGUI $controller
+     * @param \ilCrsGrpEnrollmentUIHookGUI $controller
      * @param Container $dic
      */
-    final public function __construct(\ilCrsGrpEnrollementUIHookGUI $controller, Container $dic)
+    final public function __construct(\ilCrsGrpEnrollmentUIHookGUI $controller, Container $dic)
     {
         $this->coreController = $controller;
         $this->dic = $dic;
@@ -76,9 +76,9 @@ abstract class Base implements ViewModifier
     }
 
     /**
-     * @return \ilCrsGrpEnrollementUIHookGUI
+     * @return \ilCrsGrpEnrollmentUIHookGUI
      */
-    public function getCoreController() : \ilCrsGrpEnrollementUIHookGUI
+    public function getCoreController() : \ilCrsGrpEnrollmentUIHookGUI
     {
         return $this->coreController;
     }
