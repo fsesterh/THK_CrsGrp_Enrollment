@@ -3,7 +3,10 @@
 
 namespace ILIAS\Plugin\CrsGrpEnrollement\Frontend;
 
+use ilCtrl;
+use ilObjectDataCache;
 use Psr\Http\Message\ServerRequestInterface;
+use ReflectionClass;
 
 /**
  * Trait HttpContext
@@ -12,10 +15,12 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 trait HttpContext
 {
-    /** @var \ilObjectDataCache */
+    /** @var ilObjectDataCache */
     protected $objectCache;
     /** @var ServerRequestInterface */
     protected $httpRequest;
+    /** @var ilCtrl */
+    protected $ctrl;
 
     /**
      * @param string $class
@@ -29,6 +34,14 @@ trait HttpContext
     }
 
     /**
+     * @return bool
+     */
+    final public function hasBaseClass() : bool
+    {
+        return isset($this->httpRequest->getQueryParams()['baseClass']);
+    }
+
+    /**
      * @param string $class
      * @return bool
      */
@@ -37,6 +50,63 @@ trait HttpContext
         $cmdClass = (string) ($this->httpRequest->getQueryParams()['cmdClass'] ?? '');
 
         return strtolower($class) === strtolower($cmdClass);
+    }
+
+    /**
+     * @return bool
+     */
+    final public function hasCommandClass() : bool
+    {
+        return isset($this->httpRequest->getQueryParams()['cmdClass']);
+    }
+
+    /**
+     * @param string[] $cmdClasses
+     * @return bool
+     */
+    final public function isOneOfCommandClasses(array $cmdClasses) : bool
+    {
+        if (!$this->hasCommandClass()) {
+            return false;
+        }
+
+        return in_array(
+            strtolower($this->httpRequest->getQueryParams()['cmdClass']),
+            array_map(
+                'strtolower',
+                $cmdClasses
+            )
+        );
+    }
+
+    /**
+     * @param string[] $commands
+     * @return bool
+     */
+    final public function isOneOfCommands(array $commands) : bool
+    {
+        return in_array(
+            strtolower((string) $this->ctrl->getCmd()),
+            array_map(
+                'strtolower',
+                $commands
+            )
+        );
+    }
+    
+    /**
+     * @param string[] $commands
+     * @return bool
+     */
+    final public function isOneOfPluginCommandsLike(array $commands) : bool
+    {
+        return count(array_filter($commands, function (string $command) : bool {
+            if (class_exists($command)) {
+                $command = (new ReflectionClass($command))->getShortName();
+            }
+            
+            return strpos(strtolower((string) $this->ctrl->getCmd()), strtolower($command)) !== false;
+        })) > 0;
     }
 
     /**
@@ -52,21 +122,11 @@ trait HttpContext
     /**
      * @return int
      */
-    final public function getPreviewRefId() : int
-    {
-        $refId = (int) ($this->httpRequest->getQueryParams()['intro_item_ref_id'] ?? 0);
-
-        return $refId;
-    }
-
-    /**
-     * @return int
-     */
     final public function getTargetRefId() : int
     {
-        $matches = null;
-        if (preg_match('/^[a-zA-Z0-9]+_(\d+)$/', ((string) $this->httpRequest->getQueryParams()['target'] ?? ''), $matches)) {
-            if (is_array($matches) && isset($matches[1]) && is_numeric($matches[1]) && $matches[1] > 0) {
+        $target = ((string) $this->httpRequest->getQueryParams()['target'] ?? '');
+        if (preg_match('/^[a-zA-Z0-9]+_(\d+)$/', $target, $matches)) {
+            if (isset($matches[1]) && is_numeric($matches[1]) && $matches[1] > 0) {
                 return (int) $matches[1];
             }
         }
@@ -103,23 +163,6 @@ trait HttpContext
 
         return $this->objectCache->lookupType($objId) === $type;
     }
-
-    /**
-     * @param string $type
-     * @return bool
-     */
-    final public function isPreviewObjectOfType(string $type) : bool
-    {
-        $refId = $this->getPreviewRefId();
-        if ($refId <= 0) {
-            return false;
-        }
-
-        $objId = (int) $this->objectCache->lookupObjId($refId);
-
-        return $this->objectCache->lookupType($objId) === $type;
-    }
-
 
     /**
      * @param string $type
