@@ -4,8 +4,6 @@
 use ILIAS\DI\Container;
 use ILIAS\Plugin\CrsGrpEnrollement\Frontend;
 use ILIAS\Plugin\CrsGrpEnrollement\Frontend\ViewModifier;
-use ILIAS\Plugin\CrsGrpEnrollement\Frontend\ViewModifier\TestLaunch;
-use ILIAS\Plugin\CrsGrpEnrollement\Frontend\ViewModifier\TestResults;
 use ILIAS\Plugin\CrsGrpEnrollement\Frontend\ViewModifier\CourseGroupTabs;
 
 /**
@@ -47,7 +45,11 @@ class ilCrsGrpEnrollementUIHookGUI extends ilUIHookPluginGUI
         }
 
         $this->dic->ui()->mainTemplate()->setContent($response);
-        $this->dic->ui()->mainTemplate()->show();
+        if (version_compare(ILIAS_VERSION_NUMERIC, '6.0', '>=')) {
+            $this->dic->ui()->mainTemplate()->printToStdOut();
+        } else {
+            $this->dic->ui()->mainTemplate()->show();
+        }
     }
 
     /**
@@ -56,11 +58,16 @@ class ilCrsGrpEnrollementUIHookGUI extends ilUIHookPluginGUI
     private function initModifiers() : void
     {
         if (
-            !isset($this->dic['refinery']) ||
             !isset($this->dic['tpl']) ||
             !isset($this->dic['ilToolbar'])
         ) {
             return;
+        }
+
+        if (version_compare(ILIAS_VERSION_NUMERIC, '6.0', '>=')) {
+            if (!isset($this->dic['refinery'])) {
+                return;
+            }
         }
 
         if (null !== self::$modifiers) {

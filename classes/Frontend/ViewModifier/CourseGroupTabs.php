@@ -3,6 +3,9 @@
 
 namespace ILIAS\Plugin\CrsGrpEnrollement\Frontend\ViewModifier;
 
+use ilTabsGUI;
+use ilUIPluginRouterGUI;
+
 /**
  * Class CourseGroupTabs
  * @package ILIAS\Plugin\CrsGrpEnrollement\Frontend\Controller
@@ -35,11 +38,7 @@ class CourseGroupTabs extends Base
             return false;
         }
 
-        if (!$this->isCommandClass(\ilObjCourseGUI::class)) {
-            return false;
-        }
-
-        if (!$this->isObjectOfType('crs')) {
+        if (!$this->isObjectOfType('crs') && !$this->isObjectOfType('grp')) {
             return false;
         }
 
@@ -55,19 +54,16 @@ class CourseGroupTabs extends Base
      */
     public function modifyGUI(string $component, string $part, array $parameters) : void
     {
-        /** @var \ilTabsGUI $tabs */
-
-        //ToDo: RefId mitgeben
-        $this->ctrl->setParameterByClass(get_class($this->getCoreController()), 'ref_id', $this->getRefId());
-
+        /** @var ilTabsGUI $tabs */
         $tabs = $parameters['tabs'];
 
+        $this->ctrl->setParameterByClass(get_class($this->getCoreController()), 'ref_id', $this->getRefId());
         $tabs->addTab(
             "course_group_import",
             $this->getCoreController()->getPluginObject()->getPrefix() . '_course_group_import',
             $this->ctrl->getLinkTargetByClass(
                 [ilUIPluginRouterGUI::class, get_class($this->getCoreController())],
-                'TestSettings.showSettingsCmd'
+                'CourseGroupEnrollment.showImportForm'
             )
         );
     }

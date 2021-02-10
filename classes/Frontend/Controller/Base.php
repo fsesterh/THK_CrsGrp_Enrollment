@@ -4,14 +4,10 @@
 namespace ILIAS\Plugin\CrsGrpEnrollement\Frontend\Controller;
 
 use \ILIAS\DI\Container;
-use ILIAS\Plugin\CrsGrpEnrollement\Administration\GeneralSettings\Settings;
 use ILIAS\Plugin\CrsGrpEnrollement\Frontend\HttpContext;
-use ILIAS\Plugin\CrsGrpEnrollement\Service\CrsGrpEnrollement\Impl as CrsGrpEnrollementService;
-use ILIAS\Plugin\CrsGrpEnrollement\Webservice\Rest\Impl;
 use \ILIAS\UI\Factory;
 use \ILIAS\UI\Renderer;
 use \Psr\Http\Message\ServerRequestInterface;
-use ILIAS\Plugin\CrsGrpEnrollement\AccessControl\AccessHandler;
 
 /**
  * @author Timo Müller <timomueller@databay.de>
@@ -36,8 +32,6 @@ abstract class Base
     protected $user;
     /** @var \ilAccessHandler */
     protected $coreAccessHandler;
-    /** @var AccessHandler */
-    protected $accessHandler;
     /** @var \ilErrorHandling */
     protected $errorHandler;
     /** @var \ilLanguage */

@@ -4,13 +4,12 @@
 namespace ILIAS\Plugin\CrsGrpEnrollement\Frontend\Controller;
 
 /**
- * Class TestSettings
+ * Class CourseGroupEnrollment
  * @package ILIAS\Plugin\CrsGrpEnrollement\Frontend\Controller
  * @author Timo Müller <timomueller@databay.de>
  */
-class TestSettings extends RepositoryObject
+class CourseGroupEnrollment extends RepositoryObject
 {
-
     /**
      * @inheritdoc
      */
@@ -32,19 +31,23 @@ class TestSettings extends RepositoryObject
      */
     protected function init() : void
     {
-        $this->pageTemplate->getStandardTemplate();
+        if (version_compare(ILIAS_VERSION_NUMERIC, '6.0', '>=')) {
+            $this->pageTemplate->loadStandardTemplate();
+        } else {
+            $this->pageTemplate->getStandardTemplate();
+        }
 
         parent::init();
 
-        //if (0 === $this->getRefId() || !$this->coreAccessHandler->checkAccess('write', '', $this->getRefId())) {
-        //    $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
-        //}
+        if (0 === $this->getRefId() || !$this->coreAccessHandler->checkAccess('write', '', $this->getRefId())) {
+            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
+        }
     }
 
     /**
      * @return string
      */
-    public function showSettingsCmd() : string
+    public function showImportFormCmd() : string
     {
         return "Hello World";
     }

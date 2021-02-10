@@ -23,7 +23,12 @@ class Error extends Base
      */
     public function init() : void
     {
-        $this->pageTemplate->getStandardTemplate();
+        if (version_compare(ILIAS_VERSION_NUMERIC, '6.0', '>=')) {
+            $this->pageTemplate->loadStandardTemplate();
+        } else {
+            $this->pageTemplate->getStandardTemplate();
+        }
+
         parent::init();
     }
 
