@@ -3,6 +3,10 @@
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller;
 
+use ReflectionClass;
+use ReflectionException;
+use ReflectionMethod;
+
 /**
  * Class Course
  * @package ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller
@@ -16,14 +20,20 @@ abstract class RepositoryObject extends Base
     abstract public function getObjectGuiClass() : string;
 
     /**
-     * @throws \ReflectionException
+     * @return array
+     */
+    abstract public function getConstructorArgs() : array;
+
+    /**
+     * @throws ReflectionException
      */
     protected function drawHeader() : void
     {
         $class = $this->getObjectGuiClass();
-        $object = new $class();
+        $refl = new ReflectionClass($class);
+        $object = $refl->newInstanceArgs($this->getConstructorArgs());
 
-        $reflectionMethod = new \ReflectionMethod($class, 'setTitleAndDescription');
+        $reflectionMethod = new ReflectionMethod($class, 'setTitleAndDescription');
         $reflectionMethod->setAccessible(true);
         $reflectionMethod->invoke($object);
 

@@ -7,6 +7,7 @@ use ilCalendarCategoryGUI;
 use ilCalendarPresentationGUI;
 use ilContainerStartObjectsGUI;
 use ilCourseMembershipGUI;
+use ilCrsGrpEnrollmentUIHookGUI;
 use ilGroupMembershipGUI;
 use ilMailMemberSearchGUI;
 use ilObjectCustomUserFieldsGUI;
@@ -59,7 +60,8 @@ class CourseGroupTabs extends Base
             $this->isCommandClass(ilMailMemberSearchGUI::class) || (
                 $this->isOneOfCommands(['create',]) &&
                 $this->isBaseClass(ilRepositoryGUI::class)
-            )
+            ) ||
+            $this->isCommandClass(ilCrsGrpEnrollmentUIHookGUI::class)
         );
 
         return !$isBlackListedCommandClass;
@@ -122,7 +124,7 @@ class CourseGroupTabs extends Base
         $this->ctrl->setParameterByClass(get_class($this->getCoreController()), 'ref_id', $this->getContainerRefId());
         $tabs->addTab(
             'course_group_import',
-            $this->getCoreController()->getPluginObject()->getPrefix() . '_course_group_import',
+            $this->getCoreController()->getPluginObject()->txt('course_group_import'),
             $this->ctrl->getLinkTargetByClass(
                 [ilUIPluginRouterGUI::class, get_class($this->getCoreController())],
                 'CourseGroupEnrollment.showImportForm'

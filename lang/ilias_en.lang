@@ -1,2 +1,4 @@
 course_group_enrollment#:#Course Group enrollment
 course_group_import#:#User Import
+abort_course_group_import#:#Abort
+course_group_import_field#:#User Import Field

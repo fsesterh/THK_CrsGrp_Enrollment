@@ -3,11 +3,22 @@
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller;
 
-use \ILIAS\DI\Container;
+use ilAccessHandler;
+use ilCrsGrpEnrollmentUIHookGUI;
+use ilCtrl;
+use ilErrorHandling;
+use ILIAS\DI\Container;
 use ILIAS\Plugin\CrsGrpEnrollment\Frontend\HttpContext;
-use \ILIAS\UI\Factory;
-use \ILIAS\UI\Renderer;
+use ILIAS\UI\Factory;
+use ILIAS\UI\Renderer;
+use ilLanguage;
+use ilLogger;
+use ilObjuser;
+use ilTemplate;
+use ilToolbarGUI;
 use \Psr\Http\Message\ServerRequestInterface;
+use ReflectionClass;
+use ReflectionException;
 
 /**
  * @author Timo Müller <timomueller@databay.de>
@@ -16,39 +27,39 @@ abstract class Base
 {
     use HttpContext;
 
-    /** @var \ilTemplate */
+    /** @var ilTemplate */
     public $pageTemplate;
     /** @var Factory */
     protected $uiFactory;
-    /** @var \ilCtrl */
+    /** @var ilCtrl */
     protected $ctrl;
     /** @var Renderer */
     protected $uiRenderer;
     /** @var Container */
     protected $dic;
-    /** @var \ilToolbarGUI */
+    /** @var ilToolbarGUI */
     protected $toolbar;
-    /** @var \ilObjuser */
+    /** @var ilObjuser */
     protected $user;
-    /** @var \ilAccessHandler */
+    /** @var ilAccessHandler */
     protected $coreAccessHandler;
-    /** @var \ilErrorHandling */
+    /** @var ilErrorHandling */
     protected $errorHandler;
-    /** @var \ilLanguage */
+    /** @var ilLanguage */
     public $lng;
-    /** @var \ilCrsGrpEnrollmentUIHookGUI */
+    /** @var ilCrsGrpEnrollmentUIHookGUI */
     public $coreController;
     /** @var ServerRequestInterface */
     protected $httpRequest;
-    /** @var \ilLogger */
+    /** @var ilLogger */
     protected $log;
 
     /**
      * Base constructor.
-     * @param \ilCrsGrpEnrollmentUIHookGUI $controller
+     * @param ilCrsGrpEnrollmentUIHookGUI $controller
      * @param Container $dic
      */
-    final public function __construct(\ilCrsGrpEnrollmentUIHookGUI $controller, Container $dic)
+    final public function __construct(ilCrsGrpEnrollmentUIHookGUI $controller, Container $dic)
     {
         $this->coreController = $controller;
         $this->dic = $dic;
@@ -96,9 +107,9 @@ abstract class Base
     abstract public function getDefaultCommand() : string;
 
     /**
-     * @return \ilCrsGrpEnrollmentUIHookGUI
+     * @return ilCrsGrpEnrollmentUIHookGUI
      */
-    public function getCoreController() : \ilCrsGrpEnrollmentUIHookGUI
+    public function getCoreController() : ilCrsGrpEnrollmentUIHookGUI
     {
         return $this->coreController;
     }
@@ -113,10 +124,10 @@ abstract class Base
 
     /**
      * @return string
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     final public function getControllerName() : string
     {
-        return (new \ReflectionClass($this))->getShortName();
+        return (new ReflectionClass($this))->getShortName();
     }
 }

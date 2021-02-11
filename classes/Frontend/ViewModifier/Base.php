@@ -11,6 +11,7 @@ use ILIAS\Plugin\CrsGrpEnrollment\Service\CrsGrpEnrollment\Impl;
 use ILIAS\UI\Factory;
 use ILIAS\UI\Renderer;
 use Psr\Http\Message\ServerRequestInterface;
+use ReflectionClass;
 
 /**
  * Class ViewModifier
@@ -97,7 +98,7 @@ abstract class Base implements ViewModifier
      */
     final public function getClassName() : string
     {
-        return (new \ReflectionClass($this))->getShortName();
+        return (new ReflectionClass($this))->getShortName();
     }
 
     /**
