@@ -13,7 +13,7 @@ use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\InvalidCsvColumnDefinitionException
 class UserImportValidator{
     public function validate($importFile){
         $tmpFile = fopen($importFile,"r");
-        while($row = fgetcsv($tmpFile,0,';')){
+        while (($row = fgetcsv($tmpFile, 0, ';')) !== false) {
             if(count($row) > 1){
                 throw new InvalidCsvColumnDefinitionException("Data format not correct");
             }
