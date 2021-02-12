@@ -9,6 +9,8 @@ use ilCtrl;
 use ilErrorHandling;
 use ILIAS\DI\Container;
 use ILIAS\Plugin\CrsGrpEnrollment\Frontend\HttpContext;
+use ILIAS\Plugin\CrsGrpEnrollment\Services\UserImportService;
+use ILIAS\Plugin\CrsGrpEnrollment\Validators\UserImportValidator;
 use ILIAS\UI\Factory;
 use ILIAS\UI\Renderer;
 use ilLanguage;
@@ -53,6 +55,10 @@ abstract class Base
     protected $httpRequest;
     /** @var ilLogger */
     protected $log;
+    /** @var UserImportValidator */
+    protected $userImportValidator;
+    /** @var UserImportService */
+    protected $userImportService;
 
     /**
      * Base constructor.
@@ -77,6 +83,9 @@ abstract class Base
         $this->errorHandler = $dic['ilErr'];
         $this->toolbar = $dic->toolbar();
         $this->log = $dic->logger()->root();
+
+        $this->userImportValidator = new UserImportValidator();
+        $this->userImportService = new UserImportService();
 
         $this->init();
     }

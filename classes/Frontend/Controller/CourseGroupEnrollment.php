@@ -4,6 +4,7 @@
 namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller;
 
 use ilFileInputGUI;
+use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\InvalidCsvColumnDefinitionException;
 use ilLink;
 use ilObjCourseGUI;
 use ilObjectFactory;
@@ -47,7 +48,7 @@ class CourseGroupEnrollment extends RepositoryObject
     /**
      * @inheritDoc
      */
-    public function getConstructorArgs(): array
+    public function getConstructorArgs() : array
     {
         if ($this->isObjectOfType('crs')) {
             return [];
@@ -67,7 +68,6 @@ class CourseGroupEnrollment extends RepositoryObject
     protected function init() : void
     {
         global $DIC;
-        $ctrl = $DIC->ctrl();
         if (version_compare(ILIAS_VERSION_NUMERIC, '6.0', '>=')) {
             $this->pageTemplate->loadStandardTemplate();
         } else {
@@ -127,19 +127,25 @@ class CourseGroupEnrollment extends RepositoryObject
     public function submitImportFormCmd() : string
     {
         $form = $this->buildForm();
+
         if ($form->checkInput()) {
             try {
-                // TODO: Replace translation with a more meaningful description (your import is enqueued and processed asynchronously etc.) from the plugin txt
-                ilUtil::sendSucces($this->getCoreController()->getPluginObject()->txt('import_successfully_enqueued'));
+                $this->userImportValidator->validate($_FILES['userImportFile']['tmp_name']);
 
-                // TODO Plausibilität grundsätlzich prüfen und Exception werfen, wenn ein Problem aufetreten ist
                 // TODO: Store/Process file
+                $dataArray = $this->userImportService->convertCSVToArray($_FILES['userImportFile']['tmp_name']);
+
+                echo "<pre>";
+                var_dump("Data Array",$dataArray);
+                die();
 
                 $this->ctrl->redirectByClass(
                     [ilUIPluginRouterGUI::class, get_class($this->getCoreController())],
                     $this->getControllerName() . '.showImportForm'
                 );
-            } catch (InvalidCsvColumnDefinition $e) {
+
+                ilUtil::sendSuccess($this->getCoreController()->getPluginObject()->txt('import_successfully_enqueued'));
+            } catch (InvalidCsvColumnDefinitionException $e) {
                 $form
                     ->getItemByPostVar('userImportFile')
                     ->setAlert($this->getCoreController()->getPluginObject()->txt('err_csv_file_different_row_width'));
