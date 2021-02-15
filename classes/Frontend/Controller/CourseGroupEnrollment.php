@@ -12,6 +12,9 @@ use ilObjGroupGUI;
 use ilPropertyFormGUI;
 use ilUIPluginRouterGUI;
 use ilUtil;
+use ILIAS\FileUpload\DTO\UploadResult;
+use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\FileNotReadableException;
+use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\CsvEmptyException;
 
 /**
  * Class CourseGroupEnrollment
@@ -105,6 +108,7 @@ class CourseGroupEnrollment extends RepositoryObject
         $fileInput = new ilFileInputGUI($this->getCoreController()->getPluginObject()->txt('course_group_import_field'), 'userImportFile');
         $fileInput->setRequired(true);
         $fileInput->setSuffixes(["csv"]);
+        $fileInput->setInfo($this->getCoreController()->getPluginObject()->txt('course_group_import_field_description'));
         $form->addItem($fileInput);
         $form->addCommandButton('CourseGroupEnrollment.submitImportForm', $this->lng->txt("save"));
 
@@ -126,17 +130,22 @@ class CourseGroupEnrollment extends RepositoryObject
      */
     public function submitImportFormCmd() : string
     {
+        global $DIC;
         $form = $this->buildForm();
 
         if ($form->checkInput()) {
             try {
-                $this->userImportValidator->validate($_FILES['userImportFile']['tmp_name']);
+                $DIC->upload()->process();
+                /** @var UploadResult $uploadResult */
+                $uploadResult = current($DIC->upload()->getResults());
+
+                $this->userImportValidator->validate($uploadResult->getPath());
 
                 // TODO: Store/Process file
-                $dataArray = $this->userImportService->convertCSVToArray($_FILES['userImportFile']['tmp_name']);
+                $dataArray = $this->userImportService->convertCSVToArray($uploadResult->getPath());
 
                 echo "<pre>";
-                var_dump("Data Array",$dataArray);
+                var_dump("Data Array", $dataArray);
                 die();
 
                 $this->ctrl->redirectByClass(
@@ -149,6 +158,16 @@ class CourseGroupEnrollment extends RepositoryObject
                 $form
                     ->getItemByPostVar('userImportFile')
                     ->setAlert($this->getCoreController()->getPluginObject()->txt('err_csv_file_different_row_width'));
+                ilUtil::sendFailure($this->lng->txt('form_input_not_valid'));
+            } catch (FileNotReadableException $e) {
+                $form
+                    ->getItemByPostVar('userImportFile')
+                    ->setAlert($this->getCoreController()->getPluginObject()->txt('err_csv_file_cannot_be_read'));
+                ilUtil::sendFailure($this->lng->txt('form_input_not_valid'));
+            } catch (CsvEmptyException $e) {
+                $form
+                    ->getItemByPostVar('userImportFile')
+                    ->setAlert($this->getCoreController()->getPluginObject()->txt('err_csv_empty'));
                 ilUtil::sendFailure($this->lng->txt('form_input_not_valid'));
             }
         }
