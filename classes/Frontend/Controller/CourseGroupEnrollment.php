@@ -84,7 +84,7 @@ class CourseGroupEnrollment extends RepositoryObject
 
         $this->drawHeader();
 
-        if (0 === $this->getRefId() || !$this->coreAccessHandler->checkAccess('write', '', $this->getRefId())) {
+        if (0 === $this->getRefId() || !$this->coreAccessHandler->checkAccess('manage_members', '', $this->getRefId())) {
             $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
         }
         $this->object = ilObjectFactory::getInstanceByRefId($this->getRefId());
