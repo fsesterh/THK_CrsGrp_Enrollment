@@ -4,6 +4,8 @@
 namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller;
 
 use ilFileInputGUI;
+use ILIAS\FileUpload\DTO\ProcessingStatus;
+use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\InvalidCsvColumnDefinitionException;
 use ilLink;
 use ilObjCourseGUI;
 use ilObjectFactory;
@@ -11,6 +13,11 @@ use ilObjGroupGUI;
 use ilPropertyFormGUI;
 use ilUIPluginRouterGUI;
 use ilUtil;
+use ILIAS\FileUpload\DTO\UploadResult;
+use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\FileNotReadableException;
+use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\CsvEmptyException;
+use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\CoulNotFindUploadedFileException;
+use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\UploadRejectedException;
 
 /**
  * Class CourseGroupEnrollment
@@ -47,7 +54,7 @@ class CourseGroupEnrollment extends RepositoryObject
     /**
      * @inheritDoc
      */
-    public function getConstructorArgs(): array
+    public function getConstructorArgs() : array
     {
         if ($this->isObjectOfType('crs')) {
             return [];
@@ -67,7 +74,6 @@ class CourseGroupEnrollment extends RepositoryObject
     protected function init() : void
     {
         global $DIC;
-        $ctrl = $DIC->ctrl();
         if (version_compare(ILIAS_VERSION_NUMERIC, '6.0', '>=')) {
             $this->pageTemplate->loadStandardTemplate();
         } else {
@@ -78,7 +84,7 @@ class CourseGroupEnrollment extends RepositoryObject
 
         $this->drawHeader();
 
-        if (0 === $this->getRefId() || !$this->coreAccessHandler->checkAccess('write', '', $this->getRefId())) {
+        if (0 === $this->getRefId() || !$this->coreAccessHandler->checkAccess('manage_members', '', $this->getRefId())) {
             $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
         }
         $this->object = ilObjectFactory::getInstanceByRefId($this->getRefId());
@@ -105,6 +111,7 @@ class CourseGroupEnrollment extends RepositoryObject
         $fileInput = new ilFileInputGUI($this->getCoreController()->getPluginObject()->txt('course_group_import_field'), 'userImportFile');
         $fileInput->setRequired(true);
         $fileInput->setSuffixes(["csv"]);
+        $fileInput->setInfo($this->getCoreController()->getPluginObject()->txt('course_group_import_field_description'));
         $form->addItem($fileInput);
         $form->addCommandButton('CourseGroupEnrollment.submitImportForm', $this->lng->txt("save"));
 
@@ -126,24 +133,68 @@ class CourseGroupEnrollment extends RepositoryObject
      */
     public function submitImportFormCmd() : string
     {
+        global $DIC;
         $form = $this->buildForm();
+
         if ($form->checkInput()) {
             try {
-                // TODO: Replace translation with a more meaningful description (your import is enqueued and processed asynchronously etc.) from the plugin txt
-                ilUtil::sendSucces($this->getCoreController()->getPluginObject()->txt('import_successfully_enqueued'));
+                if (false === $DIC->upload()->hasBeenProcessed()) {
+                    $DIC->upload()->process();
+                }
 
-                // TODO Plausibilität grundsätlzich prüfen und Exception werfen, wenn ein Problem aufetreten ist
+                if (false === $DIC->upload()->hasUploads()) {
+                    throw new CoulNotFindUploadedFileException($this->lng->txt('upload_error_file_not_found'));
+                }
+
+                $uploadResults = $DIC->upload()->getResults();
+                $uploadResult = current($uploadResults);
+
+                /** @var ProcessingStatus $processingStatus */
+                $processingStatus = $uploadResult->getStatus();
+                if (!($processingStatus instanceof UploadResult) || $processingStatus->getCode() === ProcessingStatus::REJECTED) {
+                    throw new UploadRejectedException($processingStatus->getMessage());
+                }
+
+                $this->userImportValidator->validate($uploadResult->getPath());
+
                 // TODO: Store/Process file
+                $dataArray = $this->userImportService->convertCSVToArray($uploadResult->getPath());
+
+                echo "<pre>";
+                var_dump("Data Array", $dataArray);
+                die();
 
                 $this->ctrl->redirectByClass(
                     [ilUIPluginRouterGUI::class, get_class($this->getCoreController())],
                     $this->getControllerName() . '.showImportForm'
                 );
-            } catch (InvalidCsvColumnDefinition $e) {
+
+                ilUtil::sendSuccess($this->getCoreController()->getPluginObject()->txt('import_successfully_enqueued'));
+            } catch (InvalidCsvColumnDefinitionException $e) {
                 $form
                     ->getItemByPostVar('userImportFile')
                     ->setAlert($this->getCoreController()->getPluginObject()->txt('err_csv_file_different_row_width'));
                 ilUtil::sendFailure($this->lng->txt('form_input_not_valid'));
+            } catch (FileNotReadableException $e) {
+                $form
+                    ->getItemByPostVar('userImportFile')
+                    ->setAlert($this->getCoreController()->getPluginObject()->txt('err_csv_file_cannot_be_read'));
+                ilUtil::sendFailure($this->lng->txt('form_input_not_valid'));
+            } catch (CsvEmptyException $e) {
+                $form
+                    ->getItemByPostVar('userImportFile')
+                    ->setAlert($this->getCoreController()->getPluginObject()->txt('err_csv_empty'));
+                ilUtil::sendFailure($this->lng->txt('form_input_not_valid'));
+            } catch (CoulNotFindUploadedFileException $e) {
+                $form
+                    ->getItemByPostVar('userImportFile')
+                    ->setAlert($this->getCoreController()->getPluginObject()->txt('err_csv_empty'));
+                ilUtil::sendFailure($this->lng->txt('upload_error_file_not_found'));
+            } catch (UploadRejectedException $e) {
+                $form
+                    ->getItemByPostVar('userImportFile')
+                    ->setAlert($e->getMessage());
+                ilUtil::sendFailure($this->lng->txt('upload_error_file_not_found'));
             }
         }
 

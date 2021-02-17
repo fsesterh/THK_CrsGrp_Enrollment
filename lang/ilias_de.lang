@@ -2,3 +2,8 @@ course_group_enrollment#:#Kurs Gruppen Zuweisung
 course_group_import#:#Benutzer-Import
 abort_course_group_import#:#Abbrechen
 course_group_import_field#:#Benutzer-Importfeld
+course_group_import_field_description#:#Bitte laden Sie eine Datei hoch, wo pro Zeile ein eindeutiger ILIAS-Benutzername oder eine eindeutige E-Mail-Adresse enthalten ist.
+import_successfully_enqueued#:#Der Benutzer-Import wurde erfolgreich eingereicht und wird asynchron weiterverarbeitet.
+err_csv_file_different_row_width#:#Bitte laden Sie eine CSV Datei hoch, die nur eine Spalte pro Zeile hat.
+err_csv_file_cannot_be_read#:#Import datei %s kann nicht gelesen werden.
+err_csv_empty#:#Die hochgeladene CSV Datei ist leer.
