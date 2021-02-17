@@ -137,7 +137,6 @@ class CourseGroupEnrollment extends RepositoryObject
 
         if ($form->checkInput()) {
             try {
-                
                 if (false === $DIC->upload()->hasBeenProcessed()) {
                     $DIC->upload()->process();
                 }
