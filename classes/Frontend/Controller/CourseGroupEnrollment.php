@@ -15,6 +15,8 @@ use ilUtil;
 use ILIAS\FileUpload\DTO\UploadResult;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\FileNotReadableException;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\CsvEmptyException;
+use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\CoulNotFindUploadedFileException;
+use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\UploadRejectedException;
 
 /**
  * Class CourseGroupEnrollment
@@ -135,6 +137,31 @@ class CourseGroupEnrollment extends RepositoryObject
 
         if ($form->checkInput()) {
             try {
+
+                //----------------------------------------------------------------------------------------------------------------------------------------
+                if (false === $DIC->upload()->hasBeenProcessed()) {
+                    $DIC->upload()->process();
+                }
+
+                if (false === $DIC->upload()->hasUploads()) {
+                    throw new CoulNotFindUploadedFileException($this->lng->txt('upload_error_file_not_found'));
+                }
+
+                /**
+                 * @var \ILIAS\FileUpload\DTO\UploadResult $uploadResult
+                 */
+                $uploadResults = $DIC->upload()->getResults();
+                $uploadResult = current($DIC->upload()->getResults());
+
+                $processingStatus = $uploadResult->getStatus();
+                if (!($processingStatus instanceof UploadResult) || $processingStatus->getCode() === ILIAS\FileUpload\DTO\ProcessingStatus::REJECTED) {
+                    throw new UploadRejectedException($processingStatus->getMessage());
+                }
+
+                //----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
                 $DIC->upload()->process();
                 /** @var UploadResult $uploadResult */
                 $uploadResult = current($DIC->upload()->getResults());
@@ -169,6 +196,16 @@ class CourseGroupEnrollment extends RepositoryObject
                     ->getItemByPostVar('userImportFile')
                     ->setAlert($this->getCoreController()->getPluginObject()->txt('err_csv_empty'));
                 ilUtil::sendFailure($this->lng->txt('form_input_not_valid'));
+            } catch (CoulNotFindUploadedFileException $e) {
+                $form
+                    ->getItemByPostVar('userImportFile')
+                    ->setAlert($this->getCoreController()->getPluginObject()->txt('err_csv_empty'));
+                ilUtil::sendFailure($this->lng->txt('upload_error_file_not_found'));
+            } catch (UploadRejectedException $e) {
+                $form
+                    ->getItemByPostVar('userImportFile')
+                    ->setAlert($e->getMessage());
+                ilUtil::sendFailure($this->lng->txt('upload_error_file_not_found'));
             }
         }
 

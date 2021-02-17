@@ -3,6 +3,8 @@
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Services;
 
+use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\FileNotReadableException;
+
 /**
  * Class UserImportService
  * @package ILIAS\Plugin\CrsGrpEnrollment\Services
@@ -13,9 +15,14 @@ class UserImportService
     public function convertCSVToArray($importFile)
     {
         $tmpFile = fopen($importFile, "r");
+
+        if (!$tmpFile || !is_resource($tmpFile)) {
+            throw new FileNotReadableException('CSV not readable');
+        }
+
         $i = 0;
         $dataArray = [];
-        while ($row = fgetcsv($tmpFile, 0, ';')) {
+        while (($row = fgetcsv($tmpFile, 0, ';')) !== false) {
             if ($i == 0) {
                 if (substr($row[0], 0, 3) == chr(hexdec('EF')) . chr(hexdec('BB')) . chr(hexdec('BF'))) {
                     $row[0] = substr($row[0], 3);
@@ -25,8 +32,11 @@ class UserImportService
             $i++;
         }
 
-        fclose($tmpFile);
+        if (is_resource($tmpFile)) {
+            fclose($tmpFile);
+        }
 
         return $dataArray;
     }
 }
+
