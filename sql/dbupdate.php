@@ -1,7 +1,7 @@
 <#1>
 <?php
 // Empty Step
-/** @var ilDB $ilDB */
+/** @var $ilDB ilDBInterface */
 ?>
 <#2>
 <?php
@@ -65,7 +65,7 @@ $ilDB->modifyTableColumn(
     array(
         'type' => 'integer',
         'length' => 8,
-        'notnull' => false,
+        'notnull' => true,
     )
 );
 if (!$ilDB->tableColumnExists('xcge_user_import', 'obj_id')) {
@@ -75,7 +75,7 @@ if (!$ilDB->tableColumnExists('xcge_user_import', 'obj_id')) {
         array(
             'type' => 'integer',
             'length' => 4,
-            'notnull' => false,
+            'notnull' => true,
         )
     );
 }
