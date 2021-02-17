@@ -39,4 +39,3 @@ class UserImportService
         return $dataArray;
     }
 }
-

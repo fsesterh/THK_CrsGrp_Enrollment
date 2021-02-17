@@ -137,8 +137,7 @@ class CourseGroupEnrollment extends RepositoryObject
 
         if ($form->checkInput()) {
             try {
-
-                //----------------------------------------------------------------------------------------------------------------------------------------
+                
                 if (false === $DIC->upload()->hasBeenProcessed()) {
                     $DIC->upload()->process();
                 }
@@ -157,14 +156,6 @@ class CourseGroupEnrollment extends RepositoryObject
                 if (!($processingStatus instanceof UploadResult) || $processingStatus->getCode() === ILIAS\FileUpload\DTO\ProcessingStatus::REJECTED) {
                     throw new UploadRejectedException($processingStatus->getMessage());
                 }
-
-                //----------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-                $DIC->upload()->process();
-                /** @var UploadResult $uploadResult */
-                $uploadResult = current($DIC->upload()->getResults());
 
                 $this->userImportValidator->validate($uploadResult->getPath());
 

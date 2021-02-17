@@ -10,19 +10,16 @@ if (!$ilDB->tableExists('xcge_user_import')) {
         'id' => array(
             'type' => 'integer',
             'length' => 4,
-            'notnull' => true,
-            'default' => 0,
+            'notnull' => false,
         ),
         'status' => array(
             'type' => 'integer',
             'length' => 4,
-            'notnull' => true,
-            'default' => 0,
+            'notnull' => false,
         ),
         'data' => array(
             'type' => 'clob',
             'notnull' => false,
-            'default' => null,
         ),
     );
 
@@ -42,8 +39,7 @@ if (!$ilDB->tableColumnExists('xcge_user_import', 'user')) {
         array(
             'type' => 'integer',
             'length' => 4,
-            'notnull' => true,
-            'default' => 0
+            'notnull' => false,
         )
     );
 }
@@ -69,8 +65,7 @@ $ilDB->modifyTableColumn(
     array(
         'type' => 'integer',
         'length' => 8,
-        'notnull' => true,
-        'default' => 0
+        'notnull' => false,
     )
 );
 if (!$ilDB->tableColumnExists('xcge_user_import', 'obj_id')) {
@@ -80,8 +75,7 @@ if (!$ilDB->tableColumnExists('xcge_user_import', 'obj_id')) {
         array(
             'type' => 'integer',
             'length' => 4,
-            'notnull' => true,
-            'default' => 0
+            'notnull' => false,
         )
     );
 }
