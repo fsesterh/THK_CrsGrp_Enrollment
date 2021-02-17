@@ -4,6 +4,7 @@
 namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller;
 
 use ilFileInputGUI;
+use ILIAS\FileUpload\DTO\ProcessingStatus;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\InvalidCsvColumnDefinitionException;
 use ilLink;
 use ilObjCourseGUI;
@@ -145,14 +146,12 @@ class CourseGroupEnrollment extends RepositoryObject
                     throw new CoulNotFindUploadedFileException($this->lng->txt('upload_error_file_not_found'));
                 }
 
-                /**
-                 * @var \ILIAS\FileUpload\DTO\UploadResult $uploadResult
-                 */
                 $uploadResults = $DIC->upload()->getResults();
-                $uploadResult = current($DIC->upload()->getResults());
+                $uploadResult = current($uploadResults);
 
+                /** @var ProcessingStatus $processingStatus */
                 $processingStatus = $uploadResult->getStatus();
-                if (!($processingStatus instanceof UploadResult) || $processingStatus->getCode() === ILIAS\FileUpload\DTO\ProcessingStatus::REJECTED) {
+                if (!($processingStatus instanceof UploadResult) || $processingStatus->getCode() === ProcessingStatus::REJECTED) {
                     throw new UploadRejectedException($processingStatus->getMessage());
                 }
 
