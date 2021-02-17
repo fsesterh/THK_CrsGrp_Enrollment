@@ -147,12 +147,13 @@ class CourseGroupEnrollment extends RepositoryObject
                 }
 
                 $uploadResults = $DIC->upload()->getResults();
-                $uploadResult = current($uploadResults);
+                $uploadResult = array_values($uploadResults)[0];
+                if (!($uploadResult instanceof UploadResult)) {
+                    throw new CoulNotFindUploadedFileException('Could not find upload result');
+                }
 
-                /** @var ProcessingStatus $processingStatus */
-                $processingStatus = $uploadResult->getStatus();
-                if (!($processingStatus instanceof UploadResult) || $processingStatus->getCode() === ProcessingStatus::REJECTED) {
-                    throw new UploadRejectedException($processingStatus->getMessage());
+                if ($uploadResult->getStatus()->getCode() === ProcessingStatus::REJECTED) {
+                    throw new UploadRejectedException($uploadResult->getStatus()->getMessage());
                 }
 
                 $this->userImportValidator->validate($uploadResult->getPath());
