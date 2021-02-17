@@ -18,6 +18,8 @@ use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\FileNotReadableException;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\CsvEmptyException;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\CoulNotFindUploadedFileException;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\UploadRejectedException;
+use ILIAS\Plugin\CrsGrpEnrollment\Models\UserImport;
+use ILIAS\Plugin\CrsGrpEnrollment\Repositories\UserImportRepository;
 
 /**
  * Class CourseGroupEnrollment
@@ -134,6 +136,7 @@ class CourseGroupEnrollment extends RepositoryObject
     public function submitImportFormCmd() : string
     {
         global $DIC;
+        $userImportRepository = new UserImportRepository();
         $form = $this->buildForm();
 
         if ($form->checkInput()) {
@@ -161,8 +164,17 @@ class CourseGroupEnrollment extends RepositoryObject
                 // TODO: Store/Process file
                 $dataArray = $this->userImportService->convertCSVToArray($uploadResult->getPath());
 
+                $userImport = new UserImport();
+                $userImport->setStatus(UserImport::STATUS_PENDING);
+                $userImport->setUser($DIC->user()->getId());
+                $userImport->setCreatedTimestamp(time());
+                $userImport->setData(json_encode($dataArray));
+
+                $userImport = $userImportRepository->save($userImport);
+
+
                 echo "<pre>";
-                var_dump("Data Array", $dataArray);
+                var_dump($dataArray, $userImport);
                 die();
 
                 $this->ctrl->redirectByClass(
