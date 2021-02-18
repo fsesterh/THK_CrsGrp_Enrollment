@@ -6,6 +6,7 @@ namespace ILIAS\Plugin\CrsGrpEnrollment\Repositories;
 use ilDBPdo;
 use ilDBInterface;
 use ILIAS\Plugin\CrsGrpEnrollment\Models\UserImport;
+use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\Repository\DataNotFoundException;
 
 /**
  * Class UserImportRepository
@@ -28,11 +29,14 @@ class UserImportRepository
 
     public function save(UserImport $userImport) : UserImport
     {
-        if (!empty($this->findOneById($userImport->getId()))) {
-            $this->update($userImport);
-        } else {
-            $userImport = $this->add($userImport);
+        if ($userImport->getId() === null) {
+            return $this->add($userImport);
         }
+
+
+        $this->findOneById($userImport->getId());
+        $this->update($userImport);
+
 
         return $userImport;
     }
@@ -40,58 +44,60 @@ class UserImportRepository
     /** @var UserImport $userImport */
     private function update($userImport)
     {
-        $this->db->prepare('
-            UPDATE ' . $this->table . ' SET
-            status = :status,
-            user = :user,
-            created_timestamp = :created_timestamp,
-            data = :data
-            WHERE id = :id
-        ');
-        $this->db->execute(array(
-            'status' => $userImport->getStatus(),
-            'user' => $userImport->getUser()->getId(),
-            'created_timestamp' => $userImport->getCreatedTimestamp(),
-            'data' => $userImport->getData()
-        ));
+        $this->db->manipulateF(
+            '
+                UPDATE ' . $this->table . ' SET
+                status = :status,
+                user = :user,
+                created_timestamp = :created_timestamp,
+                data = :data,
+                obj_id = :obj_id
+                WHERE id = :id
+            ',
+            array('integer', 'integer', 'integer', 'clob', 'integer'),
+            array((int) $userImport->getStatus(), (int) $userImport->getUser, (int) $userImport->getCreatedTimestamp(), $userImport->getData(), (int) $userImport->getObjId())
+        );
     }
 
     private function add($userImport)
     {
-        $this->db->prepare('
-            INSERT INTO ' . $this->table . '
-            (status, user, created_timestamp, data)
-            VALUES
-            (:status, :user, :created_timestamp, :data)
-        ');
-        $this->db->execute(array(
-            'status' => $userImport->getStatus(),
-            'user' => $userImport->getUser()->getId(),
-            'created_timestamp' => $userImport->getCreatedTimestamp(),
-            'data' => $userImport->getData()
-        ));
-
-        $this->db->prepare('
-            SELECT id FROM ' . $this->table . '
-            ORDER BY id DESC
-            LIMIT 1
-        ');
-        $result = $this->db->execute(array());
-        $resultRow = $result->fetchAssoc();
-        $userImport->setId($resultRow[0]['id']);
+        $nextId = $this->db->nextId($this->table);
+        $userImport->setId((int) $nextId);
+        $this->db->manipulateF(
+            '
+                INSERT INTO ' . $this->table . '
+                (id, status, user, created_timestamp, data, obj_id)
+                VALUES
+                (%s, %s, %s, %s, %s, %s)
+            ',
+            array('integer', 'integer', 'integer', 'integer', 'clob', 'integer'),
+            array((int) $userImport->getId(), (int) $userImport->getStatus(), (int) $userImport->getUser(), (int) $userImport->getCreatedTimestamp(), $userImport->getData(), (int) $userImport->getObjId())
+        );
 
         return $userImport;
     }
 
-    /** int $userImportId */
-    public function findOneById($userImportId)
+    /**
+     * @param int $userImportId
+     * @return UserImport
+     * @throws DataNotFoundException
+     */
+    public function findOneById(int $userImportId) : UserImport
     {
-        $this->db->prepare('
-            SELECT * FROM ' . $this->table . ' 
-            WHERE id = :id
-        ');
+        $result = $this->db->queryF(
+            '
+                SELECT * FROM ' . $this->table . ' 
+                WHERE id = %s
+            ',
+            array('integer'),
+            array($userImportId)
+        );
 
-        $result = $this->db->execute(array("id" => $userImportId));
-        return ($result->numRows() > 0) ? $result->fetchAssoc() : null;
+        if ($result->numRows() == 0) {
+            throw new DataNotFoundException('No UserImport with ID ' . $userImportId . ' found');
+        }
+        $row = $this->db->fetchAssoc($result);
+        $userImport = UserImport::fromRecord($row);
+        return $userImport;
     }
 }

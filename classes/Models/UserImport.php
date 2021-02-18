@@ -19,21 +19,21 @@ class UserImport
     /** @var integer */
     private $status;
 
-    /** @var ilObjUser|integer */
+    /** @var integer */
     private $user;
 
-    /** @var string */
+    /** @var integer */
     private $createdTimestamp;
 
     /** @var string */
     private $data;
 
+    /** @var integer */
+    private $objId;
+
     const STATUS_PENDING = 0;
     const STATUS_COMPLETED = 1;
 
-    /**
-     * @return int
-     */
     public function getId()
     {
         return $this->id;
@@ -42,7 +42,7 @@ class UserImport
     /**
      * @param int $id
      */
-    public function setId($id) : void
+    public function setId(int $id) : void
     {
         $this->id = $id;
     }
@@ -50,7 +50,7 @@ class UserImport
     /**
      * @return int
      */
-    public function getStatus()
+    public function getStatus() : int
     {
         return $this->status;
     }
@@ -58,26 +58,23 @@ class UserImport
     /**
      * @param int $status
      */
-    public function setStatus($status) : void
+    public function setStatus(int $status) : void
     {
         $this->status = $status;
     }
 
     /**
-     * @return ilObjUser|int
+     * @return int
      */
-    public function getUser()
+    public function getUser() : int
     {
-        if (is_numeric($this->user)) {
-            $this->user = new ilObjUser($this->user);
-        }
         return $this->user;
     }
 
     /**
-     * @param ilObjUser|int $user
+     * @param int $user
      */
-    public function setUser($user) : void
+    public function setUser(int $user) : void
     {
         $this->user = $user;
     }
@@ -85,15 +82,15 @@ class UserImport
     /**
      * @return string
      */
-    public function getCreatedTimestamp()
+    public function getCreatedTimestamp() : int
     {
         return $this->createdTimestamp;
     }
 
     /**
-     * @param string $createdTimestamp
+     * @param int $createdTimestamp
      */
-    public function setCreatedTimestamp($createdTimestamp) : void
+    public function setCreatedTimestamp(int $createdTimestamp) : void
     {
         $this->createdTimestamp = $createdTimestamp;
     }
@@ -101,7 +98,7 @@ class UserImport
     /**
      * @return string
      */
-    public function getData()
+    public function getData() : string
     {
         return $this->data;
     }
@@ -109,8 +106,36 @@ class UserImport
     /**
      * @param string $data
      */
-    public function setData($data) : void
+    public function setData(string $data) : void
     {
         $this->data = $data;
+    }
+
+    /**
+     * @return int
+     */
+    public function getObjId() : int
+    {
+        return $this->objId;
+    }
+
+    /**
+     * @param int $objId
+     */
+    public function setObjId(int $objId) : void
+    {
+        $this->objId = $objId;
+    }
+
+    public static function fromRecord(array $record) : self
+    {
+        $import = new self();
+        $import->setId((int) $record['id']);
+        $import->setCreatedTimestamp((int) $record['created_timestamp']);
+        $import->setData($record['data']);
+        $import->setObjId((int) $record['obj_id']);
+        $import->setStatus((int) $record['status']);
+        $import->setUser((int) $record['user']);
+        return $import;
     }
 }

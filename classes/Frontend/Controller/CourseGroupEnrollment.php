@@ -20,6 +20,11 @@ use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\CoulNotFindUploadedFileException;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\UploadRejectedException;
 use ILIAS\Plugin\CrsGrpEnrollment\Models\UserImport;
 use ILIAS\Plugin\CrsGrpEnrollment\Repositories\UserImportRepository;
+use ILIAS\BackgroundTasks\Implementation\Bucket\BasicBucket;
+use ILIAS\Plugin\CrsGrpEnrollment\BackgroundTask\UserImportJob;
+use ILIAS\BackgroundTasks\Implementation\Tasks\PlusJob;
+use ILIAS\BackgroundTasks\Implementation\Tasks\DownloadInteger;
+use ILIAS\Plugin\CrsGrpEnrollment\BackgroundTask\UserImportReport;
 
 /**
  * Class CourseGroupEnrollment
@@ -161,21 +166,70 @@ class CourseGroupEnrollment extends RepositoryObject
 
                 $this->userImportValidator->validate($uploadResult->getPath());
 
+
                 // TODO: Store/Process file
                 $dataArray = $this->userImportService->convertCSVToArray($uploadResult->getPath());
 
                 $userImport = new UserImport();
                 $userImport->setStatus(UserImport::STATUS_PENDING);
-                $userImport->setUser($DIC->user()->getId());
+                $userImport->setUser((int) $DIC->user()->getId());
                 $userImport->setCreatedTimestamp(time());
                 $userImport->setData(json_encode($dataArray));
+                $userImport->setObjId((int) $this->object->getId());
 
                 $userImport = $userImportRepository->save($userImport);
 
 
-                echo "<pre>";
-                var_dump($dataArray, $userImport);
-                die();
+//                echo "<pre>";
+//                var_dump($dataArray, $userImport);
+//                die();
+
+
+                //-----------------------------------------------------------------------------------------------------------------------------------
+                $taskFactory = $DIC->backgroundTasks()->taskFactory();
+                $taskManager = $DIC->backgroundTasks()->taskManager();
+
+                $bucket = new BasicBucket();
+                $bucket->setUserId($DIC->user()->getId());
+
+                $enrollment = $taskFactory->createTask(UserImportJob::class, [
+                    (int) $userImport->getId(),
+                ]);
+
+//                echo "<pre>";
+//                var_dump($enrollment);
+//                die();
+
+                $userInteraction = $taskFactory->createTask(UserImportReport::class, [$enrollment]);
+
+
+                $bucket->setTask($userInteraction);
+                $bucket->setTitle("User Import.");
+                $taskManager->run($bucket);
+
+
+
+
+//                $result = $taskFactory->createTask(PlusJob::class,[
+//                    1,
+//                    2
+//                ]);
+//
+//                echo "<pre>";
+//                var_dump($result);
+//                die();
+//
+//                $userInteraction = $taskFactory->createTask(DownloadInteger::class, [$result]);
+//
+//                $bucket->setTask($userInteraction);
+//                $bucket->setTitle("Some calculation.");
+//
+//                $taskManager->run($bucket);
+
+
+
+
+                //-----------------------------------------------------------------------------------------------------------------------------------
 
                 $this->ctrl->redirectByClass(
                     [ilUIPluginRouterGUI::class, get_class($this->getCoreController())],
