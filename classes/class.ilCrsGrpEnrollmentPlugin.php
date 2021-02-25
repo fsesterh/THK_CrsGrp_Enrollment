@@ -62,7 +62,7 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
     {
         parent::afterUninstall();
 
-        if ($this->dic->database()->tableExist('xcge_user_import')) {
+        if ($this->dic->database()->tableExists('xcge_user_import')) {
             $this->dic->database()->dropTable('xcge_user_import');
         }
 
@@ -94,8 +94,6 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
             $this->dic->database()->manipulate($deleteBackgroundTasksSql);
         }
 
-        //ToDo -> Markierten Block für UserImportReport kopieren
-        //---------------------------------------------------------------------------------------------------------------------------------
         if ($this->dic->database()->tableExists('il_bt_bucket')) {
             $deleteBucketsSql = 'DELETE FROM il_bt_bucket WHERE title = ' . $this->dic->database()->quote(
                 'User Import.',
@@ -103,7 +101,6 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
             );
             $this->dic->database()->manipulate($deleteBucketsSql);
         }
-        //---------------------------------------------------------------------------------------------------------------------------------
     }
 
     /**

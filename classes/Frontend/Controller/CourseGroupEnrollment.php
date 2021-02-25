@@ -169,8 +169,6 @@ class CourseGroupEnrollment extends RepositoryObject
 
                 $this->userImportValidator->validate($uploadResult->getPath());
 
-
-                // TODO: Store/Process file
                 $dataArray = $this->userImportService->convertCSVToArray($uploadResult->getPath());
 
                 $userImport = new UserImport();
@@ -199,7 +197,6 @@ class CourseGroupEnrollment extends RepositoryObject
                     (int) $userImport->getId(),
                 ]);
 
-                //ToDo - Namen übergeben mit Sprachvariablen
                 $object = ilObjectFactory::getInstanceByObjId($userImport->getObjId());
                 if ($object === false || ($object instanceof ilObjCourse || $object instanceof ilObjGroup) === false) {
                     $csvExportName = $this->getCoreController()->getPluginObject()->txt('err_csv_empty') . '_' . date('d.m.Y H:i');
