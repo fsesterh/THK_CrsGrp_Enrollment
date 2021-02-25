@@ -19,7 +19,7 @@ class UserImportRepository
     private $db;
 
     /** @var string */
-    private $table = "xcge_user_import";
+    private $table = 'xcge_user_import';
 
     public function __construct()
     {

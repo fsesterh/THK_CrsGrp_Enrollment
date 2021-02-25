@@ -48,9 +48,6 @@ class UserImportReport extends AbstractUserInteraction
             $outputter = new \ilPHPOutputDelivery();
             $outputter->start('User Data String');
             ilUtil::deliverData($csvString->getValue(), $csvName->getValue() . '.csv', 'text/csv');
-            //ilFileDelivery
-//            ilUtil::deliverData($csvString, "UserImport.csv", "text/csv");
-//            echo $csvString->getValue();
             $outputter->stop();
         }
 

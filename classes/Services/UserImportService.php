@@ -156,7 +156,6 @@ class UserImportService
                 ilGroupMembershipMailNotification::TYPE_ADMISSION_MEMBER,
                 $new_member
             );
-            $assigned = true;
         }
 
         return $this->csv;
