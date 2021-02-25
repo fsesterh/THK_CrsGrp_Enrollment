@@ -22,10 +22,7 @@ use ILIAS\Plugin\CrsGrpEnrollment\Models\UserImport;
 use ILIAS\Plugin\CrsGrpEnrollment\Repositories\UserImportRepository;
 use ILIAS\BackgroundTasks\Implementation\Bucket\BasicBucket;
 use ILIAS\Plugin\CrsGrpEnrollment\BackgroundTask\UserImportJob;
-use ILIAS\BackgroundTasks\Implementation\Tasks\PlusJob;
-use ILIAS\BackgroundTasks\Implementation\Tasks\DownloadInteger;
 use ILIAS\Plugin\CrsGrpEnrollment\BackgroundTask\UserImportReport;
-use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\Repository\DataNotFoundException;
 use ilObjCourse;
 use ilObjGroup;
 

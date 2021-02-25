@@ -4,7 +4,6 @@
 namespace ILIAS\Plugin\CrsGrpEnrollment\BackgroundTask;
 
 use ILIAS\BackgroundTasks\Implementation\Values\ScalarValues\BooleanValue;
-use ILIAS\BackgroundTasks\Implementation\Values\ScalarValues\IntegerValue;
 use ILIAS\BackgroundTasks\Types\SingleType;
 use ILIAS\BackgroundTasks\Implementation\Tasks\AbstractUserInteraction;
 use ILIAS\BackgroundTasks\Task\UserInteraction\Option;
