@@ -6,8 +6,6 @@ namespace ILIAS\Plugin\CrsGrpEnrollment\Services;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\FileNotReadableException;
 use ilObjectFactory;
 use ilParticipants;
-use ilObjUserTracking;
-use ilLPStatus;
 use ilObjCourse;
 use ilCSVWriter;
 use ilUserInterfaceHookPlugin;
@@ -127,6 +125,13 @@ class UserImportService
         $refIds = ilObject::_getAllReferences($groupObject->getId());
         $refId = current($refIds);
 
+        $participant = ilParticipants::getInstance($refId);
+
+        $this->csv = new ilCSVWriter();
+        $this->csv->addColumn($this->pluginObject->txt('report_csv_field_name'));
+        $this->csv->addColumn($this->pluginObject->txt('report_csv_field_error'));
+        $this->csv->addRow();
+
         $userIds = $this->getUserIds($userImport);
 
         foreach ((array) $userIds as $new_member) {
@@ -138,16 +143,16 @@ class UserImportService
                 continue;
             }
 
-            if ($this->getMembersObject()->isAssigned($new_member)) {
+            if ($participant->isAssigned($new_member)) {
                 $this->csv->addColumn('[' . $tmp_obj->getId() . '] ' . $tmp_obj->getFirstname() . ' ' . $tmp_obj->getLastname());
                 $this->csv->addColumn($this->pluginObject->txt('report_csv_user_already_assigned_err_msg'));
                 $this->csv->addRow();
                 continue;
             }
 
-            $this->getMembersObject()->add($new_member, IL_GRP_MEMBER);
+            $participant->add($new_member, IL_GRP_MEMBER);
             include_once './Modules/Group/classes/class.ilGroupMembershipMailNotification.php';
-            $this->getMembersObject()->sendNotification(
+            $participant->sendNotification(
                 ilGroupMembershipMailNotification::TYPE_ADMISSION_MEMBER,
                 $new_member
             );
@@ -155,31 +160,6 @@ class UserImportService
         }
 
         return $this->csv;
-    }
-
-    /**
-     * Get member object
-     * @return ilParticipants
-     */
-    public function getMembersObject()
-    {
-        if ($this->participants instanceof ilParticipants) {
-            return $this->participants;
-        }
-        return $this->participants = ilParticipants::getInstance($this->getParentObject()->getRefId());
-    }
-
-    public function checkLPStatusSync(int $userId)
-    {
-        // #11113
-        include_once('Services/Tracking/classes/class.ilObjUserTracking.php');
-        if (ilObjUserTracking::_enabledLearningProgress() &&
-            $this->getStatusDetermination() == ilObjCourse::STATUS_DETERMINATION_LP) {
-            include_once('Services/Tracking/classes/class.ilLPStatus.php');
-            // #13811 - we need to suppress creation if status entry
-            $has_completed = (ilLPStatus::_lookupStatus($this->getId(), $userId, false) == ilLPStatus::LP_STATUS_COMPLETED_NUM);
-            $this->getMembersObject()->updatePassed($userId, $has_completed, false, true);
-        }
     }
 
     /**
