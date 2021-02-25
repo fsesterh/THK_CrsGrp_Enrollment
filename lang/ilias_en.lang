@@ -7,3 +7,12 @@ import_successfully_enqueued#:#User import successfully enqueued for asynchronou
 err_csv_file_different_row_width#:#Please upload a file that has only one column per row.
 err_csv_file_cannot_be_read#:#Import file %s could not be read.
 err_csv_empty#:#The uploaded CSV is empty.
+report_csv_filtered_out_user_err_msg#:#No access to allocate this user.
+report_csv_user_not_found_err_msg#:#The user was not found.
+report_csv_user_already_assigned_err_msg#:#The user was already assigned.
+crs_grp_enrol_report_csv_field_name#:#User
+report_csv_field_error#:#Error
+report_csv_no_user_import_found#:#No User Import Dataset found for the ID %s
+report_csv_no_executive_user_found#:#No executive user for the ID %s found
+report_csv_no_associated_object_found#:#No object with ID %s found where to import to
+report_csv_export_name#:#User Import Export

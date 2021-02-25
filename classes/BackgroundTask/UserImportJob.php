@@ -13,6 +13,13 @@ use ILIAS\Plugin\CrsGrpEnrollment\Repositories\UserImportRepository;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\Repository\DataNotFoundException;
 use ILIAS\Plugin\CrsGrpEnrollment\Models\UserImport;
 use ilObjUser;
+use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\UserNotFoundException;
+use ilObjCourse;
+use ilObjectFactory;
+use ilObjGroup;
+use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\AssociatedObjectNotFoundException;
+use ILIAS\Plugin\CrsGrpEnrollment\Services\UserImportService;
+use ilCSVWriter;
 
 /**
  * Class UserImportJob
@@ -21,12 +28,35 @@ use ilObjUser;
 class UserImportJob extends AbstractJob
 {
     /**
+     * @var ilCSVWriter
+     */
+    protected $csv = null;
+
+    /**
      * @inheritdoc
      */
     public function run(array $input, Observer $observer)
     {
         global $DIC;
+        $this->csv = new ilCSVWriter();
+
+        if (
+            $DIC['ilPluginAdmin']->exists('Services', 'UIComponent', 'uihk', 'CrsGrpEnrollment') &&
+            $DIC['ilPluginAdmin']->isActive('Services', 'UIComponent', 'uihk', 'CrsGrpEnrollment')
+        ) {
+            $plugin = call_user_func_array(
+                array(get_class($DIC['ilPluginAdmin']), 'getPluginObject'),
+                ['Services', 'UIComponent', 'uihk', 'CrsGrpEnrollment']
+            );
+        }
+
+        if (!$plugin) {
+            $this->csv->addColumn('Fatal Error! Plugin not installed!');
+            return $this->csv;
+        }
+
         $userImportRepository = new UserImportRepository();
+        $userImportService = new UserImportService($plugin);
 
         try {
             /** @var UserImport $userImport */
@@ -37,43 +67,33 @@ class UserImportJob extends AbstractJob
                 json_encode($userImport->getData(), JSON_PRETTY_PRINT)
             ));
 
-            $users = $this->getUserObjects($userImport);
+            if (ilObjUser::_lookupLogin($userImport->getUser()) === false) {
+                throw new UserNotFoundException('Executive User not found');
+            }
 
-            //ToDo - Weitere Implementation von den Zuweisungen
-            //Schritt 1: Benutzer ID und Object ID auf existenz prüfen
-            //Schritt 2: Ist es ein Kurs oder eine Gruppe
-            //Schritt 3: Zuweisungslogik implementieren
-            //Schritt 4: Protokoll im UserImportReport bauen und zum Download bereitstellen
-            //Schritt 5: Fertig
+            $object = ilObjectFactory::getInstanceByObjId($userImport->getObjId());
+            if ($object === false || ($object instanceof ilObjCourse || $object instanceof ilObjGroup) === false) {
+                throw new AssociatedObjectNotFoundException('Associated object not found');
+            }
+
+            if ($object instanceof ilObjCourse) {
+                $this->csv = $userImportService->importUserToCourse($object, $userImport);
+            }
+
+            if ($object instanceof ilObjGroup) {
+                $this->csv = $userImportService->importUserToGroup($object, $userImport);
+            }
         } catch (DataNotFoundException $e) {
-            $DIC->logger()->root()->info(sprintf(
-                'No User Import found for the ID: %s',
-                $input[0]->getValue()
-            ));
+            $this->csv->addColumn(sprintf($plugin->txt('report_csv_no_user_import_found'), $input[0]->getValue()));
+        } catch (UserNotFoundException $e) {
+            $this->csv->addColumn(sprintf($plugin->txt('report_csv_no_executive_user_found'), $userImport->getUser()));
+        } catch (AssociatedObjectNotFoundException $e) {
+            $this->csv->addColumn(sprintf($plugin->txt('report_csv_no_associated_object_found'), $userImport->getObjId()));
         }
 
         $output = new StringValue();
-        $output->setValue($userImport->getData());
+        $output->setValue($this->csv->getCSVString());
         return $output;
-    }
-    /** @var UserImport $userImport */
-    private function getUserObjects($userImport)
-    {
-        foreach (json_decode($userImport->getData(), true) as $userData) {
-            $users = [];
-            if (is_numeric($userData)) {
-                $user[] = new ilObjUser($userData);
-            } else {
-                $userIds = ilObjUser::getUserIdsByEmail($userData);
-                if (count($userIds) > 0) {
-                    foreach ($userIds as $userId) {
-                        $user[] = new ilObjUser($userId);
-                    }
-                }
-            }
-        }
-
-        return $users;
     }
 
     /**

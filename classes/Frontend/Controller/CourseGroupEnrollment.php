@@ -25,6 +25,9 @@ use ILIAS\Plugin\CrsGrpEnrollment\BackgroundTask\UserImportJob;
 use ILIAS\BackgroundTasks\Implementation\Tasks\PlusJob;
 use ILIAS\BackgroundTasks\Implementation\Tasks\DownloadInteger;
 use ILIAS\Plugin\CrsGrpEnrollment\BackgroundTask\UserImportReport;
+use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\Repository\DataNotFoundException;
+use ilObjCourse;
+use ilObjGroup;
 
 /**
  * Class CourseGroupEnrollment
@@ -192,19 +195,24 @@ class CourseGroupEnrollment extends RepositoryObject
                 $bucket = new BasicBucket();
                 $bucket->setUserId($DIC->user()->getId());
 
-                $enrollment = $taskFactory->createTask(UserImportJob::class, [
+                $csvExport = $taskFactory->createTask(UserImportJob::class, [
                     (int) $userImport->getId(),
                 ]);
 
-//                echo "<pre>";
-//                var_dump($enrollment);
-//                die();
+                //ToDo - Namen übergeben mit Sprachvariablen
+                $object = ilObjectFactory::getInstanceByObjId($userImport->getObjId());
+                if ($object === false || ($object instanceof ilObjCourse || $object instanceof ilObjGroup) === false) {
+                    $csvExportName = $this->getCoreController()->getPluginObject()->txt('err_csv_empty') . '_' . date('d.m.Y H:i');
+                } else {
+                    /** @var \ilObject $csvExportName */
+                    $csvExportName = $this->getCoreController()->getPluginObject()->txt('report_csv_export_name') . "_" . $object->getTitle() . "_" . date("d.m.Y H:i");
+                }
 
-                $userInteraction = $taskFactory->createTask(UserImportReport::class, [$enrollment]);
+                $userInteraction = $taskFactory->createTask(UserImportReport::class, [$csvExport,$csvExportName]);
 
 
                 $bucket->setTask($userInteraction);
-                $bucket->setTitle("User Import.");
+                $bucket->setTitle('User Import.');
                 $taskManager->run($bucket);
 
 

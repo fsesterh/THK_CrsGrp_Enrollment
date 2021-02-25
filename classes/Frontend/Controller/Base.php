@@ -85,7 +85,7 @@ abstract class Base
         $this->log = $dic->logger()->root();
 
         $this->userImportValidator = new UserImportValidator();
-        $this->userImportService = new UserImportService();
+        $this->userImportService = new UserImportService($this->getCoreController()->getPluginObject());
 
         $this->init();
     }

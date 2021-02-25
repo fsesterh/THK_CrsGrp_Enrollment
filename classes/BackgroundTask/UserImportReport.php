@@ -12,6 +12,7 @@ use ILIAS\BackgroundTasks\Value;
 use ILIAS\BackgroundTasks\Bucket;
 use ILIAS\BackgroundTasks\Implementation\Values\ScalarValues\StringValue;
 use ILIAS\BackgroundTasks\Implementation\Tasks\UserInteraction\UserInteractionOption;
+use ilUtil;
 
 /**
  * Class UserImportReport
@@ -28,7 +29,7 @@ class UserImportReport extends AbstractUserInteraction
     public function getOptions(array $input)
     {
         return [
-            new UserInteractionOption("download", "download"),
+            new UserInteractionOption('download', 'download'),
         ];
     }
 
@@ -38,17 +39,23 @@ class UserImportReport extends AbstractUserInteraction
     public function interaction(array $input, Option $user_selected_option, Bucket $bucket)
     {
         /** @var StringValue */
-        $integerValue = $input[0];
+        $csvString = $input[0];
+
+        /** @var StringValue */
+        $csvName = $input[1];
         global $DIC;
 
-        if ($user_selected_option->getValue() == "download") {
+        if ($user_selected_option->getValue() == 'download') {
             $outputter = new \ilPHPOutputDelivery();
-            $outputter->start("User Data String");
-            echo $integerValue->getValue();
+            $outputter->start('User Data String');
+            ilUtil::deliverData($csvString->getValue(), $csvName->getValue() . '.csv', 'text/csv');
+            //ilFileDelivery
+//            ilUtil::deliverData($csvString, "UserImport.csv", "text/csv");
+//            echo $csvString->getValue();
             $outputter->stop();
         }
 
-        return $integerValue;
+        return $csvString;
     }
 
     /**
@@ -57,8 +64,8 @@ class UserImportReport extends AbstractUserInteraction
     public function getInputTypes()
     {
         return [
-//            new SingleType(IntegerValue::class), // 0. User Import Id
             new SingleType(StringValue::class), // 0. Data String
+            new SingleType(StringValue::class), // 0. CSV Name
         ];
     }
 
