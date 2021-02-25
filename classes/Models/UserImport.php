@@ -34,6 +34,9 @@ class UserImport
     const STATUS_PENDING = 0;
     const STATUS_COMPLETED = 1;
 
+    /**
+     * @return int|null
+     */
     public function getId()
     {
         return $this->id;

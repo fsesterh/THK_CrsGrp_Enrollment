@@ -180,6 +180,12 @@ class UserImportService
             $userIds = ilObjUser::getUserIdsByEmail($userData);
             if (count($userIds) > 0) {
                 $findUserFlag = true;
+                if (count($userIds) > 1) {
+                    $this->csv->addColumn('[' . $userData . '] ');
+                    $this->csv->addColumn($this->pluginObject->txt('report_csv_user_not_fingerprintable_err_msg'));
+                    $this->csv->addRow();
+                    continue;
+                }
                 foreach ($userIds as $userId) {
                     $users[] = $userId;
                 }

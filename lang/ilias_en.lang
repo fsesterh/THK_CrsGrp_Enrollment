@@ -16,3 +16,4 @@ report_csv_no_user_import_found#:#No User Import Dataset found for the ID %s
 report_csv_no_executive_user_found#:#No executive user for the ID %s found
 report_csv_no_associated_object_found#:#No object with ID %s found where to import to
 report_csv_export_name#:#User Import Export
+report_csv_user_not_fingerprintable_err_msg#:#User was not fingerprintable.

@@ -27,6 +27,11 @@ class UserImportRepository
         $this->db = $DIC->database();
     }
 
+    /**
+     * @param UserImport $userImport
+     * @return UserImport
+     * @throws DataNotFoundException
+     */
     public function save(UserImport $userImport) : UserImport
     {
         if ($userImport->getId() === null) {
@@ -41,25 +46,31 @@ class UserImportRepository
         return $userImport;
     }
 
-    /** @var UserImport $userImport */
-    private function update($userImport)
+    /**
+     * @param UserImport $userImport
+     */
+    private function update(UserImport $userImport) : void
     {
         $this->db->manipulateF(
             '
                 UPDATE ' . $this->table . ' SET
-                status = :status,
-                user = :user,
-                created_timestamp = :created_timestamp,
-                data = :data,
-                obj_id = :obj_id
-                WHERE id = :id
+                status = %s,
+                user = %s,
+                created_timestamp = %s,
+                data = %s,
+                obj_id = %s
+                WHERE id = %s
             ',
             array('integer', 'integer', 'integer', 'clob', 'integer'),
-            array((int) $userImport->getStatus(), (int) $userImport->getUser, (int) $userImport->getCreatedTimestamp(), $userImport->getData(), (int) $userImport->getObjId())
+            array((int) $userImport->getStatus(), (int) $userImport->getUser(), (int) $userImport->getCreatedTimestamp(), $userImport->getData(), (int) $userImport->getObjId())
         );
     }
 
-    private function add($userImport)
+    /**
+     * @param UserImport $userImport
+     * @return UserImport
+     */
+    private function add(UserImport $userImport) : UserImport
     {
         $nextId = $this->db->nextId($this->table);
         $userImport->setId((int) $nextId);

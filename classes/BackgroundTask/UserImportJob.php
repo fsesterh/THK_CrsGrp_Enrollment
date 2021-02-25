@@ -1,10 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 /* Copyright (c) 1998-2019 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\BackgroundTask;
 
 use ILIAS\BackgroundTasks\Implementation\Tasks\AbstractJob;
-use ILIAS\BackgroundTasks\Implementation\Values\ScalarValues\BooleanValue;
 use ILIAS\BackgroundTasks\Implementation\Values\ScalarValues\IntegerValue;
 use ILIAS\BackgroundTasks\Implementation\Values\ScalarValues\StringValue;
 use ILIAS\BackgroundTasks\Observer;
@@ -93,6 +92,7 @@ class UserImportJob extends AbstractJob
 
         $output = new StringValue();
         $output->setValue($this->csv->getCSVString());
+
         return $output;
     }
 
