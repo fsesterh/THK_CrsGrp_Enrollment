@@ -7,3 +7,13 @@ import_successfully_enqueued#:#Der Benutzer-Import wurde erfolgreich eingereicht
 err_csv_file_different_row_width#:#Bitte laden Sie eine CSV Datei hoch, die nur eine Spalte pro Zeile hat.
 err_csv_file_cannot_be_read#:#Import datei %s kann nicht gelesen werden.
 err_csv_empty#:#Die hochgeladene CSV Datei ist leer.
+report_csv_filtered_out_user_err_msg#:#Es existierten keine Berechtigungen diesen Benutzer zuzuweisen.
+report_csv_user_not_found_err_msg#:#Der Benutzer konnte nicht gefunden werden.
+report_csv_user_already_assigned_err_msg#:#Der Benutzer war bereits zugewiesen.
+report_csv_field_name#:#Benutzer
+report_csv_field_error#:#Fehler
+report_csv_no_user_import_found#:#Kein UserImport Datensatz zu der ID %s gefunden
+report_csv_no_executive_user_found#:#Keinen ausführenden Benutzer für die ID %s gefunden
+report_csv_no_associated_object_found#:#Kein Objekt mit der ID %s gefunden, wohin Importiert werden soll
+report_csv_export_name#:#Benutzer-Import Export
+report_csv_user_not_fingerprintable_err_msg#:#Benutzer konnte nicht eindeutig bestimmt werden.

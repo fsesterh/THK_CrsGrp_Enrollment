@@ -18,6 +18,13 @@ use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\FileNotReadableException;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\CsvEmptyException;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\CoulNotFindUploadedFileException;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\UploadRejectedException;
+use ILIAS\Plugin\CrsGrpEnrollment\Models\UserImport;
+use ILIAS\Plugin\CrsGrpEnrollment\Repositories\UserImportRepository;
+use ILIAS\BackgroundTasks\Implementation\Bucket\BasicBucket;
+use ILIAS\Plugin\CrsGrpEnrollment\BackgroundTask\UserImportJob;
+use ILIAS\Plugin\CrsGrpEnrollment\BackgroundTask\UserImportReport;
+use ilObjCourse;
+use ilObjGroup;
 
 /**
  * Class CourseGroupEnrollment
@@ -134,6 +141,8 @@ class CourseGroupEnrollment extends RepositoryObject
     public function submitImportFormCmd() : string
     {
         global $DIC;
+
+        $userImportRepository = new UserImportRepository();
         $form = $this->buildForm();
 
         if ($form->checkInput()) {
@@ -158,12 +167,41 @@ class CourseGroupEnrollment extends RepositoryObject
 
                 $this->userImportValidator->validate($uploadResult->getPath());
 
-                // TODO: Store/Process file
                 $dataArray = $this->userImportService->convertCSVToArray($uploadResult->getPath());
 
-                echo "<pre>";
-                var_dump("Data Array", $dataArray);
-                die();
+                $userImport = new UserImport();
+                $userImport->setStatus(UserImport::STATUS_PENDING);
+                $userImport->setUser((int) $DIC->user()->getId());
+                $userImport->setCreatedTimestamp(time());
+                $userImport->setData(json_encode($dataArray));
+                $userImport->setObjId((int) $this->object->getId());
+
+                $userImport = $userImportRepository->save($userImport);
+
+                $taskFactory = $DIC->backgroundTasks()->taskFactory();
+                $taskManager = $DIC->backgroundTasks()->taskManager();
+
+                $bucket = new BasicBucket();
+                $bucket->setUserId($DIC->user()->getId());
+
+                $csvExport = $taskFactory->createTask(UserImportJob::class, [
+                    (int) $userImport->getId(),
+                ]);
+
+                $object = ilObjectFactory::getInstanceByObjId($userImport->getObjId());
+                if ($object === false || ($object instanceof ilObjCourse || $object instanceof ilObjGroup) === false) {
+                    $csvExportName = $this->getCoreController()->getPluginObject()->txt('err_csv_empty') . '_' . date('d.m.Y H:i');
+                } else {
+                    /** @var \ilObject $csvExportName */
+                    $csvExportName = $this->getCoreController()->getPluginObject()->txt('report_csv_export_name') . "_" . $object->getTitle() . "_" . date("d.m.Y H:i");
+                }
+
+                $userInteraction = $taskFactory->createTask(UserImportReport::class, [$csvExport,$csvExportName]);
+
+
+                $bucket->setTask($userInteraction);
+                $bucket->setTitle('User Import.');
+                $taskManager->run($bucket);
 
                 $this->ctrl->redirectByClass(
                     [ilUIPluginRouterGUI::class, get_class($this->getCoreController())],
