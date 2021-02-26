@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /* Copyright (c) 1998-2019 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\BackgroundTask;
@@ -43,7 +43,6 @@ class UserImportReport extends AbstractUserInteraction
 
         /** @var StringValue */
         $csvName = $input[1];
-        global $DIC;
 
         if ($user_selected_option->getValue() == 'download') {
             $outputter = new ilPHPOutputDelivery();
