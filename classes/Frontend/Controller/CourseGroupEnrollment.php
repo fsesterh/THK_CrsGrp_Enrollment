@@ -203,12 +203,12 @@ class CourseGroupEnrollment extends RepositoryObject
                 $bucket->setTitle('User Import.');
                 $taskManager->run($bucket);
 
+                ilUtil::sendSuccess($this->getCoreController()->getPluginObject()->txt('import_successfully_enqueued'), true);
+
                 $this->ctrl->redirectByClass(
                     [ilUIPluginRouterGUI::class, get_class($this->getCoreController())],
                     $this->getControllerName() . '.showImportForm'
                 );
-
-                ilUtil::sendSuccess($this->getCoreController()->getPluginObject()->txt('import_successfully_enqueued'));
             } catch (InvalidCsvColumnDefinitionException $e) {
                 $form
                     ->getItemByPostVar('userImportFile')
