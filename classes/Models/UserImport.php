@@ -35,7 +35,7 @@ class UserImport
     const STATUS_COMPLETED = 1;
 
     /**
-     * @return int|null
+     * @return ?int
      */
     public function getId()
     {
@@ -130,6 +130,10 @@ class UserImport
         $this->objId = $objId;
     }
 
+    /**
+     * @param array{int, int, string, int, int, int} $record
+     * @return static
+     */
     public static function fromRecord(array $record) : self
     {
         $import = new self();

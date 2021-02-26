@@ -141,6 +141,7 @@ class CourseGroupEnrollment extends RepositoryObject
     public function submitImportFormCmd() : string
     {
         global $DIC;
+
         $userImportRepository = new UserImportRepository();
         $form = $this->buildForm();
 
@@ -177,13 +178,6 @@ class CourseGroupEnrollment extends RepositoryObject
 
                 $userImport = $userImportRepository->save($userImport);
 
-
-//                echo "<pre>";
-//                var_dump($dataArray, $userImport);
-//                die();
-
-
-                //-----------------------------------------------------------------------------------------------------------------------------------
                 $taskFactory = $DIC->backgroundTasks()->taskFactory();
                 $taskManager = $DIC->backgroundTasks()->taskManager();
 
@@ -208,30 +202,6 @@ class CourseGroupEnrollment extends RepositoryObject
                 $bucket->setTask($userInteraction);
                 $bucket->setTitle('User Import.');
                 $taskManager->run($bucket);
-
-
-
-
-//                $result = $taskFactory->createTask(PlusJob::class,[
-//                    1,
-//                    2
-//                ]);
-//
-//                echo "<pre>";
-//                var_dump($result);
-//                die();
-//
-//                $userInteraction = $taskFactory->createTask(DownloadInteger::class, [$result]);
-//
-//                $bucket->setTask($userInteraction);
-//                $bucket->setTitle("Some calculation.");
-//
-//                $taskManager->run($bucket);
-
-
-
-
-                //-----------------------------------------------------------------------------------------------------------------------------------
 
                 $this->ctrl->redirectByClass(
                     [ilUIPluginRouterGUI::class, get_class($this->getCoreController())],

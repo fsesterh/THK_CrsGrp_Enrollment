@@ -63,9 +63,10 @@ class UserImportService
         return $dataArray;
     }
 
-    public function importUserToCourse(ilObjCourse $courseObject, UserImport $userImport)
+    public function importUserToCourse(ilObjCourse $courseObject, UserImport $userImport) : ilCSVWriter
     {
         global $DIC;
+
         $this->csv = new ilCSVWriter();
         $this->csv->addColumn($this->pluginObject->txt('report_csv_field_name'));
         $this->csv->addColumn($this->pluginObject->txt('report_csv_field_error'));
@@ -87,8 +88,8 @@ class UserImportService
         $filteredOutUserIds = array_diff($userIds, $filteredUserIds);
         foreach ($filteredOutUserIds as $filteredOutUserId) {
             /** @var ilObjUser $user */
-            $user = ilObjectFactory::getInstanceByObjId($filteredOutUserId);
-            if (!$user) {
+            $user = ilObjectFactory::getInstanceByObjId($filteredOutUserId, false);
+            if (false === $user || !($user instanceof ilObjUser)) {
                 $this->csv->addColumn('[' . $user->getId() . '] ');
             } else {
                 $this->csv->addColumn('[' . $user->getId() . '] ' . $user->getFirstname() . ' ' . $user->getLastname());
@@ -99,7 +100,7 @@ class UserImportService
 
         foreach ($filteredUserIds as $filteredUserId) {
             $tmp_obj = ilObjectFactory::getInstanceByObjId($filteredUserId, false);
-            if (!$tmp_obj) {
+            if (false === $tmp_obj || !($tmp_obj instanceof ilObjUser)) {
                 $this->csv->addColumn('[' . $filteredUserId . '] ');
                 $this->csv->addColumn($this->pluginObject->txt('report_csv_user_not_found_err_msg'));
                 $this->csv->addRow();
@@ -120,7 +121,7 @@ class UserImportService
         return $this->csv;
     }
 
-    public function importUserToGroup(\ilObjGroup $groupObject, UserImport $userImport)
+    public function importUserToGroup(\ilObjGroup $groupObject, UserImport $userImport) : ilCSVWriter
     {
         $refIds = ilObject::_getAllReferences($groupObject->getId());
         $refId = current($refIds);
@@ -136,7 +137,7 @@ class UserImportService
 
         foreach ((array) $userIds as $new_member) {
             $tmp_obj = ilObjectFactory::getInstanceByObjId($new_member, false);
-            if (!$tmp_obj) {
+            if (false === $tmp_obj || !($tmp_obj instanceof ilObjUser)) {
                 $this->csv->addColumn('[' . $new_member . '] ');
                 $this->csv->addColumn($this->pluginObject->txt('report_csv_user_not_found_err_msg'));
                 $this->csv->addRow();
@@ -163,7 +164,7 @@ class UserImportService
 
     /**
      * @param UserImport $userImport
-     * @return array{int} $users
+     * @return int[] $users
      */
     private function getUserIds(UserImport $userImport) : array
     {
@@ -175,6 +176,7 @@ class UserImportService
             if ($userId > 0) {
                 $findUserFlag = true;
                 $users[] = $userId;
+                continue;
             }
 
             $userIds = ilObjUser::getUserIdsByEmail($userData);

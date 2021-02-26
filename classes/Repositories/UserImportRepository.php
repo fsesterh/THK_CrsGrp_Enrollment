@@ -3,7 +3,6 @@
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Repositories;
 
-use ilDBPdo;
 use ilDBInterface;
 use ILIAS\Plugin\CrsGrpEnrollment\Models\UserImport;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\Repository\DataNotFoundException;
@@ -24,6 +23,7 @@ class UserImportRepository
     public function __construct()
     {
         global $DIC;
+
         $this->db = $DIC->database();
     }
 
@@ -49,20 +49,16 @@ class UserImportRepository
     /**
      * @param UserImport $userImport
      */
-    private function update(UserImport $userImport) : void
+    private function updateStatus(UserImport $userImport) : void
     {
         $this->db->manipulateF(
             '
                 UPDATE ' . $this->table . ' SET
                 status = %s,
-                user = %s,
-                created_timestamp = %s,
-                data = %s,
-                obj_id = %s
                 WHERE id = %s
             ',
-            array('integer', 'integer', 'integer', 'clob', 'integer'),
-            array((int) $userImport->getStatus(), (int) $userImport->getUser(), (int) $userImport->getCreatedTimestamp(), $userImport->getData(), (int) $userImport->getObjId())
+            ['integer', 'integer'],
+            [(int) $userImport->getStatus(), (int) $userImport->getObjId()]
         );
     }
 
@@ -81,8 +77,8 @@ class UserImportRepository
                 VALUES
                 (%s, %s, %s, %s, %s, %s)
             ',
-            array('integer', 'integer', 'integer', 'integer', 'clob', 'integer'),
-            array((int) $userImport->getId(), (int) $userImport->getStatus(), (int) $userImport->getUser(), (int) $userImport->getCreatedTimestamp(), $userImport->getData(), (int) $userImport->getObjId())
+            ['integer', 'integer', 'integer', 'integer', 'clob', 'integer'],
+            [(int) $userImport->getId(), (int) $userImport->getStatus(), (int) $userImport->getUser(), (int) $userImport->getCreatedTimestamp(), $userImport->getData(), (int) $userImport->getObjId()]
         );
 
         return $userImport;
@@ -100,8 +96,8 @@ class UserImportRepository
                 SELECT * FROM ' . $this->table . ' 
                 WHERE id = %s
             ',
-            array('integer'),
-            array($userImportId)
+            ['integer'],
+            [$userImportId]
         );
 
         if ($result->numRows() == 0) {

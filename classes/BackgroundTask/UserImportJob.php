@@ -37,6 +37,8 @@ class UserImportJob extends AbstractJob
     public function run(array $input, Observer $observer)
     {
         global $DIC;
+
+        $plugin = null;
         $this->csv = new ilCSVWriter();
 
         if (

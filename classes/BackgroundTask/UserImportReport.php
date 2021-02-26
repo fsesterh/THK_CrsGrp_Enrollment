@@ -12,6 +12,7 @@ use ILIAS\BackgroundTasks\Bucket;
 use ILIAS\BackgroundTasks\Implementation\Values\ScalarValues\StringValue;
 use ILIAS\BackgroundTasks\Implementation\Tasks\UserInteraction\UserInteractionOption;
 use ilUtil;
+use ilPHPOutputDelivery;
 
 /**
  * Class UserImportReport
@@ -45,7 +46,7 @@ class UserImportReport extends AbstractUserInteraction
         global $DIC;
 
         if ($user_selected_option->getValue() == 'download') {
-            $outputter = new \ilPHPOutputDelivery();
+            $outputter = new ilPHPOutputDelivery();
             $outputter->start('User Data String');
             ilUtil::deliverData($csvString->getValue(), $csvName->getValue() . '.csv', 'text/csv');
             $outputter->stop();
@@ -61,7 +62,7 @@ class UserImportReport extends AbstractUserInteraction
     {
         return [
             new SingleType(StringValue::class), // 0. Data String
-            new SingleType(StringValue::class), // 0. CSV Name
+            new SingleType(StringValue::class), // 1. CSV Name
         ];
     }
 
