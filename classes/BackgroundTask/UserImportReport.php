@@ -46,7 +46,7 @@ class UserImportReport extends AbstractUserInteraction
 
         if ($user_selected_option->getValue() == 'download') {
             $outputter = new ilPHPOutputDelivery();
-            $outputter->start('User Data String');
+            $outputter->start($csvName->getValue() . '.csv', 'text/csv');
             ilUtil::deliverData($csvString->getValue(), $csvName->getValue() . '.csv', 'text/csv');
             $outputter->stop();
         }
