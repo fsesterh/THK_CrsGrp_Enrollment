@@ -2,7 +2,7 @@ course_group_enrollment#:#Course Group enrollment
 course_group_import#:#User Import
 course_group_import_field_description#:#Please upload a data with one unique ILIAS username or unique E-Mail address per row.
 abort_course_group_import#:#Abort
-course_group_import_field#:#User Import Field
+course_group_import_field#:#Import Users
 import_successfully_enqueued#:#File uploaded successfully and enqueued for asynchronous processing. You will be notified when the process is finished.
 err_csv_file_different_row_width#:#Please upload a file that has only one column per row.
 err_csv_file_cannot_be_read#:#Import file %s could not be read.

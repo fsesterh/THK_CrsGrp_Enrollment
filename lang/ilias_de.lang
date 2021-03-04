@@ -1,7 +1,7 @@
 course_group_enrollment#:#Kurs Gruppen Zuweisung
 course_group_import#:#Benutzer-Import
 abort_course_group_import#:#Abbrechen
-course_group_import_field#:#Benutzer-Importfeld
+course_group_import_field#:#Benutzer importieren
 course_group_import_field_description#:#Bitte laden Sie eine Datei hoch, wo pro Zeile ein eindeutiger ILIAS-Benutzername oder eine eindeutige E-Mail-Adresse enthalten ist.
 import_successfully_enqueued#:#Die Datei wurde erfolgreich hochgeladen und wird asynchron verarbeitet. Sie werden benachrichtigt, sobald die Verarbeitung abgeschlossen ist.
 err_csv_file_different_row_width#:#Bitte laden Sie eine CSV Datei hoch, die nur eine Spalte pro Zeile hat.
