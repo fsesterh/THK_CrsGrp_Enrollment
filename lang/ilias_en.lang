@@ -1,6 +1,6 @@
 course_group_enrollment#:#Course Group enrollment
 course_group_import#:#User Import
-course_group_import_field_description#:#Please upload a file with one unique ILIAS username or unique E-Mail address per row.
+course_group_import_field_description#:#Please upload a file with one unique ILIAS username or unique E-Mail address per row. The user accounts will be added to the membership role.
 abort_course_group_import#:#Abort
 course_group_import_field#:#Import Users
 import_successfully_enqueued#:#File uploaded successfully and enqueued for processing. You will be notified when the process is finished.
