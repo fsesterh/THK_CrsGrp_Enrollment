@@ -5,7 +5,7 @@ course_group_import_field#:#Benutzer-Importfeld
 course_group_import_field_description#:#Bitte laden Sie eine Datei hoch, wo pro Zeile ein eindeutiger ILIAS-Benutzername oder eine eindeutige E-Mail-Adresse enthalten ist.
 import_successfully_enqueued#:#Die Datei wurde erfolgreich hochgeladen und wird asynchron verarbeitet. Sie werden benachrichtigt, sobald die Verarbeitung abgeschlossen ist.
 err_csv_file_different_row_width#:#Bitte laden Sie eine CSV Datei hoch, die nur eine Spalte pro Zeile hat.
-err_csv_file_cannot_be_read#:#Import datei %s kann nicht gelesen werden.
+err_csv_file_cannot_be_read#:#Importdatei %s kann nicht gelesen werden.
 err_csv_empty#:#Die hochgeladene CSV Datei ist leer.
 report_csv_filtered_out_user_err_msg#:#Es existierten keine Berechtigungen diesen Benutzer zuzuweisen.
 report_csv_user_not_found_err_msg#:#Der Benutzer konnte nicht gefunden werden.
