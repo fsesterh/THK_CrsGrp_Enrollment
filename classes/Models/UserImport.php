@@ -9,7 +9,7 @@ use ilObjUser;
 /**
  * Class UserImport
  * @package ILIAS\Plugin\CrsGrpEnrollment\Models
- * @author Timo Müller <timomueller@databay.de>
+ * @author  Timo Müller <timomueller@databay.de>
  */
 class UserImport
 {

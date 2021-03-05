@@ -29,7 +29,7 @@ use ilObjGroup;
 /**
  * Class CourseGroupEnrollment
  * @package ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller
- * @author Timo Müller <timomueller@databay.de>
+ * @author  Timo Müller <timomueller@databay.de>
  */
 class CourseGroupEnrollment extends RepositoryObject
 {
@@ -74,7 +74,6 @@ class CourseGroupEnrollment extends RepositoryObject
         ];
     }
 
-
     /**
      * @inheritdoc
      */
@@ -91,7 +90,8 @@ class CourseGroupEnrollment extends RepositoryObject
 
         $this->drawHeader();
 
-        if (0 === $this->getRefId() || !$this->coreAccessHandler->checkAccess('manage_members', '', $this->getRefId())) {
+        if (0 === $this->getRefId() || !$this->coreAccessHandler->checkAccess('manage_members', '',
+                $this->getRefId())) {
             $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
         }
         $this->object = ilObjectFactory::getInstanceByRefId($this->getRefId());
@@ -113,9 +113,12 @@ class CourseGroupEnrollment extends RepositoryObject
     {
         $form = new ilPropertyFormGUI();
         $this->ctrl->setParameterByClass(get_class($this->getCoreController()), 'ref_id', $this->object->getRefId());
-        $form->setFormAction($this->ctrl->getFormActionByClass([ilUIPluginRouterGUI::class, get_class($this->getCoreController())], $this->getControllerName() . ".submitImportForm"));
+        $form->setFormAction($this->ctrl->getFormActionByClass([ilUIPluginRouterGUI::class,
+                                                                get_class($this->getCoreController())
+        ], $this->getControllerName() . ".submitImportForm"));
         $form->setTitle($this->getCoreController()->getPluginObject()->txt("course_group_import"));
-        $fileInput = new ilFileInputGUI($this->getCoreController()->getPluginObject()->txt('course_group_import_field'), 'userImportFile');
+        $fileInput = new ilFileInputGUI($this->getCoreController()->getPluginObject()->txt('course_group_import_field'),
+            'userImportFile');
         $fileInput->setRequired(true);
         $fileInput->setSuffixes(["csv"]);
         $fileInput->setInfo($this->getCoreController()->getPluginObject()->txt('course_group_import_field_description'));
@@ -192,24 +195,24 @@ class CourseGroupEnrollment extends RepositoryObject
                 if ($object === false || ($object instanceof ilObjCourse || $object instanceof ilObjGroup) === false) {
                     $csvExportName = $this->getCoreController()->getPluginObject()->txt('err_csv_empty') . '_' . date('dmY_H_i');
                 } else {
-                    if($object instanceof ilObjCourse){
+                    if ($object instanceof ilObjCourse) {
                         $objType = 'crs';
-                    }
-                    else{
+                    } else {
                         $objType = 'grp';
                     }
 
                     /** @var \ilObject $csvExportName */
-                    $csvExportName = $this->getCoreController()->getPluginObject()->txt('report_csv_export_name')  . '_' . $object->getTitle() . '_' . $objType . '_' . $object->getId() . '_' . date('dmY_H_i');
+                    $csvExportName = $this->getCoreController()->getPluginObject()->txt('report_csv_export_name') . '_' . $object->getTitle() . '_' . $objType . '_' . $object->getId() . '_' . date('dmY_H_i');
                 }
 
-                $userInteraction = $taskFactory->createTask(UserImportReport::class, [$csvExport,$csvExportName]);
-                
+                $userInteraction = $taskFactory->createTask(UserImportReport::class, [$csvExport, $csvExportName]);
+
                 $bucket->setTask($userInteraction);
                 $bucket->setTitle($this->object->getTitle());
                 $taskManager->run($bucket);
 
-                ilUtil::sendSuccess($this->getCoreController()->getPluginObject()->txt('import_successfully_enqueued'), true);
+                ilUtil::sendSuccess($this->getCoreController()->getPluginObject()->txt('import_successfully_enqueued'),
+                    true);
 
                 $this->ctrl->redirectByClass(
                     [ilUIPluginRouterGUI::class, get_class($this->getCoreController())],
