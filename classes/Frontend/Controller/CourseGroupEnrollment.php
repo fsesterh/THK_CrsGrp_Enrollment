@@ -205,6 +205,7 @@ class CourseGroupEnrollment extends RepositoryObject
 
                 $userInteraction = $taskFactory->createTask(UserImportReport::class, [$csvExport,$csvExportName]);
 
+                
                 $bucket->setTask($userInteraction);
                 $bucket->setTitle($this->object->getTitle());
                 $taskManager->run($bucket);
