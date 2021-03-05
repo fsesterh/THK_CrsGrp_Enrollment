@@ -114,13 +114,13 @@ class CourseGroupEnrollment extends RepositoryObject
         $form = new ilPropertyFormGUI();
         $this->ctrl->setParameterByClass(get_class($this->getCoreController()), 'ref_id', $this->object->getRefId());
         $form->setFormAction($this->ctrl->getFormActionByClass([ilUIPluginRouterGUI::class, get_class($this->getCoreController())], $this->getControllerName() . ".submitImportForm"));
-        $form->setTitle($this->getCoreController()->getPluginObject()->txt("course_group_import_field"));
+        $form->setTitle($this->getCoreController()->getPluginObject()->txt("course_group_import"));
         $fileInput = new ilFileInputGUI($this->getCoreController()->getPluginObject()->txt('course_group_import_field'), 'userImportFile');
         $fileInput->setRequired(true);
         $fileInput->setSuffixes(["csv"]);
         $fileInput->setInfo($this->getCoreController()->getPluginObject()->txt('course_group_import_field_description'));
         $form->addItem($fileInput);
-        $form->addCommandButton('CourseGroupEnrollment.submitImportForm', $this->lng->txt("save"));
+        $form->addCommandButton('CourseGroupEnrollment.submitImportForm', $this->lng->txt("import"));
 
         return $form;
     }
@@ -190,17 +190,24 @@ class CourseGroupEnrollment extends RepositoryObject
 
                 $object = ilObjectFactory::getInstanceByObjId($userImport->getObjId());
                 if ($object === false || ($object instanceof ilObjCourse || $object instanceof ilObjGroup) === false) {
-                    $csvExportName = $this->getCoreController()->getPluginObject()->txt('err_csv_empty') . '_' . date('d.m.Y H:i');
+                    $csvExportName = $this->getCoreController()->getPluginObject()->txt('err_csv_empty') . '_' . date('dmY_H_i');
                 } else {
+                    if($object instanceof ilObjCourse){
+                        $objType = 'crs';
+                    }
+                    else{
+                        $objType = 'grp';
+                    }
+
                     /** @var \ilObject $csvExportName */
-                    $csvExportName = $this->getCoreController()->getPluginObject()->txt('report_csv_export_name') . "_" . $object->getTitle() . "_" . date("d.m.Y H:i");
+                    $csvExportName = $this->getCoreController()->getPluginObject()->txt('report_csv_export_name')  . '_' . $object->getTitle() . '_' . $objType . '_' . $object->getId() . '_' . date('dmY_H_i');
                 }
 
                 $userInteraction = $taskFactory->createTask(UserImportReport::class, [$csvExport,$csvExportName]);
 
 
                 $bucket->setTask($userInteraction);
-                $bucket->setTitle('User Import.');
+                $bucket->setTitle($this->object->getTitle());
                 $taskManager->run($bucket);
 
                 ilUtil::sendSuccess($this->getCoreController()->getPluginObject()->txt('import_successfully_enqueued'), true);
