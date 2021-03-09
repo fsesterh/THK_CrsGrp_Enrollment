@@ -23,8 +23,8 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
     protected $dic;
 
     /**
-    * @inheritDoc
-    */
+     * @inheritDoc
+     */
     public function __construct()
     {
         global $DIC;
@@ -72,7 +72,8 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
                     $deleteBucketValuesSql = '
                     DELETE FROM il_bt_value WHERE id IN (
                         SELECT value_id FROM il_bt_value_to_task WHERE task_id IN (
-                            SELECT id FROM il_bt_task WHERE ' . $this->dic->database()->like('type', 'text', '%UserImport%') . '
+                            SELECT id FROM il_bt_task WHERE ' . $this->dic->database()->like('type', 'text',
+                            '%UserImport%') . '
                         )
                     )';
                     $this->dic->database()->manipulate($deleteBucketValuesSql);
@@ -87,18 +88,18 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
                 $this->dic->database()->manipulate($deleteValueToTask);
             }
             $deleteBackgroundTasksSql = 'DELETE FROM il_bt_task WHERE ' . $this->dic->database()->like(
-                'type',
-                'text',
-                '%UserImport%'
-            );
+                    'type',
+                    'text',
+                    '%UserImport%'
+                );
             $this->dic->database()->manipulate($deleteBackgroundTasksSql);
         }
 
         if ($this->dic->database()->tableExists('il_bt_bucket')) {
             $deleteBucketsSql = 'DELETE FROM il_bt_bucket WHERE title = ' . $this->dic->database()->quote(
-                'User Import.',
-                'text'
-            );
+                    'User Import.',
+                    'text'
+                );
             $this->dic->database()->manipulate($deleteBucketsSql);
         }
     }
