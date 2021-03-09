@@ -16,4 +16,3 @@ report_csv_no_user_import_found#:#Kein Datensatz zu der ID %s gefunden
 report_csv_no_executive_user_found#:#Keinen ausführenden Benutzer für die ID %s gefunden
 report_csv_no_associated_object_found#:#Kein Zielobjekt mit der ID %s gefunden, für das der Import durchgeführt werden soll
 report_csv_export_name#:#Import
-report_csv_user_not_fingerprintable_err_msg#:#Benutzerkonto konnte nicht eindeutig bestimmt werden

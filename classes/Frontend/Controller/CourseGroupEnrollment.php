@@ -4,27 +4,27 @@
 namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller;
 
 use ilFileInputGUI;
+use ILIAS\BackgroundTasks\Implementation\Bucket\BasicBucket;
 use ILIAS\FileUpload\DTO\ProcessingStatus;
+use ILIAS\FileUpload\DTO\UploadResult;
+use ILIAS\Plugin\CrsGrpEnrollment\BackgroundTask\UserImportJob;
+use ILIAS\Plugin\CrsGrpEnrollment\BackgroundTask\UserImportReport;
+use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\CoulNotFindUploadedFileException;
+use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\CsvEmptyException;
+use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\FileNotReadableException;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\InvalidCsvColumnDefinitionException;
+use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\UploadRejectedException;
+use ILIAS\Plugin\CrsGrpEnrollment\Models\UserImport;
+use ILIAS\Plugin\CrsGrpEnrollment\Repositories\UserImportRepository;
 use ilLink;
+use ilObjCourse;
 use ilObjCourseGUI;
 use ilObjectFactory;
+use ilObjGroup;
 use ilObjGroupGUI;
 use ilPropertyFormGUI;
 use ilUIPluginRouterGUI;
 use ilUtil;
-use ILIAS\FileUpload\DTO\UploadResult;
-use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\FileNotReadableException;
-use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\CsvEmptyException;
-use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\CoulNotFindUploadedFileException;
-use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\UploadRejectedException;
-use ILIAS\Plugin\CrsGrpEnrollment\Models\UserImport;
-use ILIAS\Plugin\CrsGrpEnrollment\Repositories\UserImportRepository;
-use ILIAS\BackgroundTasks\Implementation\Bucket\BasicBucket;
-use ILIAS\Plugin\CrsGrpEnrollment\BackgroundTask\UserImportJob;
-use ILIAS\Plugin\CrsGrpEnrollment\BackgroundTask\UserImportReport;
-use ilObjCourse;
-use ilObjGroup;
 
 /**
  * Class CourseGroupEnrollment
@@ -90,8 +90,11 @@ class CourseGroupEnrollment extends RepositoryObject
 
         $this->drawHeader();
 
-        if (0 === $this->getRefId() || !$this->coreAccessHandler->checkAccess('manage_members', '',
-                $this->getRefId())) {
+        if (0 === $this->getRefId() || !$this->coreAccessHandler->checkAccess(
+            'manage_members',
+            '',
+            $this->getRefId()
+        )) {
             $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
         }
         $this->object = ilObjectFactory::getInstanceByRefId($this->getRefId());
@@ -113,17 +116,23 @@ class CourseGroupEnrollment extends RepositoryObject
     {
         $form = new ilPropertyFormGUI();
         $this->ctrl->setParameterByClass(get_class($this->getCoreController()), 'ref_id', $this->object->getRefId());
-        $form->setFormAction($this->ctrl->getFormActionByClass([ilUIPluginRouterGUI::class,
-                                                                get_class($this->getCoreController())
-        ], $this->getControllerName() . ".submitImportForm"));
-        $form->setTitle($this->getCoreController()->getPluginObject()->txt("course_group_import"));
-        $fileInput = new ilFileInputGUI($this->getCoreController()->getPluginObject()->txt('course_group_import_field'),
-            'userImportFile');
+        $form->setFormAction($this->ctrl->getFormActionByClass(
+            [
+                ilUIPluginRouterGUI::class,
+                get_class($this->getCoreController()),
+            ],
+            $this->getControllerName() . '.submitImportForm'
+        ));
+        $form->setTitle($this->getCoreController()->getPluginObject()->txt('course_group_import'));
+        $fileInput = new ilFileInputGUI(
+            $this->getCoreController()->getPluginObject()->txt('course_group_import_field'),
+            'userImportFile'
+        );
         $fileInput->setRequired(true);
-        $fileInput->setSuffixes(["csv"]);
+        $fileInput->setSuffixes(['csv']);
         $fileInput->setInfo($this->getCoreController()->getPluginObject()->txt('course_group_import_field_description'));
         $form->addItem($fileInput);
-        $form->addCommandButton('CourseGroupEnrollment.submitImportForm', $this->lng->txt("import"));
+        $form->addCommandButton('CourseGroupEnrollment.submitImportForm', $this->lng->txt('import'));
 
         return $form;
     }
@@ -201,8 +210,13 @@ class CourseGroupEnrollment extends RepositoryObject
                         $objType = 'grp';
                     }
 
-                    /** @var \ilObject $csvExportName */
-                    $csvExportName = $this->getCoreController()->getPluginObject()->txt('report_csv_export_name') . '_' . $object->getTitle() . '_' . $objType . '_' . $object->getId() . '_' . date('dmY_H_i');
+                    $csvExportName = ilUtil::getASCIIFilename(implode('_', [
+                        $this->getCoreController()->getPluginObject()->txt('report_csv_export_name'),
+                        $object->getTitle(),
+                        $objType,
+                        $object->getId(),
+                        date('dmY_H_i'),
+                    ]));
                 }
 
                 $userInteraction = $taskFactory->createTask(UserImportReport::class, [$csvExport, $csvExportName]);
@@ -211,8 +225,10 @@ class CourseGroupEnrollment extends RepositoryObject
                 $bucket->setTitle($this->object->getTitle());
                 $taskManager->run($bucket);
 
-                ilUtil::sendSuccess($this->getCoreController()->getPluginObject()->txt('import_successfully_enqueued'),
-                    true);
+                ilUtil::sendSuccess(
+                    $this->getCoreController()->getPluginObject()->txt('import_successfully_enqueued'),
+                    true
+                );
 
                 $this->ctrl->redirectByClass(
                     [ilUIPluginRouterGUI::class, get_class($this->getCoreController())],
