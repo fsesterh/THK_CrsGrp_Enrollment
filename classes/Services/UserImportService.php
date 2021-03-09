@@ -3,16 +3,18 @@
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Services;
 
-use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\FileNotReadableException;
-use ilObjectFactory;
-use ilParticipants;
-use ilObjCourse;
 use ilCSVWriter;
-use ilUserInterfaceHookPlugin;
-use ilObjUser;
 use ilGroupMembershipMailNotification;
+use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\FileNotReadableException;
 use ILIAS\Plugin\CrsGrpEnrollment\Models\UserImport;
+use ILIAS\Plugin\CrsGrpEnrollment\Repositories\UserImportRepository;
+use ilObjCourse;
 use ilObject;
+use ilObjectFactory;
+use ilObjGroup;
+use ilObjUser;
+use ilParticipants;
+use ilUserInterfaceHookPlugin;
 
 /**
  * Class UserImportService
@@ -21,22 +23,26 @@ use ilObject;
  */
 class UserImportService
 {
-    /**
-     * @var ilCSVWriter
-     */
+    /** @var ilCSVWriter */
     protected $csv = null;
-
-    /**
-     * @var ilUserInterfaceHookPlugin
-     */
+    /** @var ilUserInterfaceHookPlugin */
     protected $pluginObject = null;
 
-    public function __construct($pluginObject)
+    /**
+     * UserImportService constructor.
+     * @param ilUserInterfaceHookPlugin $pluginObject
+     */
+    public function __construct(ilUserInterfaceHookPlugin $pluginObject)
     {
         $this->pluginObject = $pluginObject;
     }
 
-    public function convertCSVToArray($importFile)
+    /**
+     * @param string $importFile
+     * @return array
+     * @throws FileNotReadableException
+     */
+    public function convertCSVToArray(string $importFile) : array
     {
         $tmpFile = fopen($importFile, 'r');
 
@@ -63,6 +69,11 @@ class UserImportService
         return $dataArray;
     }
 
+    /**
+     * @param ilObjCourse $courseObject
+     * @param UserImport $userImport
+     * @return ilCSVWriter
+     */
     public function importUserToCourse(ilObjCourse $courseObject, UserImport $userImport) : ilCSVWriter
     {
         global $DIC;
@@ -118,10 +129,16 @@ class UserImportService
 
             $courseObject->checkLPStatusSync($filteredUserId);
         }
+
         return $this->csv;
     }
 
-    public function importUserToGroup(\ilObjGroup $groupObject, UserImport $userImport) : ilCSVWriter
+    /**
+     * @param ilObjGroup $groupObject
+     * @param UserImport $userImport
+     * @return ilCSVWriter
+     */
+    public function importUserToGroup(ilObjGroup $groupObject, UserImport $userImport) : ilCSVWriter
     {
         $refIds = ilObject::_getAllReferences($groupObject->getId());
         $refId = current($refIds);
@@ -164,43 +181,41 @@ class UserImportService
 
     /**
      * @param UserImport $userImport
-     * @return int[] $users
+     * @return int[]
      */
     private function getUserIds(UserImport $userImport) : array
     {
-        $users = [];
-        foreach (json_decode($userImport->getData(), true) as $userData) {
-            $findUserFlag = false;
+        $userImportRepository = new UserImportRepository();
+        $usrIds = [];
 
+        foreach (json_decode($userImport->getData(), true) as $userData) {
             $userId = ilObjUser::getUserIdByLogin($userData);
             if ($userId > 0) {
-                $findUserFlag = true;
-                $users[] = $userId;
+                $usrIds[] = $userId;
                 continue;
             }
 
             $userIds = ilObjUser::getUserIdsByEmail($userData);
-            if (count($userIds) > 0) {
-                $findUserFlag = true;
-                if (count($userIds) > 1) {
-                    $this->csv->addColumn('[' . $userData . '] ');
-                    $this->csv->addColumn($this->pluginObject->txt('report_csv_user_not_fingerprintable_err_msg'));
-                    $this->csv->addRow();
-                    continue;
-                }
+            if (1 === count($userIds)) {
                 foreach ($userIds as $userId) {
-                    $users[] = $userId;
+                    $usrIds[] = $userId;
                 }
+                continue;
             }
 
-
-            if (!$findUserFlag) {
-                $this->csv->addColumn('[' . $userData . '] ');
-                $this->csv->addColumn($this->pluginObject->txt('report_csv_user_not_found_err_msg'));
-                $this->csv->addRow();
+            $userIds = $userImportRepository->getUserIdsByMatriculation($userData);
+            if (1 === count($userIds)) {
+                foreach ($userIds as $userId) {
+                    $usrIds[] = $userId;
+                }
+                continue;
             }
+
+            $this->csv->addColumn('[' . $userData . '] ');
+            $this->csv->addColumn($this->pluginObject->txt('report_csv_user_not_found_err_msg'));
+            $this->csv->addRow();
         }
 
-        return $users;
+        return $usrIds;
     }
 }

@@ -60,7 +60,6 @@ class UserImportJob extends AbstractJob
         $userImportService = new UserImportService($plugin);
 
         try {
-            /** @var UserImport $userImport */
             $userImport = $userImportRepository->findOneById((int) $input[0]->getValue());
 
             $DIC->logger()->root()->info(sprintf(

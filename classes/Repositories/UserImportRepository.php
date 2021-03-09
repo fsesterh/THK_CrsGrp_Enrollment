@@ -4,8 +4,8 @@
 namespace ILIAS\Plugin\CrsGrpEnrollment\Repositories;
 
 use ilDBInterface;
-use ILIAS\Plugin\CrsGrpEnrollment\Models\UserImport;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\Repository\DataNotFoundException;
+use ILIAS\Plugin\CrsGrpEnrollment\Models\UserImport;
 
 /**
  * Class UserImportRepository
@@ -16,10 +16,12 @@ class UserImportRepository
 {
     /** @var ilDBInterface */
     private $db;
-
     /** @var string */
     private $table = 'xcge_user_import';
 
+    /**
+     * UserImportRepository constructor.
+     */
     public function __construct()
     {
         global $DIC;
@@ -38,10 +40,8 @@ class UserImportRepository
             return $this->add($userImport);
         }
 
-
         $this->findOneById($userImport->getId());
-        $this->update($userImport);
-
+        $this->updateStatus($userImport);
 
         return $userImport;
     }
@@ -78,7 +78,14 @@ class UserImportRepository
                 (%s, %s, %s, %s, %s, %s)
             ',
             ['integer', 'integer', 'integer', 'integer', 'clob', 'integer'],
-            [(int) $userImport->getId(), (int) $userImport->getStatus(), (int) $userImport->getUser(), (int) $userImport->getCreatedTimestamp(), $userImport->getData(), (int) $userImport->getObjId()]
+            [
+                (int) $userImport->getId(),
+                (int) $userImport->getStatus(),
+                (int) $userImport->getUser(),
+                (int) $userImport->getCreatedTimestamp(),
+                $userImport->getData(),
+                (int) $userImport->getObjId()
+            ]
         );
 
         return $userImport;
@@ -92,10 +99,7 @@ class UserImportRepository
     public function findOneById(int $userImportId) : UserImport
     {
         $result = $this->db->queryF(
-            '
-                SELECT * FROM ' . $this->table . ' 
-                WHERE id = %s
-            ',
+            'SELECT * FROM ' . $this->table . ' WHERE id = %s',
             ['integer'],
             [$userImportId]
         );
@@ -103,8 +107,31 @@ class UserImportRepository
         if ($result->numRows() == 0) {
             throw new DataNotFoundException('No UserImport with ID ' . $userImportId . ' found');
         }
+
         $row = $this->db->fetchAssoc($result);
         $userImport = UserImport::fromRecord($row);
+
         return $userImport;
+    }
+
+    /**
+     * @param string $matriculation
+     * @return int[]
+     */
+    public function getUserIdsByMatriculation(string $matriculation) : array
+    {
+        $usrIds = [];
+
+        $result = $this->db->queryF(
+            'SELECT usr_id FROM usr_data WHERE matriculation = %s',
+            ['text'],
+            [$matriculation]
+        );
+        
+        while ($row = $this->db->fetchAssoc($result)) {
+            $usrIds[] = (int) $row['usr_id'];
+        }
+
+        return $usrIds;
     }
 }

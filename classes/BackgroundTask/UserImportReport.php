@@ -3,16 +3,16 @@
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\BackgroundTask;
 
-use ILIAS\BackgroundTasks\Implementation\Values\ScalarValues\BooleanValue;
-use ILIAS\BackgroundTasks\Types\SingleType;
-use ILIAS\BackgroundTasks\Implementation\Tasks\AbstractUserInteraction;
-use ILIAS\BackgroundTasks\Task\UserInteraction\Option;
-use ILIAS\BackgroundTasks\Value;
 use ILIAS\BackgroundTasks\Bucket;
-use ILIAS\BackgroundTasks\Implementation\Values\ScalarValues\StringValue;
+use ILIAS\BackgroundTasks\Implementation\Tasks\AbstractUserInteraction;
 use ILIAS\BackgroundTasks\Implementation\Tasks\UserInteraction\UserInteractionOption;
-use ilUtil;
+use ILIAS\BackgroundTasks\Implementation\Values\ScalarValues\BooleanValue;
+use ILIAS\BackgroundTasks\Implementation\Values\ScalarValues\StringValue;
+use ILIAS\BackgroundTasks\Task\UserInteraction\Option;
+use ILIAS\BackgroundTasks\Types\SingleType;
+use ILIAS\BackgroundTasks\Value;
 use ilPHPOutputDelivery;
+use ilUtil;
 
 /**
  * Class UserImportReport
