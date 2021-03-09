@@ -66,42 +66,61 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
             $this->dic->database()->dropTable('xcge_user_import');
         }
 
-        if ($this->dic->database()->tableExists('il_bt_task')) {
-            if ($this->dic->database()->tableExists('il_bt_value_to_task')) {
-                if ($this->dic->database()->tableExists('il_bt_value')) {
-                    $deleteBucketValuesSql = '
-                    DELETE FROM il_bt_value WHERE id IN (
-                        SELECT value_id FROM il_bt_value_to_task WHERE task_id IN (
-                            SELECT id FROM il_bt_task WHERE ' . $this->dic->database()->like('type', 'text',
-                            '%UserImport%') . '
-                        )
-                    )';
-                    $this->dic->database()->manipulate($deleteBucketValuesSql);
-                }
+        $task_ids = [];
+        $bucket_ids = [];
 
-                $deleteValueToTask = '
-                DELETE FROM il_bt_value_to_task
-                WHERE task_id IN (
-                    SELECT id FROM il_bt_task WHERE ' . $this->dic->database()->like('type', 'text', '%UserImport%') . '
-                )';
-
-                $this->dic->database()->manipulate($deleteValueToTask);
-            }
-            $deleteBackgroundTasksSql = 'DELETE FROM il_bt_task WHERE ' . $this->dic->database()->like(
-                    'type',
-                    'text',
-                    '%UserImport%'
-                );
-            $this->dic->database()->manipulate($deleteBackgroundTasksSql);
+        $result = $this->dic->database()->query(
+            'SELECT id, bucket_id FROM il_bt_task WHERE ' . $this->dic->database()->like(
+                'type',
+                'text',
+                '%ILIAS\\\\Plugin\\\\CrsGrpEnrollment%'
+            )
+        );
+        while ($row = $this->dic->database()->fetchAssoc($result)) {
+            $task_ids[(int) $row['id']] = (int) $row['id'];
+            $bucket_ids[(int) $row['bucket_id']] = (int) $row['bucket_id'];
         }
 
-        if ($this->dic->database()->tableExists('il_bt_bucket')) {
-            $deleteBucketsSql = 'DELETE FROM il_bt_bucket WHERE title = ' . $this->dic->database()->quote(
-                    'User Import.',
-                    'text'
-                );
-            $this->dic->database()->manipulate($deleteBucketsSql);
-        }
+        $this->dic->database()->manipulate('
+            DELETE FROM il_bt_value WHERE id IN (
+                SELECT value_id FROM il_bt_value_to_task WHERE ' . $this->dic->database()->in(
+            'task_id',
+            $task_ids,
+            false,
+            'integer'
+        ) . '
+            )
+        ');
+
+        $this->dic->database()->manipulate(
+            '
+            DELETE FROM il_bt_value_to_task WHERE ' . $this->dic->database()->in(
+                'task_id',
+                $task_ids,
+                false,
+                'integer'
+            )
+        );
+
+        $this->dic->database()->manipulate(
+            '
+            DELETE FROM il_bt_bucket WHERE ' . $this->dic->database()->in(
+                'id',
+                $bucket_ids,
+                false,
+                'integer'
+            )
+        );
+
+        $this->dic->database()->manipulate(
+            '
+            DELETE FROM il_bt_task WHERE ' . $this->dic->database()->in(
+                'id',
+                $task_ids,
+                false,
+                'integer'
+            )
+        );
     }
 
     /**
