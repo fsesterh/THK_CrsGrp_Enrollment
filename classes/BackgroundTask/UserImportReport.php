@@ -11,6 +11,7 @@ use ILIAS\BackgroundTasks\Implementation\Values\ScalarValues\StringValue;
 use ILIAS\BackgroundTasks\Task\UserInteraction\Option;
 use ILIAS\BackgroundTasks\Types\SingleType;
 use ILIAS\BackgroundTasks\Value;
+use ILIAS\Plugin\CrsGrpEnrollment\Repositories\UserImportRepository;
 use ilPHPOutputDelivery;
 use ilUtil;
 
@@ -20,6 +21,8 @@ use ilUtil;
  */
 class UserImportReport extends AbstractUserInteraction
 {
+    const OPTION_DOWNLOAD = 'download';
+    const OPTION_REMOVE = 'remove';
 
     /**
      * @param Value[] $input The input value of this task.
@@ -29,8 +32,16 @@ class UserImportReport extends AbstractUserInteraction
     public function getOptions(array $input)
     {
         return [
-            new UserInteractionOption('download', 'download'),
+            new UserInteractionOption(self::OPTION_DOWNLOAD, self::OPTION_DOWNLOAD),
         ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getRemoveOption()
+    {
+        return new UserInteractionOption(self::OPTION_REMOVE, self::OPTION_REMOVE);
     }
 
     /**
@@ -38,20 +49,23 @@ class UserImportReport extends AbstractUserInteraction
      */
     public function interaction(array $input, Option $user_selected_option, Bucket $bucket)
     {
-        /** @var StringValue */
-        $csvString = $input[0];
+        if ($user_selected_option->getValue() === self::OPTION_DOWNLOAD) {
+            /** @var StringValue */
+            $csvString = $input[0];
+            /** @var StringValue */
+            $csvName = $input[1];
 
-        /** @var StringValue */
-        $csvName = $input[1];
-
-        if ($user_selected_option->getValue() == 'download') {
             $outputter = new ilPHPOutputDelivery();
             $outputter->start($csvName->getValue() . '.csv', 'text/csv');
             ilUtil::deliverData($csvString->getValue(), $csvName->getValue() . '.csv', 'text/csv');
             $outputter->stop();
+            return $csvString;
         }
 
-        return $csvString;
+        if ($user_selected_option->getValue() === self::OPTION_REMOVE) {
+        }
+
+        return '';
     }
 
     /**
