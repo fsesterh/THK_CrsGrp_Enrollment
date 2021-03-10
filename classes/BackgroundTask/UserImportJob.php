@@ -59,6 +59,7 @@ class UserImportJob extends AbstractJob
         $userImportRepository = new UserImportRepository();
         $userImportService = new UserImportService($plugin);
 
+        $userImport = null;
         try {
             $userImport = $userImportRepository->findOneById((int) $input[0]->getValue());
 
@@ -93,6 +94,10 @@ class UserImportJob extends AbstractJob
 
         $output = new StringValue();
         $output->setValue($this->csv->getCSVString());
+
+        if (null !== $userImport) {
+            $userImportRepository->delete($userImport);
+        }
 
         return $output;
     }
