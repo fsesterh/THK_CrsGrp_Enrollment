@@ -49,6 +49,21 @@ class UserImportRepository
     /**
      * @param UserImport $userImport
      */
+    public function delete(UserImport $userImport) : void
+    {
+        $this->db->manipulateF(
+            '
+                DELETE FROM ' . $this->table . '
+                WHERE id = %s
+            ',
+            ['integer'],
+            [(int) $userImport->getId()]
+        );
+    }
+
+    /**
+     * @param UserImport $userImport
+     */
     private function updateStatus(UserImport $userImport) : void
     {
         $this->db->manipulateF(
@@ -58,7 +73,7 @@ class UserImportRepository
                 WHERE id = %s
             ',
             ['integer', 'integer'],
-            [(int) $userImport->getStatus(), (int) $userImport->getObjId()]
+            [(int) $userImport->getStatus(), (int) $userImport->getStatus()]
         );
     }
 
