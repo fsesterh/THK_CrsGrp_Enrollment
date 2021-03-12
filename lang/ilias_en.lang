@@ -10,7 +10,7 @@ err_csv_empty#:#The uploaded CSV file is empty.
 report_csv_filtered_out_user_err_msg#:#No permission to add user
 report_csv_user_not_found_err_msg#:#The user was not found
 report_csv_user_already_assigned_err_msg#:#The user was already assigned
-crs_grp_enrol_report_csv_field_name#:#User
+report_csv_field_name#:#User
 report_csv_field_error#:#Note
 report_csv_no_user_import_found#:#No dataset found for the ID %s
 report_csv_no_executive_user_found#:#No executive user for the ID %s found
