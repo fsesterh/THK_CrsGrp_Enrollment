@@ -7,13 +7,16 @@ use ilCalendarCategoryGUI;
 use ilCalendarPresentationGUI;
 use ilContainerStartObjectsGUI;
 use ilCourseMembershipGUI;
+use ilCourseParticipantsGroupsGUI;
 use ilGroupMembershipGUI;
 use ilMailMemberSearchGUI;
+use ilMemberExportGUI;
 use ilObjectCustomUserFieldsGUI;
 use ilPublicUserProfileGUI;
 use ilRepositoryGUI;
 use ilTabsGUI;
 use ilUIPluginRouterGUI;
+use ilUsersGalleryGUI;
 
 /**
  * Class CourseGroupTabs
@@ -70,7 +73,20 @@ class CourseGroupTabs extends Base
      */
     private function shouldRenderCourseOrGroupTabs() : bool
     {
-        return $this->shouldRenderCustomCourseOrGroupTabs();
+        $shouldRenderCustomCourseTabs = $this->shouldRenderCustomCourseOrGroupTabs();
+        if (!$shouldRenderCustomCourseTabs) {
+            return false;
+        }
+
+        $isCourseMembershipSubTabContext = (
+            $this->isCommandClass(ilCourseMembershipGUI::class) ||
+            $this->isCommandClass(ilGroupMembershipGUI::class) ||
+            $this->isCommandClass(ilCourseParticipantsGroupsGUI::class) ||
+            $this->isCommandClass(ilUsersGalleryGUI::class) ||
+            $this->isCommandClass(ilMemberExportGUI::class)
+        );
+
+        return $isCourseMembershipSubTabContext;
     }
 
     /**
@@ -123,18 +139,18 @@ class CourseGroupTabs extends Base
      */
     public function modifyGUI(string $component, string $part, array $parameters) : void
     {
-        global $DIC;
         /** @var ilTabsGUI $tabs */
         $tabs = $parameters['tabs'];
 
         $this->ctrl->setParameterByClass(get_class($this->getCoreController()), 'ref_id', $this->getContainerRefId());
-        $tabs->addSubTab(
-            'course_group_import',
-            $this->getCoreController()->getPluginObject()->txt('course_group_import'),
+        $tabs->addSubTabTarget(
+            $this->getCoreController()->getPluginObject()->getPrefix() . '_course_group_import',
             $this->ctrl->getLinkTargetByClass(
                 [ilUIPluginRouterGUI::class, get_class($this->getCoreController())],
                 'CourseGroupEnrollment.showImportForm'
-            )
+            ),
+            '',
+            [CourseGroupTabs::class]
         );
     }
 }
