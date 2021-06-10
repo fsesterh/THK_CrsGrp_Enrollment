@@ -7,7 +7,6 @@ use ilCalendarCategoryGUI;
 use ilCalendarPresentationGUI;
 use ilContainerStartObjectsGUI;
 use ilCourseMembershipGUI;
-use ilCrsGrpEnrollmentUIHookGUI;
 use ilGroupMembershipGUI;
 use ilMailMemberSearchGUI;
 use ilObjectCustomUserFieldsGUI;
@@ -40,7 +39,7 @@ class CourseGroupTabs extends Base
     /**
      * @return bool
      */
-    private function shouldRenderCourseOrGroupTabs() : bool
+    private function shouldRenderCustomCourseOrGroupTabs() : bool
     {
         $isBlackListedCommandClass = (
             (
@@ -60,11 +59,18 @@ class CourseGroupTabs extends Base
             $this->isCommandClass(ilMailMemberSearchGUI::class) || (
                 $this->isOneOfCommands(['create',]) &&
                 $this->isBaseClass(ilRepositoryGUI::class)
-            ) ||
-            $this->isCommandClass(ilCrsGrpEnrollmentUIHookGUI::class)
+            )
         );
 
         return !$isBlackListedCommandClass;
+    }
+
+    /**
+     * @return bool
+     */
+    private function shouldRenderCourseOrGroupTabs() : bool
+    {
+        return $this->shouldRenderCustomCourseOrGroupTabs();
     }
 
     /**
@@ -88,7 +94,7 @@ class CourseGroupTabs extends Base
      */
     public function shouldModifyGUI(string $component, string $part, array $parameters) : bool
     {
-        if ('tabs' !== $part) {
+        if ('tabs' !== $part && 'sub_tabs' !== $part) {
             return false;
         }
 
@@ -122,7 +128,7 @@ class CourseGroupTabs extends Base
         $tabs = $parameters['tabs'];
 
         $this->ctrl->setParameterByClass(get_class($this->getCoreController()), 'ref_id', $this->getContainerRefId());
-        $tabs->addTab(
+        $tabs->addSubTab(
             'course_group_import',
             $this->getCoreController()->getPluginObject()->txt('course_group_import'),
             $this->ctrl->getLinkTargetByClass(
