@@ -1,12 +1,12 @@
 course_group_enrollment#:#Course Group enrollment
 course_group_import#:#Membership import
-course_group_import_field_description#:#Please upload a file with one unique ILIAS username or unique E-Mail address per row. The user accounts will be added to the membership role.
+course_group_import_field_description#:#Please upload a file with one unique ILIAS username, unique matriculation number or unique e-mail address per row. The user accounts will be added to the membership role.
 abort_course_group_import#:#Abort
 course_group_import_field#:#Upload list
 import_successfully_enqueued#:#File uploaded successfully and enqueued for processing. You will be notified when the process is finished.
 err_csv_file_different_row_width#:#Please upload a file that has only one column per row.
 err_csv_file_cannot_be_read#:#Import file %s could not be read.
-err_csv_empty#:#The uploaded CSV is empty.
+err_csv_empty#:#The uploaded CSV file is empty.
 report_csv_filtered_out_user_err_msg#:#No permission to add user
 report_csv_user_not_found_err_msg#:#The user was not found
 report_csv_user_already_assigned_err_msg#:#The user was already assigned
