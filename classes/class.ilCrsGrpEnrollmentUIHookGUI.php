@@ -45,11 +45,7 @@ class ilCrsGrpEnrollmentUIHookGUI extends ilUIHookPluginGUI
         }
 
         $this->dic->ui()->mainTemplate()->setContent($response);
-        if (version_compare(ILIAS_VERSION_NUMERIC, '6.0', '>=')) {
-            $this->dic->ui()->mainTemplate()->printToStdOut();
-        } else {
-            $this->dic->ui()->mainTemplate()->show();
-        }
+        $this->dic->ui()->mainTemplate()->printToStdOut();
     }
 
     /**
