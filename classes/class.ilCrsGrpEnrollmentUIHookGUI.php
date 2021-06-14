@@ -55,15 +55,10 @@ class ilCrsGrpEnrollmentUIHookGUI extends ilUIHookPluginGUI
     {
         if (
             !isset($this->dic['tpl']) ||
+            !isset($this->dic['refinery']) ||
             !isset($this->dic['ilToolbar'])
         ) {
             return;
-        }
-
-        if (version_compare(ILIAS_VERSION_NUMERIC, '6.0', '>=')) {
-            if (!isset($this->dic['refinery'])) {
-                return;
-            }
         }
 
         if (null !== self::$modifiers) {
