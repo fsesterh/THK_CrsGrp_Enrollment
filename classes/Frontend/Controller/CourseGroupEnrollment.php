@@ -80,11 +80,8 @@ class CourseGroupEnrollment extends RepositoryObject
     protected function init() : void
     {
         global $DIC;
-        if (version_compare(ILIAS_VERSION_NUMERIC, '6.0', '>=')) {
-            $this->pageTemplate->loadStandardTemplate();
-        } else {
-            $this->pageTemplate->getStandardTemplate();
-        }
+
+        $this->pageTemplate->getStandardTemplate();
 
         parent::init();
 
