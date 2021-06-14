@@ -7,6 +7,6 @@
 $id = 'crs_grp_enrol';
 $version = '1.0.5';
 $ilias_min_version = '5.4.0';
-$ilias_max_version = '6.999';
+$ilias_max_version = '5.4.999';
 $responsible = 'Timo Müller';
 $responsible_mail = 'timomueller@databay.de';

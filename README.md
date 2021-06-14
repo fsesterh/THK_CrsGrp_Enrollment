@@ -31,7 +31,7 @@ The CrsGrpEnrollment plugin will create a report file (CSV) for download once an
 ## Requirements
 
 * PHP: [![Minimum PHP Version](https://img.shields.io/badge/Minimum_PHP-7.2.x-blue.svg)](https://php.net/) [![Maximum PHP Version](https://img.shields.io/badge/Maximum_PHP-7.4.x-blue.svg)](https://php.net/)
-* ILIAS: [![Minimum ILIAS Version](https://img.shields.io/badge/Minimum_ILIAS-5.4.0-orange.svg)](https://ilias.de/) [![Maximum ILIAS Version](https://img.shields.io/badge/Maximum_ILIAS-6.999-orange.svg)](https://ilias.de/)
+* ILIAS: [![Minimum ILIAS Version](https://img.shields.io/badge/Minimum_ILIAS-5.4.0-orange.svg)](https://ilias.de/) [![Maximum ILIAS Version](https://img.shields.io/badge/Maximum_ILIAS-5.4.999-orange.svg)](https://ilias.de/)
 * Permissions: In order to import course or group memberships, the active user MUST have the permission to manage members for courses/groups in ILIAS.
 * SOAP administration MUST be enabled.
 * Background Tasks: In order to enable asynchronous processing of import files you SHOULD activate the asynchronous processing of background tasks in the ILIAS setup. Otherwise uploaded files will be processed on runtime. System administrators SHOULD configure the max. number of concurrent tasks according to the available system resources. In addition, system administrators SHOULD enable the cron for cleanup of files left behind by background processes.
