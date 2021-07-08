@@ -1,5 +1,5 @@
 course_group_enrollment#:#Course Group enrollment
-course_group_import#:#Membership import
+course_group_import#:#Import Participants
 course_group_import_field_description#:#Please upload a file with one unique ILIAS username, unique matriculation number or unique e-mail address per row. The user accounts will be added to the membership role.
 abort_course_group_import#:#Abort
 course_group_import_field#:#Upload list
