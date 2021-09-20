@@ -10,5 +10,9 @@
   "require-dev": {
     "captainhook/plugin-composer": "^5.1",
     "friendsofphp/php-cs-fixer": "^2.16"
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "classmap-authoritative": true
   }
 }
