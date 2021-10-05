@@ -16,3 +16,5 @@ report_csv_no_user_import_found#:#No dataset found for the ID %s
 report_csv_no_executive_user_found#:#No executive user for the ID %s found
 report_csv_no_associated_object_found#:#No target object with ID %s found for import
 report_csv_export_name#:#Import
+course_group_config_clear#:#Clear data
+course_group_config_cleared#:#Cleared

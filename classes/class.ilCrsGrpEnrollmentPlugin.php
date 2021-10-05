@@ -37,7 +37,7 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
     /**
      * @inheritdoc
      */
-    public function getPluginName()
+    public function getPluginName() : string
     {
         return self::PNAME;
     }
@@ -45,7 +45,7 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
     /**
      * @inheritdoc
      */
-    protected function init()
+    protected function init() : void
     {
         parent::init();
         $this->registerAutoloader();
@@ -58,7 +58,7 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
     /**
      * @inheritDoc
      */
-    protected function afterUninstall()
+    protected function afterUninstall() : void
     {
         parent::afterUninstall();
 
@@ -66,6 +66,36 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
             $this->dic->database()->dropTable('xcge_user_import');
         }
 
+        $this->clearDatabaseRows();
+    }
+
+    /**
+     * Registers the plugin autoloader
+     */
+    public function registerAutoloader() : void
+    {
+        require_once __DIR__ . '/../vendor/autoload.php';
+    }
+
+    /**
+     * @return self
+     */
+    public static function getInstance() : self
+    {
+        if (null === self::$instance) {
+            return self::$instance = ilPluginAdmin::getPluginObject(
+                self::CTYPE,
+                self::CNAME,
+                self::SLOT_ID,
+                self::PNAME
+            );
+        }
+
+        return self::$instance;
+    }
+
+    public function clearDatabaseRows() : void
+    {
         $task_ids = [];
         $bucket_ids = [];
 
@@ -84,11 +114,11 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
         $this->dic->database()->manipulate('
             DELETE FROM il_bt_value WHERE id IN (
                 SELECT value_id FROM il_bt_value_to_task WHERE ' . $this->dic->database()->in(
-            'task_id',
-            $task_ids,
-            false,
-            'integer'
-        ) . '
+                    'task_id',
+                    $task_ids,
+                    false,
+                    'integer'
+                ) . '
             )
         ');
 
@@ -121,30 +151,5 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
                 'integer'
             )
         );
-    }
-
-    /**
-     * Registers the plugin autoloader
-     */
-    public function registerAutoloader() : void
-    {
-        require_once __DIR__ . '/../vendor/autoload.php';
-    }
-
-    /**
-     * @return self
-     */
-    public static function getInstance() : self
-    {
-        if (null === self::$instance) {
-            return self::$instance = ilPluginAdmin::getPluginObject(
-                self::CTYPE,
-                self::CNAME,
-                self::SLOT_ID,
-                self::PNAME
-            );
-        }
-
-        return self::$instance;
     }
 }
