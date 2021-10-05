@@ -22,9 +22,6 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
     /** @var \ILIAS\DI\Container */
     protected $dic;
 
-    /**
-     * @inheritDoc
-     */
     public function __construct()
     {
         global $DIC;
@@ -34,17 +31,11 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
         $this->dic = $DIC;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getPluginName() : string
     {
         return self::PNAME;
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function init() : void
     {
         parent::init();
@@ -55,9 +46,6 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
         }
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function afterUninstall() : void
     {
         parent::afterUninstall();
@@ -66,20 +54,14 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
             $this->dic->database()->dropTable('xcge_user_import');
         }
 
-        $this->clearDatabaseRows();
+        $this->purgeBackgroundTasks();
     }
 
-    /**
-     * Registers the plugin autoloader
-     */
     public function registerAutoloader() : void
     {
         require_once __DIR__ . '/../vendor/autoload.php';
     }
 
-    /**
-     * @return self
-     */
     public static function getInstance() : self
     {
         if (null === self::$instance) {
@@ -94,7 +76,7 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
         return self::$instance;
     }
 
-    public function clearDatabaseRows() : void
+    public function purgeBackgroundTasks() : void
     {
         $task_ids = [];
         $bucket_ids = [];
@@ -114,11 +96,11 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
         $this->dic->database()->manipulate('
             DELETE FROM il_bt_value WHERE id IN (
                 SELECT value_id FROM il_bt_value_to_task WHERE ' . $this->dic->database()->in(
-                    'task_id',
-                    $task_ids,
-                    false,
-                    'integer'
-                ) . '
+            'task_id',
+            $task_ids,
+            false,
+            'integer'
+        ) . '
             )
         ');
 
