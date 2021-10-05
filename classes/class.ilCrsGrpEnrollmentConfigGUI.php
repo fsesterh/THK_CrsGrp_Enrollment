@@ -1,42 +1,61 @@
-<?php
+<?php declare(strict_types=1);
 
-include_once("./Services/Component/classes/class.ilPluginConfigGUI.php");
+use ILIAS\UI\Renderer;
+use ILIAS\UI\Factory;
 
 class ilCrsGrpEnrollmentConfigGUI extends \ilPluginConfigGUI
 {
-    public function performCommand(string $cmd) : void
+    /**
+     * @var Factory
+     */
+    private $factory;
+
+    /**
+     * @var Renderer
+     */
+    private $renderer;
+
+    /**
+     * @var \ilGlobalTemplateInterface
+     */
+    private $template;
+
+    /**
+     * @var \ilCtrl
+     */
+    private $ctrl;
+
+    public function __construct()
+    {
+        global $DIC;
+
+        $this->factory = $DIC->ui()->factory();
+        $this->renderer = $DIC->ui()->renderer();
+        $this->template = $DIC->ui()->mainTemplate();
+        $this->ctrl = $DIC->ctrl();
+    }
+
+    public function performCommand($cmd) : void
     {
         $this->$cmd();
     }
 
     private function configure(string $add = '') : void
     {
-        global $tpl, $DIC;
+        $content = $this->renderer->render($this->factory->button()->standard($this->txt('course_group_config_clear'), $this->ctrl->getLinkTarget($this, 'clear')));
 
-        $factory = $DIC->ui()->factory();
-        $renderer = $DIC->ui()->renderer();
-
-        $content = $renderer->render($factory->button()->standard($this->txt('course_group_config_clear'), $DIC->ctrl()->getLinkTarget($this, 'clear')));
-
-        $tpl->setContent($add . $content);
+        $this->template->setContent($add . $content);
     }
 
     private function clear() : void
     {
-        global $DIC;
-
-        \ilCrsGrpEnrollmentPlugin::getInstance()->clearDatabaseRows();
-        $DIC->ctrl()->redirectToURL($DIC->ctrl()->getLinkTarget($this, 'cleared'));
+        \ilCrsGrpEnrollmentPlugin::getInstance()->purgeBackgroundTasks();
+        $this->ctrl->redirectToURL($this->ctrl->getLinkTarget($this, 'cleared'));
     }
 
     private function cleared() : void
     {
-        global $DIC;
-
-        $factory = $DIC->ui()->factory();
-        $renderer = $DIC->ui()->renderer();
-
-        $content = $renderer->render($factory->messageBox()->success($this->txt('course_group_config_cleared')));
+        $content = $this->renderer->render($this->factory->messageBox()->success($this->txt('course_group_config_cleared')));
         $this->configure($content);
     }
 
