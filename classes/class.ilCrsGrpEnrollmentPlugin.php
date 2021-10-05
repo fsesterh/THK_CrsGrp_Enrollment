@@ -22,9 +22,6 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
     /** @var \ILIAS\DI\Container */
     protected $dic;
 
-    /**
-     * @inheritDoc
-     */
     public function __construct()
     {
         global $DIC;
@@ -34,18 +31,12 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
         $this->dic = $DIC;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getPluginName()
+    public function getPluginName() : string
     {
         return self::PNAME;
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function init()
+    protected function init() : void
     {
         parent::init();
         $this->registerAutoloader();
@@ -55,10 +46,7 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function afterUninstall()
+    protected function afterUninstall() : void
     {
         parent::afterUninstall();
 
@@ -66,6 +54,30 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
             $this->dic->database()->dropTable('xcge_user_import');
         }
 
+        $this->purgeBackgroundTasks();
+    }
+
+    public function registerAutoloader() : void
+    {
+        require_once __DIR__ . '/../vendor/autoload.php';
+    }
+
+    public static function getInstance() : self
+    {
+        if (null === self::$instance) {
+            return self::$instance = ilPluginAdmin::getPluginObject(
+                self::CTYPE,
+                self::CNAME,
+                self::SLOT_ID,
+                self::PNAME
+            );
+        }
+
+        return self::$instance;
+    }
+
+    public function purgeBackgroundTasks() : void
+    {
         $task_ids = [];
         $bucket_ids = [];
 
@@ -121,30 +133,5 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
                 'integer'
             )
         );
-    }
-
-    /**
-     * Registers the plugin autoloader
-     */
-    public function registerAutoloader() : void
-    {
-        require_once __DIR__ . '/../vendor/autoload.php';
-    }
-
-    /**
-     * @return self
-     */
-    public static function getInstance() : self
-    {
-        if (null === self::$instance) {
-            return self::$instance = ilPluginAdmin::getPluginObject(
-                self::CTYPE,
-                self::CNAME,
-                self::SLOT_ID,
-                self::PNAME
-            );
-        }
-
-        return self::$instance;
     }
 }
