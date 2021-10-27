@@ -3,6 +3,9 @@
 use ILIAS\UI\Renderer;
 use ILIAS\UI\Factory;
 
+/**
+ * @author Lukas Scharmer <lscharmer@databay.de>
+ */
 class ilCrsGrpEnrollmentConfigGUI extends \ilPluginConfigGUI
 {
     /**
@@ -42,7 +45,7 @@ class ilCrsGrpEnrollmentConfigGUI extends \ilPluginConfigGUI
 
     private function configure(string $add = '') : void
     {
-        $content = $this->renderer->render($this->factory->button()->standard($this->txt('course_group_config_clear'), $this->ctrl->getLinkTarget($this, 'clear')));
+        $content = $this->renderer->render($this->factory->button()->standard($this->txt('course_group_config_clear'), $this->ctrl->getLinkTarget($this, 'clear', '', false, false)));
 
         $this->template->setContent($add . $content);
     }
@@ -50,7 +53,7 @@ class ilCrsGrpEnrollmentConfigGUI extends \ilPluginConfigGUI
     private function clear() : void
     {
         \ilCrsGrpEnrollmentPlugin::getInstance()->purgeBackgroundTasks();
-        $this->ctrl->redirectToURL($this->ctrl->getLinkTarget($this, 'cleared'));
+        $this->ctrl->redirect($this, 'cleared');
     }
 
     private function cleared() : void
