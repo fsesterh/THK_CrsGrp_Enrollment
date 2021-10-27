@@ -5,7 +5,7 @@
  * @author Timo Müller <timomueller@databay.de>
  */
 $id = 'crs_grp_enrol';
-$version = '1.0.6';
+$version = '1.0.7';
 $ilias_min_version = '5.4.0';
 $ilias_max_version = '5.4.999';
 $responsible = 'Timo Müller';
