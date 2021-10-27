@@ -1,5 +1,5 @@
 course_group_enrollment#:#Kurs Gruppen Zuweisung
-course_group_import#:#Mitgliedschaften importieren
+course_group_import#:#Teilnehmerimport
 abort_course_group_import#:#Abbrechen
 course_group_import_field#:#Importdatei hochladen
 course_group_import_field_description#:#Bitte laden Sie eine Datei hoch, in der pro Zeile ein eindeutiger ILIAS-Benutzername, die eindeutige Martrikelnummer oder eine eindeutige E-Mail-Adresse enthalten ist. Diese Benutzerkonten erhalten die Mitgliederrolle.
