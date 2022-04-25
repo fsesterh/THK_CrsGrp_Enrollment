@@ -44,7 +44,7 @@ class UserImportService
      */
     public function convertCSVToArray(string $importFile) : array
     {
-        $tmpFile = fopen($importFile, 'r');
+        $tmpFile = fopen($importFile, 'rb');
 
         if (!$tmpFile || !is_resource($tmpFile)) {
             throw new FileNotReadableException('CSV not readable');
@@ -53,12 +53,10 @@ class UserImportService
         $i = 0;
         $dataArray = [];
         while (($row = fgetcsv($tmpFile, 0, ';')) !== false) {
-            if ($i == 0) {
-                if (substr($row[0], 0, 3) == chr(hexdec('EF')) . chr(hexdec('BB')) . chr(hexdec('BF'))) {
-                    $row[0] = substr($row[0], 3);
-                }
+            if ($i === 0 && strpos($row[0], chr(hexdec('EF')) . chr(hexdec('BB')) . chr(hexdec('BF'))) === 0) {
+                $row[0] = substr($row[0], 3);
             }
-            $dataArray[] = $row[0];
+            $dataArray[] = trim($row[0]);
             $i++;
         }
 
