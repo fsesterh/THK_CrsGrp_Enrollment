@@ -130,6 +130,21 @@ class UserImportRepository
     }
 
     /**
+     * @return UserImport[]
+     */
+    public function readAll() : array
+    {
+        $result = $this->db->query("SELECT * FROM " . $this->table);
+
+        $data = [];
+        while ($row = $this->db->fetchAssoc($result)) {
+            $data[] = UserImport::fromRecord($row);
+        }
+
+        return $data;
+    }
+
+    /**
      * @param string $matriculation
      * @return int[]
      */

@@ -49,7 +49,6 @@ class ilCrsGrpEnrollmentConfigGUI extends \ilPluginConfigGUI
 
     private function clear() : void
     {
-        \ilCrsGrpEnrollmentPlugin::getInstance()->purgeBackgroundTasks();
         $this->ctrl->redirectToURL($this->ctrl->getLinkTarget($this, 'cleared'));
     }
 

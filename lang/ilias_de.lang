@@ -18,3 +18,9 @@ report_csv_no_associated_object_found#:#Kein Zielobjekt mit der ID %s gefunden, 
 report_csv_export_name#:#Import
 course_group_config_clear#:#Daten leeren
 course_group_config_cleared#:#Geleert
+
+cronResult#:#%s Benutzerimporte verarbeitet %s E-Mails konnten nicht versand werden.
+cronResult.noImports#:#Keine Benutzer-Imports zu verarbeiten.
+
+mail.message.title#:#Benutzer-Import auf %s-Objekt mit obj-id '%s' abgeschlossen
+mail.message.text#:#Der Import der Benutzer ist abgeschlossen. Die Ergebnisse finden Sie in der angehängten csv-Datei.
