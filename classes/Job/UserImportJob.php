@@ -35,8 +35,6 @@ use ILIAS\Plugin\CrsGrpEnrollment\Repositories\UserImportRepository;
 use ILIAS\Plugin\CrsGrpEnrollment\Services\UserImportService;
 use ilLogger;
 use ilMail;
-use ilMailMimeSenderFactory;
-use ilMimeMail;
 use ilObjCourse;
 use ilObjectFactory;
 use ilObjectNotFoundException;
@@ -66,10 +64,7 @@ class UserImportJob extends ilCronJob
      * @var ilLogger
      */
     private $logger;
-    /**
-     * @var ilMailMimeSenderFactory
-     */
-    private $mailMimeSenderFactory;
+
     /**
      * @var Locker
      */
@@ -81,7 +76,6 @@ class UserImportJob extends ilCronJob
         $this->dic = $DIC;
         $this->pluginAdmin = $this->dic['ilPluginAdmin'];
         $this->logger = $this->dic->logger()->root();
-        $this->mailMimeSenderFactory = $DIC['mail.mime.sender.factory'];
         $this->lock = $this->dic['plugin.crs_grp_enrol.cronjob.locker'];
     }
 
@@ -279,7 +273,7 @@ class UserImportJob extends ilCronJob
                 $failedMailDeliveries
             )
         );
-        //$this->lock->releaseLock();
+        $this->lock->releaseLock();
 
 
 
