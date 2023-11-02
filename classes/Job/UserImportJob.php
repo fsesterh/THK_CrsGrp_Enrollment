@@ -26,12 +26,14 @@ use ilCronJobResult;
 use ilCrsGrpEnrollmentPlugin;
 use ilCSVWriter;
 use ilDatabaseException;
+use ilFileDataMail;
 use ILIAS\DI\Container;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\AssociatedObjectNotFoundException;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\UserNotFoundException;
 use ILIAS\Plugin\CrsGrpEnrollment\Repositories\UserImportRepository;
 use ILIAS\Plugin\CrsGrpEnrollment\Services\UserImportService;
 use ilLogger;
+use ilMail;
 use ilMailMimeSenderFactory;
 use ilMimeMail;
 use ilObjCourse;
@@ -207,17 +209,6 @@ class UserImportJob extends ilCronJob
 
             $pluginLngModule = "ui_uihk_crs_grp_enrol";
 
-            $mail = new ilMimeMail();
-            $mail->From($this->mailMimeSenderFactory->system());
-            $mail->To($user->getEmail());
-            $mail->Subject(
-                sprintf(
-                    $this->dic->language()->txtlng($pluginLngModule, "{$pluginLngModule}_mail.message.title", $user->getLanguage()),
-                    $objectTypeName,
-                    $userImport->getObjId()
-                )
-            );
-            $mail->Body($this->dic->language()->txtlng($pluginLngModule, "{$pluginLngModule}_mail.message.text", $user->getLanguage()));
             $tempFile = ilUtil::ilTempnam() . '.csv';
             file_put_contents($tempFile, $csvWriter->getCSVString());
 
@@ -227,11 +218,27 @@ class UserImportJob extends ilCronJob
                 $objectType,
                 $userImport->getObjId(),
                 date('dmY_H_i'),
-            ]));
+            ])) . ".csv";
 
-            $mail->Attach($tempFile, "text/csv", "inline", "$fileName.csv");
+            $fileDataMail = new ilFileDataMail(ANONYMOUS_USER_ID);
+            $fileDataMail->copyAttachmentFile($tempFile, $fileName);
+            $mail = new ilMail(ANONYMOUS_USER_ID);
+            $errors = $mail->enqueue(
+                $user->getEmail(),
+                "",
+                "",
+                sprintf(
+                    $this->dic->language()->txtlng($pluginLngModule, "{$pluginLngModule}_mail.message.title", $user->getLanguage()),
+                    $objectTypeName,
+                    $userImport->getObjId()
+                ),
+                $this->dic->language()->txtlng($pluginLngModule, "{$pluginLngModule}_mail.message.text", $user->getLanguage()),
+                [$fileName],
+                false
+            );
 
-            if (!$mail->Send()) {
+
+            if (count($errors) !== 0) {
                 $this->logger->error(
                     sprintf(
                         "Mail delivery of import results failed. ID of import: %s, ID of receiving user: %s",
@@ -241,7 +248,6 @@ class UserImportJob extends ilCronJob
                 );
                 $failedMailDeliveries++;
             }
-
             $userImportRepository->delete($userImport);
         }
 
