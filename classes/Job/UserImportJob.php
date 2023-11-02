@@ -30,6 +30,7 @@ use ilFileDataMail;
 use ILIAS\DI\Container;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\AssociatedObjectNotFoundException;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\UserNotFoundException;
+use ILIAS\Plugin\CrsGrpEnrollment\Lock\Locker;
 use ILIAS\Plugin\CrsGrpEnrollment\Repositories\UserImportRepository;
 use ILIAS\Plugin\CrsGrpEnrollment\Services\UserImportService;
 use ilLogger;
@@ -69,6 +70,10 @@ class UserImportJob extends ilCronJob
      * @var ilMailMimeSenderFactory
      */
     private $mailMimeSenderFactory;
+    /**
+     * @var Locker
+     */
+    private $lock;
 
     public function __construct()
     {
@@ -77,6 +82,7 @@ class UserImportJob extends ilCronJob
         $this->pluginAdmin = $this->dic['ilPluginAdmin'];
         $this->logger = $this->dic->logger()->root();
         $this->mailMimeSenderFactory = $DIC['mail.mime.sender.factory'];
+        $this->lock = $this->dic['plugin.crs_grp_enrol.cronjob.locker'];
     }
 
     public function getId() : string
@@ -146,6 +152,20 @@ class UserImportJob extends ilCronJob
             $cronResult->setMessage('Fatal Error! Plugin not installed!');
             return $cronResult;
         }
+
+        if ($this->lock->acquireLock()) {
+            $this->logger->info('Acquired lock.');
+        } else {
+            $message = sprintf(
+                'Terminated import script: %s',
+                'Script is probably running, please remove the lock if you are sure no task is running.'
+            );
+            $this->logger->info($message);
+            $cronResult->setStatus(ilCronJobResult::STATUS_NO_ACTION);
+            $cronResult->setMessage($message);
+            return $cronResult;
+        }
+
 
         $userImportRepository = new UserImportRepository();
         $userImportService = new UserImportService($plugin);
@@ -259,6 +279,9 @@ class UserImportJob extends ilCronJob
                 $failedMailDeliveries
             )
         );
+        //$this->lock->releaseLock();
+
+
 
         return $cronResult;
     }

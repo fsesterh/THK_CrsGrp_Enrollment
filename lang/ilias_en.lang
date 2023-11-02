@@ -24,3 +24,8 @@ cronResult.noImports#:#No user imports to process.
 
 mail.message.title#:#User import on %s object with obj-id '%s' finished
 mail.message.text#:#Finished importing users. See attached csv file for results.
+
+lock.locked#:#The script is probably running. Please remove the lock if you are sure no import task is running.
+lock.release#:#Release Lock
+lock.release.sure#:#Are you sure you want to release the lock?
+lock.released#:#The lock has been removed.

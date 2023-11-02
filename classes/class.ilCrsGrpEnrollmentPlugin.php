@@ -3,6 +3,7 @@
 /* Copyright (c) 1998-2021 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 use ILIAS\Plugin\CrsGrpEnrollment\Job\UserImportJob;
+use ILIAS\Plugin\CrsGrpEnrollment\Lock\PidBasedLocker;
 
 /**
  * Class ilCrsGrpEnrollmentPlugin
@@ -52,6 +53,12 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
 
         if (!self::$initialized) {
             self::$initialized = true;
+
+            $GLOBALS['DIC']['plugin.crs_grp_enrol.cronjob.locker'] = function () {
+                return new PidBasedLocker(
+                    new ilSetting($this->getPluginName())
+                );
+            };
         }
     }
 

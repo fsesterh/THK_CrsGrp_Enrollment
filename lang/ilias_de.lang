@@ -24,3 +24,8 @@ cronResult.noImports#:#Keine Benutzer-Imports zu verarbeiten.
 
 mail.message.title#:#Benutzer-Import auf %s-Objekt mit obj-id '%s' abgeschlossen
 mail.message.text#:#Der Import der Benutzer ist abgeschlossen. Die Ergebnisse finden Sie in der angehängten csv-Datei.
+
+lock.locked#:#Aktuell befindet sich ein Importvorgang in Bearbeitung. Bitte entfernen Sie dem Lock wenn Sie sich sicher sind, dass aktuell kein Import ausgeführt wird.
+lock.release#:#Lock Entfernen
+lock.release.sure#:#Sind Sie sicher, dass Sie die Lock-Datei löschen möchten? Die Existenz dieser Datei verhindert, dass sich Import-Prozesse überlappen.
+lock.released#:#Die Lock-Datei wurde entfernt.
