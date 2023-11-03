@@ -18,3 +18,14 @@ report_csv_no_associated_object_found#:#No target object with ID %s found for im
 report_csv_export_name#:#Import
 course_group_config_clear#:#Clear data
 course_group_config_cleared#:#Cleared
+
+cronResult#:#Processed %s user imports. %s e-mails could not be send.
+cronResult.noImports#:#No user imports to process.
+
+mail.message.title#:#User import on %s object with obj-id '%s' finished
+mail.message.text#:#Finished importing users. See attached csv file for results.
+
+lock.locked#:#The script is probably running. Please remove the lock if you are sure no import task is running.
+lock.release#:#Release Lock
+lock.release.sure#:#Are you sure you want to release the lock?
+lock.released#:#The lock has been removed.

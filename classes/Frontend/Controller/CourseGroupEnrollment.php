@@ -4,11 +4,8 @@
 namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller;
 
 use ilFileInputGUI;
-use ILIAS\BackgroundTasks\Implementation\Bucket\BasicBucket;
 use ILIAS\FileUpload\DTO\ProcessingStatus;
 use ILIAS\FileUpload\DTO\UploadResult;
-use ILIAS\Plugin\CrsGrpEnrollment\BackgroundTask\UserImportJob;
-use ILIAS\Plugin\CrsGrpEnrollment\BackgroundTask\UserImportReport;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\CoulNotFindUploadedFileException;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\CsvEmptyException;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\FileNotReadableException;
@@ -187,40 +184,10 @@ class CourseGroupEnrollment extends RepositoryObject
 
                 $userImport = $userImportRepository->save($userImport);
 
-                $taskFactory = $DIC->backgroundTasks()->taskFactory();
-                $taskManager = $DIC->backgroundTasks()->taskManager();
-
-                $bucket = new BasicBucket();
-                $bucket->setUserId($DIC->user()->getId());
-
-                $csvExport = $taskFactory->createTask(UserImportJob::class, [
-                    (int) $userImport->getId(),
-                ]);
-
                 $object = ilObjectFactory::getInstanceByObjId($userImport->getObjId());
                 if ($object === false || ($object instanceof ilObjCourse || $object instanceof ilObjGroup) === false) {
                     $csvExportName = $this->getCoreController()->getPluginObject()->txt('err_csv_empty') . '_' . date('dmY_H_i');
-                } else {
-                    if ($object instanceof ilObjCourse) {
-                        $objType = 'crs';
-                    } else {
-                        $objType = 'grp';
-                    }
-
-                    $csvExportName = ilUtil::getASCIIFilename(implode('_', [
-                        $this->getCoreController()->getPluginObject()->txt('report_csv_export_name'),
-                        $object->getTitle(),
-                        $objType,
-                        $object->getId(),
-                        date('dmY_H_i'),
-                    ]));
                 }
-
-                $userInteraction = $taskFactory->createTask(UserImportReport::class, [$csvExport, $csvExportName]);
-
-                $bucket->setTask($userInteraction);
-                $bucket->setTitle($this->object->getTitle());
-                $taskManager->run($bucket);
 
                 ilUtil::sendSuccess(
                     $this->getCoreController()->getPluginObject()->txt('import_successfully_enqueued'),

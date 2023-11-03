@@ -90,3 +90,57 @@ if (!$ilDB->tableColumnExists('xcge_user_import', 'obj_id')) {
     );
 }
 ?>
+<#7>
+<?php
+$task_ids = [];
+$bucket_ids = [];
+
+$result = $ilDB->query(
+    'SELECT id, bucket_id FROM il_bt_task WHERE ' . $ilDB->like(
+        'type',
+        'text',
+        '%ILIAS\\\\Plugin\\\\CrsGrpEnrollment%'
+    )
+);
+while ($row = $ilDB->fetchAssoc($result)) {
+    $task_ids[(int) $row['id']] = (int) $row['id'];
+    $bucket_ids[(int) $row['bucket_id']] = (int) $row['bucket_id'];
+}
+
+$ilDB->manipulate(
+    'DELETE FROM il_bt_value WHERE id IN (SELECT value_id FROM il_bt_value_to_task WHERE ' . $ilDB->in(
+        'task_id',
+        $task_ids,
+        false,
+        'integer'
+    ) . ')'
+);
+
+$ilDB->manipulate(
+    'DELETE FROM il_bt_value_to_task WHERE ' . $ilDB->in(
+        'task_id',
+        $task_ids,
+        false,
+        'integer'
+    )
+);
+
+$ilDB->manipulate(
+    'DELETE FROM il_bt_bucket WHERE ' . $ilDB->in(
+        'id',
+        $bucket_ids,
+        false,
+        'integer'
+    )
+);
+
+$ilDB->manipulate(
+    'DELETE FROM il_bt_task WHERE ' . $ilDB->in(
+        'id',
+        $task_ids,
+        false,
+        'integer'
+    )
+);
+
+?>
