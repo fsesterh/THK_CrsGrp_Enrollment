@@ -238,7 +238,7 @@ class UserImportJob extends ilCronJob
             $fileDataMail->copyAttachmentFile($tempFile, $fileName);
             $mail = new ilMail(ANONYMOUS_USER_ID);
             $errors = $mail->enqueue(
-                $user->getEmail(),
+                $user->getLogin(),
                 "",
                 "",
                 sprintf(
