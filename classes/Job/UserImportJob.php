@@ -36,6 +36,7 @@ use ILIAS\Plugin\CrsGrpEnrollment\Services\UserImportService;
 use ilLogger;
 use ilMail;
 use ilObjCourse;
+use ilObject;
 use ilObjectFactory;
 use ilObjectNotFoundException;
 use ilObjGroup;
@@ -244,7 +245,7 @@ class UserImportJob extends ilCronJob
                 sprintf(
                     $this->dic->language()->txtlng($pluginLngModule, "{$pluginLngModule}_mail.message.title", $user->getLanguage()),
                     $objectTypeName,
-                    $userImport->getObjId()
+                    ilObject::_lookupTitle($userImport->getObjId())
                 ),
                 $this->dic->language()->txtlng($pluginLngModule, "{$pluginLngModule}_mail.message.text", $user->getLanguage()),
                 [$fileName],

@@ -22,7 +22,7 @@ course_group_config_cleared#:#Cleared
 cronResult#:#Processed %s user imports. %s e-mails could not be send.
 cronResult.noImports#:#No user imports to process.
 
-mail.message.title#:#User import on %s object with obj-id '%s' finished
+mail.message.title#:#User import on %s-object '%s' finished
 mail.message.text#:#Finished importing users. See attached csv file for results.
 
 lock.locked#:#The script is probably running. Please remove the lock if you are sure no import task is running.
