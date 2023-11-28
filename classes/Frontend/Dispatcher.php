@@ -1,58 +1,43 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /* Copyright (c) 1998-2021 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend;
 
-use \ILIAS\DI\Container;
-use \ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller\Base;
+use ilCrsGrpEnrollmentUIHookGUI;
+use ILIAS\DI\Container;
+use ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller\Base;
 
 /**
  * Class Dispatcher
+ *
  * @package ILIAS\Plugin\CrsGrpEnrollment\Frontend
  * @author  Timo Müller <timomueller@databay.de>
  */
 class Dispatcher
 {
-    /** @var self */
-    private static $instance = null;
-    /** @var \ilCrsGrpEnrollmentUIHookGUI */
-    private $coreController;
-    /** @var string */
-    private $defaultController = '';
-    /** @var Container */
-    private $dic;
+    private static ?self $instance = null;
+    private ilCrsGrpEnrollmentUIHookGUI $coreController;
+    private string $defaultController = '';
+    private Container $dic;
 
-    /**
-     *
-     */
     private function __clone()
     {
     }
 
-    /**
-     * Dispatcher constructor.
-     * @param \ilCrsGrpEnrollmentUIHookGUI $baseController
-     * @param string $defaultController
-     */
-    private function __construct(\ilCrsGrpEnrollmentUIHookGUI $baseController, string $defaultController = '')
+    private function __construct(ilCrsGrpEnrollmentUIHookGUI $baseController, string $defaultController = '')
     {
         $this->coreController = $baseController;
         $this->defaultController = $defaultController;
     }
 
-    /**
-     * @param Container $dic
-     */
-    public function setDic(Container $dic) : void
+    public function setDic(Container $dic): void
     {
         $this->dic = $dic;
     }
 
-    /**
-     * @param \ilCrsGrpEnrollmentUIHookGUI $baseController
-     * @return self
-     */
-    public static function getInstance(\ilCrsGrpEnrollmentUIHookGUI $baseController) : self
+    public static function getInstance(ilCrsGrpEnrollmentUIHookGUI $baseController): self
     {
         if (self::$instance === null) {
             self::$instance = new self($baseController);
@@ -61,11 +46,7 @@ class Dispatcher
         return self::$instance;
     }
 
-    /**
-     * @param string $cmd
-     * @return string
-     */
-    public function dispatch(string $cmd) : string
+    public function dispatch(string $cmd): string
     {
         $controller = $this->getController($cmd);
         $command = $this->getCommand($cmd);
@@ -74,11 +55,7 @@ class Dispatcher
         return $controller->$command();
     }
 
-    /**
-     * @param string $cmd
-     * @return string
-     */
-    protected function getController(string $cmd) : string
+    protected function getController(string $cmd): string
     {
         $parts = explode('.', $cmd);
 
@@ -89,11 +66,7 @@ class Dispatcher
         return $this->defaultController ? $this->defaultController : 'Error';
     }
 
-    /**
-     * @param string $cmd
-     * @return string
-     */
-    protected function getCommand(string $cmd) : string
+    protected function getCommand(string $cmd): string
     {
         $parts = explode('.', $cmd);
 
@@ -106,21 +79,14 @@ class Dispatcher
         return '';
     }
 
-    /**
-     * @param string $controller
-     * @return Base
-     */
-    protected function instantiateController(string $controller) : Base
+    protected function instantiateController(string $controller): Base
     {
         $class = "ILIAS\\Plugin\\CrsGrpEnrollment\\Frontend\\Controller\\$controller";
 
         return new $class($this->getCoreController(), $this->dic);
     }
 
-    /**
-     * @return string
-     */
-    protected function getControllerPath() : string
+    protected function getControllerPath(): string
     {
         $path = $this->getCoreController()->getPluginObject()->getDirectory() .
             DIRECTORY_SEPARATOR .
@@ -134,26 +100,17 @@ class Dispatcher
         return $path;
     }
 
-    /**
-     * @param string $controller
-     */
-    protected function requireController(string $controller) : void
+    protected function requireController(string $controller): void
     {
         require_once $this->getControllerPath() . $controller . '.php';
     }
 
-    /**
-     * @return \ilCrsGrpEnrollmentUIHookGUI
-     */
-    public function getCoreController() : \ilCrsGrpEnrollmentUIHookGUI
+    public function getCoreController(): ilCrsGrpEnrollmentUIHookGUI
     {
         return $this->coreController;
     }
 
-    /**
-     * @param \ilCrsGrpEnrollmentUIHookGUI $coreController
-     */
-    public function setCoreController(\ilCrsGrpEnrollmentUIHookGUI $coreController) : void
+    public function setCoreController(ilCrsGrpEnrollmentUIHookGUI $coreController): void
     {
         $this->coreController = $coreController;
     }

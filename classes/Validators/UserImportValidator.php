@@ -1,16 +1,19 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /* Copyright (c) 1998-2021 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Validators;
 
-use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\InvalidCsvColumnDefinitionException;
-use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\FileNotReadableException;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\CsvEmptyException;
+use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\FileNotReadableException;
+use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\InvalidCsvColumnDefinitionException;
 
 /**
  * Class UserImportValidator
+ *
  * @package ILIAS\Plugin\CrsGrpEnrollment\Validators
- * @author Timo Müller <timomueller@databay.de>
+ * @author  Timo Müller <timomueller@databay.de>
  */
 class UserImportValidator
 {

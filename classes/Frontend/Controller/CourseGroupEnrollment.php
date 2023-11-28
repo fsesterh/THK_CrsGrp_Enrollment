@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /* Copyright (c) 1998-2021 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller;
@@ -13,40 +15,37 @@ use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\InvalidCsvColumnDefinitionException
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\UploadRejectedException;
 use ILIAS\Plugin\CrsGrpEnrollment\Models\UserImport;
 use ILIAS\Plugin\CrsGrpEnrollment\Repositories\UserImportRepository;
+use ILIAS\Plugin\CrsGrpImport\Utils\UiUtil;
 use ilLink;
 use ilObjCourse;
 use ilObjCourseGUI;
+use ilObject;
 use ilObjectFactory;
 use ilObjGroup;
 use ilObjGroupGUI;
 use ilPropertyFormGUI;
 use ilUIPluginRouterGUI;
-use ilUtil;
 
 /**
  * Class CourseGroupEnrollment
+ *
  * @package ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller
  * @author  Timo Müller <timomueller@databay.de>
  */
 class CourseGroupEnrollment extends RepositoryObject
 {
-    /**
-     * @var \ilObject $object
-     */
-    private $object;
+    private ilObject $object;
+    private UiUtil $uiUtil;
 
     /**
      * @inheritdoc
      */
-    public function getDefaultCommand() : string
+    public function getDefaultCommand(): string
     {
         return 'showSettingsCmd';
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getObjectGuiClass() : string
+    public function getObjectGuiClass(): string
     {
         if ($this->isObjectOfType('crs')) {
             return ilObjCourseGUI::class;
@@ -55,15 +54,8 @@ class CourseGroupEnrollment extends RepositoryObject
         return ilObjGroupGUI::class;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getConstructorArgs() : array
+    public function getConstructorArgs(): array
     {
-        if ($this->isObjectOfType('crs')) {
-            return [];
-        }
-
         return [
             null,
             $this->getRefId(),
@@ -74,10 +66,12 @@ class CourseGroupEnrollment extends RepositoryObject
     /**
      * @inheritdoc
      */
-    protected function init() : void
+    protected function init(): void
     {
         global $DIC;
-       
+
+        $this->uiUtil = new UiUtil();
+
         $this->pageTemplate->loadStandardTemplate();
 
         parent::init();
@@ -103,10 +97,7 @@ class CourseGroupEnrollment extends RepositoryObject
         );
     }
 
-    /**
-     * @return ilPropertyFormGUI
-     */
-    private function buildForm() : ilPropertyFormGUI
+    private function buildForm(): ilPropertyFormGUI
     {
         $form = new ilPropertyFormGUI();
         $this->ctrl->setParameterByClass(get_class($this->getCoreController()), 'ref_id', $this->object->getRefId());
@@ -131,20 +122,12 @@ class CourseGroupEnrollment extends RepositoryObject
         return $form;
     }
 
-    /**
-     * @return string
-     */
-    public function showImportFormCmd() : string
+    public function showImportFormCmd(): string
     {
-        $form = $this->buildForm();
-
-        return $form->getHTML();
+        return $this->buildForm()->getHTML();
     }
 
-    /**
-     * @return string
-     */
-    public function submitImportFormCmd() : string
+    public function submitImportFormCmd(): string
     {
         global $DIC;
 
@@ -189,7 +172,7 @@ class CourseGroupEnrollment extends RepositoryObject
                     $csvExportName = $this->getCoreController()->getPluginObject()->txt('err_csv_empty') . '_' . date('dmY_H_i');
                 }
 
-                ilUtil::sendSuccess(
+                $this->uiUtil->sendSuccess(
                     $this->getCoreController()->getPluginObject()->txt('import_successfully_enqueued'),
                     true
                 );
@@ -202,27 +185,27 @@ class CourseGroupEnrollment extends RepositoryObject
                 $form
                     ->getItemByPostVar('userImportFile')
                     ->setAlert($this->getCoreController()->getPluginObject()->txt('err_csv_file_different_row_width'));
-                ilUtil::sendFailure($this->lng->txt('form_input_not_valid'));
+                $this->uiUtil->sendFailure($this->lng->txt('form_input_not_valid'));
             } catch (FileNotReadableException $e) {
                 $form
                     ->getItemByPostVar('userImportFile')
                     ->setAlert($this->getCoreController()->getPluginObject()->txt('err_csv_file_cannot_be_read'));
-                ilUtil::sendFailure($this->lng->txt('form_input_not_valid'));
+                $this->uiUtil->sendFailure($this->lng->txt('form_input_not_valid'));
             } catch (CsvEmptyException $e) {
                 $form
                     ->getItemByPostVar('userImportFile')
                     ->setAlert($this->getCoreController()->getPluginObject()->txt('err_csv_empty'));
-                ilUtil::sendFailure($this->lng->txt('form_input_not_valid'));
+                $this->uiUtil->sendFailure($this->lng->txt('form_input_not_valid'));
             } catch (CoulNotFindUploadedFileException $e) {
                 $form
                     ->getItemByPostVar('userImportFile')
                     ->setAlert($this->getCoreController()->getPluginObject()->txt('err_csv_empty'));
-                ilUtil::sendFailure($this->lng->txt('upload_error_file_not_found'));
+                $this->uiUtil->sendFailure($this->lng->txt('upload_error_file_not_found'));
             } catch (UploadRejectedException $e) {
                 $form
                     ->getItemByPostVar('userImportFile')
                     ->setAlert($e->getMessage());
-                ilUtil::sendFailure($this->lng->txt('upload_error_file_not_found'));
+                $this->uiUtil->sendFailure($this->lng->txt('upload_error_file_not_found'));
             }
         }
 

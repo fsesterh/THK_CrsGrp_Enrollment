@@ -1,140 +1,97 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /* Copyright (c) 1998-2021 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Models;
 
-use DateTime;
-use ilObjUser;
-
 /**
  * Class UserImport
+ *
  * @package ILIAS\Plugin\CrsGrpEnrollment\Models
  * @author  Timo Müller <timomueller@databay.de>
  */
 class UserImport
 {
-    /** @var integer */
-    private $id;
+    private ?int $id = null;
 
-    /** @var integer */
-    private $status;
+    private int $status;
 
-    /** @var integer */
-    private $user;
+    private int $user;
 
-    /** @var integer */
-    private $createdTimestamp;
+    private int $createdTimestamp;
 
-    /** @var string */
-    private $data;
+    private string $data;
 
-    /** @var integer */
-    private $objId;
+    private int $objId;
 
-    const STATUS_PENDING = 0;
-    const STATUS_COMPLETED = 1;
+    public const STATUS_PENDING = 0;
+    public const STATUS_COMPLETED = 1;
 
-    /**
-     * @return ?int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId(int $id) : void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return int
-     */
-    public function getStatus() : int
+    public function getStatus(): int
     {
         return $this->status;
     }
 
-    /**
-     * @param int $status
-     */
-    public function setStatus(int $status) : void
+    public function setStatus(int $status): void
     {
         $this->status = $status;
     }
 
-    /**
-     * @return int
-     */
-    public function getUser() : int
+    public function getUser(): int
     {
         return $this->user;
     }
 
-    /**
-     * @param int $user
-     */
-    public function setUser(int $user) : void
+    public function setUser(int $user): void
     {
         $this->user = $user;
     }
 
-    /**
-     * @return string
-     */
-    public function getCreatedTimestamp() : int
+    public function getCreatedTimestamp(): int
     {
         return $this->createdTimestamp;
     }
 
-    /**
-     * @param int $createdTimestamp
-     */
-    public function setCreatedTimestamp(int $createdTimestamp) : void
+    public function setCreatedTimestamp(int $createdTimestamp): void
     {
         $this->createdTimestamp = $createdTimestamp;
     }
 
-    /**
-     * @return string
-     */
-    public function getData() : string
+    public function getData(): string
     {
         return $this->data;
     }
 
-    /**
-     * @param string $data
-     */
-    public function setData(string $data) : void
+    public function setData(string $data): void
     {
         $this->data = $data;
     }
 
-    /**
-     * @return int
-     */
-    public function getObjId() : int
+    public function getObjId(): int
     {
         return $this->objId;
     }
 
-    /**
-     * @param int $objId
-     */
-    public function setObjId(int $objId) : void
+    public function setObjId(int $objId): void
     {
         $this->objId = $objId;
     }
 
     /**
      * @param array{int, int, string, int, int, int} $record
-     * @return static
      */
-    public static function fromRecord(array $record) : self
+    public static function fromRecord(array $record): self
     {
         $import = new self();
         $import->setId((int) $record['id']);

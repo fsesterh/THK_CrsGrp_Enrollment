@@ -1,2 +1,3 @@
-vendor/
-.idea/
+/vendor/
+/.idea
+/.php-cs-fixer.cache

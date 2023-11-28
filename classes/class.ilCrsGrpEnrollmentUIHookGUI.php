@@ -1,4 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 /* Copyright (c) 1998-2021 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 use ILIAS\DI\Container;
@@ -12,10 +15,9 @@ use ILIAS\Plugin\CrsGrpEnrollment\Frontend\ViewModifier\CourseGroupTabs;
  */
 class ilCrsGrpEnrollmentUIHookGUI extends ilUIHookPluginGUI
 {
-    /** @var Container */
-    protected $dic;
+    protected Container $dic;
     /** @var ViewModifier[]|null */
-    protected static $modifiers = null;
+    protected static ?array $modifiers = null;
 
     /**
      * ilCrsGrpEnrollmentUIHookGUI constructor.
@@ -30,7 +32,7 @@ class ilCrsGrpEnrollmentUIHookGUI extends ilUIHookPluginGUI
     /**
      * The main entry point for own plugin controllers
      */
-    public function executeCommand() : void
+    public function executeCommand(): void
     {
         $this->setPluginObject(ilCrsGrpEnrollmentPlugin::getInstance());
 
@@ -51,7 +53,7 @@ class ilCrsGrpEnrollmentUIHookGUI extends ilUIHookPluginGUI
     /**
      *
      */
-    private function initModifiers() : void
+    private function initModifiers(): void
     {
         if (
             !isset($this->dic['tpl']) ||
@@ -92,7 +94,7 @@ class ilCrsGrpEnrollmentUIHookGUI extends ilUIHookPluginGUI
     /**
      * @inheritDoc
      */
-    public function getHTML($a_comp, $a_part, $a_par = [])
+    public function getHTML($a_comp, $a_part, $a_par = []): array
     {
         $unmodified = ['mode' => ilUIHookPluginGUI::KEEP, 'html' => ''];
 
@@ -112,7 +114,7 @@ class ilCrsGrpEnrollmentUIHookGUI extends ilUIHookPluginGUI
     /**
      * @inheritDoc
      */
-    public function modifyGUI($a_comp, $a_part, $a_par = [])
+    public function modifyGUI($a_comp, $a_part, $a_par = []): void
     {
         parent::modifyGUI($a_comp, $a_part, $a_par);
 

@@ -5,14 +5,14 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 in this document are to be interpreted as described in
 [RFC 2119](https://www.ietf.org/rfc/rfc2119.txt).
 
-**Table of Contents**
-
+<!-- TOC -->
 * [CrsGrpEnrollment](#crsgrpenrollment)
-* [Requirements](#requirements)
-* [Installation](#installation)
+  * [CrsGrpEnrollment](#crsgrpenrollment-1)
+  * [Requirements](#requirements)
+  * [Installation](#installation)
     * [Composer](#composer)
-* [Know Issues](#known-issues)
-* [License](#license)
+  * [License](#license)
+<!-- TOC -->
 
 ## CrsGrpEnrollment
 This plugin enables the import of course or group memberships via CSV file. User accounts are identified by either:
@@ -30,17 +30,12 @@ The CrsGrpEnrollment plugin will create a report file (CSV) which is send to the
 
 ## Requirements
 
-* PHP: [![Minimum PHP Version](https://img.shields.io/badge/Minimum_PHP-7.2.x-blue.svg)](https://php.net/) [![Maximum PHP Version](https://img.shields.io/badge/Maximum_PHP-7.4.x-blue.svg)](https://php.net/)
-* ILIAS: [![Minimum ILIAS Version](https://img.shields.io/badge/Minimum_ILIAS-6.0-orange.svg)](https://ilias.de/) [![Maximum ILIAS Version](https://img.shields.io/badge/Maximum_ILIAS-7.999-orange.svg)](https://ilias.de/)
+* PHP: [![Minimum PHP Version](https://img.shields.io/badge/Minimum_PHP-7.4-blue.svg)](https://php.net/) [![Maximum PHP Version](https://img.shields.io/badge/Maximum_PHP-8.0-blue.svg)](https://php.net/)
+* ILIAS: [![Minimum ILIAS Version](https://img.shields.io/badge/Minimum_ILIAS-8.0-orange.svg)](https://ilias.de/) [![Maximum ILIAS Version](https://img.shields.io/badge/Maximum_ILIAS-8.999-orange.svg)](https://ilias.de/)
 * Permissions: In order to import course or group memberships, the active user MUST have the permission to manage members for courses/groups in ILIAS.
 * SOAP administration MUST be enabled.
 * CSV: The import file MUST be CSV and MUST contain 1 (one) user account name OR 1 (one) email address OR 1 (one) matriculation number per row. The file MUST contain 1 (one) column only.
-* In ILIAS 7 UserInterfaceHook plugins can't add cronjobs. The cronjob has to be manually started using the following bash command: 
-  ```bash
-  php <path to plugin>/cron.php <username> <password> <client-id>
-  ```
-  * This script can then be added to a normal linux cronjob for automatic execution.
-  * In future versions of ILIAS (8+) this will no longer be required and the CronJob can be added to ILIAS directly and managed through it as well. 
+
 ## Installation
 
 This plugin MUST be installed as a

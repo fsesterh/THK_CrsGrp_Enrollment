@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /* Copyright (c) 1998-2016 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller;
@@ -9,25 +11,20 @@ use ReflectionMethod;
 
 /**
  * Class Course
+ *
  * @package ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller
- * @author Timo Müller <timomueller@databay.de>
+ * @author  Timo Müller <timomueller@databay.de>
  */
 abstract class RepositoryObject extends Base
 {
-    /**
-     * @return string
-     */
-    abstract public function getObjectGuiClass() : string;
+    abstract public function getObjectGuiClass(): string;
 
-    /**
-     * @return array
-     */
-    abstract public function getConstructorArgs() : array;
+    abstract public function getConstructorArgs(): array;
 
     /**
      * @throws ReflectionException
      */
-    protected function drawHeader() : void
+    protected function drawHeader(): void
     {
         $class = $this->getObjectGuiClass();
         $refl = new ReflectionClass($class);

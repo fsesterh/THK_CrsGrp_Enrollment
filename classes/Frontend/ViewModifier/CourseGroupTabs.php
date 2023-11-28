@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /* Copyright (c) 1998-2021 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend\ViewModifier;
@@ -20,15 +22,13 @@ use ilUsersGalleryGUI;
 
 /**
  * Class CourseGroupTabs
+ *
  * @package ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller
- * @author Timo Müller <timomueller@databay.de>
+ * @author  Timo Müller <timomueller@databay.de>
  */
 class CourseGroupTabs extends Base
 {
-    /**
-     * @return int
-     */
-    private function getContainerRefId() : int
+    private function getContainerRefId(): int
     {
         $refId = $this->getRefId();
 
@@ -39,10 +39,7 @@ class CourseGroupTabs extends Base
         return $refId;
     }
 
-    /**
-     * @return bool
-     */
-    private function shouldRenderCustomCourseOrGroupTabs() : bool
+    private function shouldRenderCustomCourseOrGroupTabs(): bool
     {
         $isBlackListedCommandClass = (
             (
@@ -68,10 +65,7 @@ class CourseGroupTabs extends Base
         return !$isBlackListedCommandClass;
     }
 
-    /**
-     * @return bool
-     */
-    private function shouldRenderCourseOrGroupTabs() : bool
+    private function shouldRenderCourseOrGroupTabs(): bool
     {
         $shouldRenderCustomCourseTabs = $this->shouldRenderCustomCourseOrGroupTabs();
         if (!$shouldRenderCustomCourseTabs) {
@@ -92,7 +86,7 @@ class CourseGroupTabs extends Base
     /**
      * @inheritDoc
      */
-    public function shouldModifyHtml(string $component, string $part, array $parameters) : bool
+    public function shouldModifyHtml(string $component, string $part, array $parameters): bool
     {
         return false;
     }
@@ -100,7 +94,7 @@ class CourseGroupTabs extends Base
     /**
      * @inheritDoc
      */
-    public function modifyHtml(string $component, string $part, array $parameters) : array
+    public function modifyHtml(string $component, string $part, array $parameters): array
     {
         return [];
     }
@@ -108,7 +102,7 @@ class CourseGroupTabs extends Base
     /**
      * @inheritDoc
      */
-    public function shouldModifyGUI(string $component, string $part, array $parameters) : bool
+    public function shouldModifyGUI(string $component, string $part, array $parameters): bool
     {
         if ('tabs' !== $part && 'sub_tabs' !== $part) {
             return false;
@@ -137,20 +131,19 @@ class CourseGroupTabs extends Base
     /**
      * @inheritDoc
      */
-    public function modifyGUI(string $component, string $part, array $parameters) : void
+    public function modifyGUI(string $component, string $part, array $parameters): void
     {
         /** @var ilTabsGUI $tabs */
         $tabs = $parameters['tabs'];
 
         $this->ctrl->setParameterByClass(get_class($this->getCoreController()), 'ref_id', $this->getContainerRefId());
-        $tabs->addSubTabTarget(
-            $this->getCoreController()->getPluginObject()->getPrefix() . '_course_group_import',
+        $tabs->addSubTab(
+            'course_group_import',
+            $this->getCoreController()->getPluginObject()->txt("course_group_import"),
             $this->ctrl->getLinkTargetByClass(
                 [ilUIPluginRouterGUI::class, get_class($this->getCoreController())],
                 'CourseGroupEnrollment.showImportForm'
             ),
-            '',
-            [CourseGroupTabs::class]
         );
     }
 }
