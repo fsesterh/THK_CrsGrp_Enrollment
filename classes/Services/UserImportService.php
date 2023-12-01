@@ -3,11 +3,13 @@
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Services;
 
+use Exception;
 use ilCSVWriter;
 use ilGroupMembershipMailNotification;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\FileNotReadableException;
 use ILIAS\Plugin\CrsGrpEnrollment\Models\UserImport;
 use ILIAS\Plugin\CrsGrpEnrollment\Repositories\UserImportRepository;
+use ilLogger;
 use ilObjCourse;
 use ilObject;
 use ilObjectFactory;
@@ -27,6 +29,10 @@ class UserImportService
     protected $csv = null;
     /** @var ilUserInterfaceHookPlugin */
     protected $pluginObject = null;
+    /**
+     * @var ilLogger
+     */
+    private $logger;
 
     /**
      * UserImportService constructor.
@@ -34,7 +40,9 @@ class UserImportService
      */
     public function __construct(ilUserInterfaceHookPlugin $pluginObject)
     {
+        global $DIC;
         $this->pluginObject = $pluginObject;
+        $this->logger = $DIC->logger()->root();
     }
 
     /**
@@ -186,7 +194,18 @@ class UserImportService
         $userImportRepository = new UserImportRepository();
         $usrIds = [];
 
-        foreach (json_decode($userImport->getData(), true) as $userData) {
+        try {
+            $data = json_decode($userImport->getData(), true, 512, JSON_THROW_ON_ERROR);
+        } catch (Exception $ex) {
+            $this->logger->error("Unable to decode UserImport data. Ex.: {$ex->getMessage()}");
+            return [];
+        }
+
+        foreach ($data as $userData) {
+            if (!$userData) {
+                continue;
+            }
+
             $userId = ilObjUser::getUserIdByLogin($userData);
             if ($userId > 0) {
                 $usrIds[] = $userId;
