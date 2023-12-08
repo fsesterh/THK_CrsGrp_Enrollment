@@ -142,6 +142,7 @@ class UserImportJob extends ilCronJob
         if (count($userImports) === 0) {
             $cronResult->setStatus(ilCronJobResult::STATUS_OK);
             $cronResult->setMessage($this->plugin->txt("cronResult.noImports"));
+            $this->lock->releaseLock();
             return $cronResult;
         }
 

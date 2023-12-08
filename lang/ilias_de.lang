@@ -16,8 +16,6 @@ report_csv_no_user_import_found#:#Kein Datensatz zu der ID %s gefunden
 report_csv_no_executive_user_found#:#Keinen ausführenden Benutzer für die ID %s gefunden
 report_csv_no_associated_object_found#:#Kein Zielobjekt mit der ID %s gefunden, für das der Import durchgeführt werden soll
 report_csv_export_name#:#Import
-course_group_config_clear#:#Daten leeren
-course_group_config_cleared#:#Geleert
 
 cronResult#:#%s Benutzerimporte verarbeitet %s E-Mails konnten nicht versand werden.
 cronResult.noImports#:#Keine Benutzer-Imports zu verarbeiten.
