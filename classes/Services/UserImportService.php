@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /* Copyright (c) 1998-2021 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Services;
@@ -20,24 +22,16 @@ use ilUserInterfaceHookPlugin;
 
 /**
  * Class UserImportService
+ *
  * @package ILIAS\Plugin\CrsGrpEnrollment\Services
  * @author  Timo Müller <timomueller@databay.de>
  */
 class UserImportService
 {
-    /** @var ilCSVWriter */
-    protected $csv = null;
-    /** @var ilUserInterfaceHookPlugin */
-    protected $pluginObject = null;
-    /**
-     * @var ilLogger
-     */
-    private $logger;
+    protected ?ilCSVWriter $csv = null;
+    protected ?ilUserInterfaceHookPlugin $pluginObject = null;
+    private ilLogger $logger;
 
-    /**
-     * UserImportService constructor.
-     * @param ilUserInterfaceHookPlugin $pluginObject
-     */
     public function __construct(ilUserInterfaceHookPlugin $pluginObject)
     {
         global $DIC;
@@ -46,11 +40,9 @@ class UserImportService
     }
 
     /**
-     * @param string $importFile
-     * @return array
      * @throws FileNotReadableException
      */
-    public function convertCSVToArray(string $importFile) : array
+    public function convertCSVToArray(string $importFile): array
     {
         $tmpFile = fopen($importFile, 'rb');
 
@@ -75,12 +67,7 @@ class UserImportService
         return $dataArray;
     }
 
-    /**
-     * @param ilObjCourse $courseObject
-     * @param UserImport $userImport
-     * @return ilCSVWriter
-     */
-    public function importUserToCourse(ilObjCourse $courseObject, UserImport $userImport) : ilCSVWriter
+    public function importUserToCourse(ilObjCourse $courseObject, UserImport $userImport): ilCSVWriter
     {
         global $DIC;
 
@@ -130,8 +117,8 @@ class UserImportService
                 continue;
             }
 
-            $participant->add($filteredUserId, IL_CRS_MEMBER);
-            $participant->sendNotification($participant->NOTIFY_ACCEPT_USER, $filteredUserId);
+            $participant->add($filteredUserId, ilParticipants::IL_CRS_MEMBER);
+            $participant->sendNotification(ilGroupMembershipMailNotification::TYPE_ADMISSION_MEMBER, $filteredUserId);
 
             $courseObject->checkLPStatusSync($filteredUserId);
         }
@@ -139,12 +126,7 @@ class UserImportService
         return $this->csv;
     }
 
-    /**
-     * @param ilObjGroup $groupObject
-     * @param UserImport $userImport
-     * @return ilCSVWriter
-     */
-    public function importUserToGroup(ilObjGroup $groupObject, UserImport $userImport) : ilCSVWriter
+    public function importUserToGroup(ilObjGroup $groupObject, UserImport $userImport): ilCSVWriter
     {
         $refIds = ilObject::_getAllReferences($groupObject->getId());
         $refId = current($refIds);
@@ -174,7 +156,7 @@ class UserImportService
                 continue;
             }
 
-            $participant->add($new_member, IL_GRP_MEMBER);
+            $participant->add($new_member, ilParticipants::IL_GRP_MEMBER);
             include_once './Modules/Group/classes/class.ilGroupMembershipMailNotification.php';
             $participant->sendNotification(
                 ilGroupMembershipMailNotification::TYPE_ADMISSION_MEMBER,
@@ -186,10 +168,9 @@ class UserImportService
     }
 
     /**
-     * @param UserImport $userImport
      * @return int[]
      */
-    private function getUserIds(UserImport $userImport) : array
+    private function getUserIds(UserImport $userImport): array
     {
         $userImportRepository = new UserImportRepository();
         $usrIds = [];

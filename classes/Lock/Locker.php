@@ -18,17 +18,19 @@
 
 declare(strict_types=1);
 
-
 namespace ILIAS\Plugin\CrsGrpEnrollment\Lock;
 
 /**
  * Class Locker
+ *
  * @package ILIAS\Plugin\CrsGrpEnrollment\Lock
- * @author Marvin Beym <mbeym@databay.de>
+ * @author  Marvin Beym <mbeym@databay.de>
  */
 interface Locker
 {
-    public function acquireLock() : bool;
-    public function isLocked() : bool;
-    public function releaseLock() : void;
+    public function acquireLock(): bool;
+
+    public function isLocked(): bool;
+
+    public function releaseLock(): void;
 }

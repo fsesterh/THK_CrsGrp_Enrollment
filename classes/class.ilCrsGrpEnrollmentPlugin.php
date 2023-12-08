@@ -1,52 +1,46 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /* Copyright (c) 1998-2021 ILIAS open source, Extended GPL, see docs/LICENSE */
 
+use ILIAS\DI\Container;
 use ILIAS\Plugin\CrsGrpEnrollment\Job\UserImportJob;
 use ILIAS\Plugin\CrsGrpEnrollment\Lock\PidBasedLocker;
 
 /**
  * Class ilCrsGrpEnrollmentPlugin
+ *
  * @author Timo Müller <timomueller@databay.de>
  */
-class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
+class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin implements ilCronJobProvider
 {
     /** @var string */
-    const CTYPE = 'Services';
+    public const CTYPE = 'Services';
     /** @var string */
-    const CNAME = 'UIComponent';
+    public const CNAME = 'UIComponent';
     /** @var string */
-    const SLOT_ID = 'uihk';
+    public const SLOT_ID = 'uihk';
     /** @var string */
-    const PNAME = 'CrsGrpEnrollment';
-    /** @var self */
-    private static $instance = null;
-    /** @var bool */
-    protected static $initialized = false;
-    /** @var \ILIAS\DI\Container */
-    protected $dic;
+    public const PNAME = 'CrsGrpEnrollment';
+    private static ?ilCrsGrpEnrollmentPlugin $instance = null;
+    protected static bool $initialized = false;
+    protected Container $dic;
 
-    public function __construct()
+    public function __construct(ilDBInterface $db, ilComponentRepositoryWrite $component_repository, string $id)
     {
         global $DIC;
-
-        parent::__construct();
+        parent::__construct($db, $component_repository, $id);
 
         $this->dic = $DIC;
     }
 
-    public function getPluginName() : string
+    public function getPluginName(): string
     {
         return self::PNAME;
     }
 
-    public function run() : ilCronJobResult
-    {
-        $job = new UserImportJob();
-        return $job->run();
-    }
-
-    protected function init() : void
+    protected function init(): void
     {
         parent::init();
         $this->registerAutoloader();
@@ -62,7 +56,7 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
         }
     }
 
-    protected function afterUninstall() : void
+    protected function afterUninstall(): void
     {
         parent::afterUninstall();
 
@@ -71,22 +65,42 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin
         }
     }
 
-    public function registerAutoloader() : void
+    public function registerAutoloader(): void
     {
         require_once __DIR__ . '/../vendor/autoload.php';
     }
 
-    public static function getInstance() : self
+    public static function getInstance(): self
     {
-        if (null === self::$instance) {
-            return self::$instance = ilPluginAdmin::getPluginObject(
-                self::CTYPE,
-                self::CNAME,
-                self::SLOT_ID,
-                self::PNAME
-            );
+        if (self::$instance) {
+            return self::$instance;
         }
 
+        global $DIC;
+
+        /** @var ilComponentFactory $componentFactory */
+        $componentFactory = $DIC['component.factory'];
+        self::$instance = $componentFactory->getPlugin('crs_grp_enrol');
         return self::$instance;
+    }
+
+    public function getCronJobInstances(): array
+    {
+        return [
+            new UserImportJob()
+        ];
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getCronJobInstance(string $jobId): ilCronJob
+    {
+        foreach ($this->getCronJobInstances() as $cronJobInstance) {
+            if ($cronJobInstance->getId() === $jobId) {
+                return $cronJobInstance;
+            }
+        }
+        throw new Exception("No cron job found with the id '$jobId'.");
     }
 }

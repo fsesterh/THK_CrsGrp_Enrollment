@@ -29,3 +29,6 @@ lock.locked#:#The script is probably running. Please remove the lock if you are 
 lock.release#:#Release Lock
 lock.release.sure#:#Are you sure you want to release the lock?
 lock.released#:#The lock has been removed.
+
+job.title#:#CrsGrpEnrollment User Import
+job.description#:#Processes the queue.

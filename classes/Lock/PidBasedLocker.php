@@ -18,27 +18,26 @@
 
 declare(strict_types=1);
 
-
 namespace ILIAS\Plugin\CrsGrpEnrollment\Lock;
 
 use ilSetting;
 
 /**
  * Class PidBasedLocker
+ *
  * @package ILIAS\Plugin\CrsGrpEnrollment\Lock
- * @author Marvin Beym <mbeym@databay.de>
+ * @author  Marvin Beym <mbeym@databay.de>
  */
 class PidBasedLocker implements Locker
 {
-    /** @var ilSetting */
-    protected $settings;
+    protected ilSetting $settings;
 
     public function __construct(ilSetting $settings)
     {
         $this->settings = $settings;
     }
 
-    protected function isRunning(string $pid) : bool
+    protected function isRunning(string $pid): bool
     {
         try {
             $result = shell_exec(\sprintf("ps %d", $pid));
@@ -51,14 +50,14 @@ class PidBasedLocker implements Locker
         return false;
     }
 
-    protected function writeLockedState() : void
+    protected function writeLockedState(): void
     {
-        $this->settings->set('cron_lock_status', 1);
-        $this->settings->set('cron_lock_ts', time());
+        $this->settings->set('cron_lock_status', '1');
+        $this->settings->set('cron_lock_ts', (string) time());
         $this->settings->set('cron_lock_pid', (string) getmypid());
     }
 
-    public function acquireLock() : bool
+    public function acquireLock(): bool
     {
         if (!$this->isLocked()) {
             $this->writeLockedState();
@@ -67,7 +66,7 @@ class PidBasedLocker implements Locker
 
         $pid = (string) $this->settings->get('cron_lock_pid', '');
         if ($this->isRunning($pid)) {
-            $lastLockTimestamp = $this->settings->get('cron_lock_ts', time());
+            $lastLockTimestamp = (int) $this->settings->get('cron_lock_ts', (string) time());
             if ($lastLockTimestamp > time() - (60 * 60 * 1)) {
                 return false;
             }
@@ -77,15 +76,15 @@ class PidBasedLocker implements Locker
         return true;
     }
 
-    public function isLocked() : bool
+    public function isLocked(): bool
     {
-        return (bool) $this->settings->get('cron_lock_status', 0);
+        return (bool) $this->settings->get('cron_lock_status', '0');
     }
 
-    public function releaseLock() : void
+    public function releaseLock(): void
     {
-        $this->settings->set('cron_lock_status', 0);
-        $this->settings->set('cron_lock_ts', null);
-        $this->settings->set('cron_lock_pid', null);
+        $this->settings->set('cron_lock_status', '0');
+        $this->settings->set('cron_lock_ts', '');
+        $this->settings->set('cron_lock_pid', '');
     }
 }

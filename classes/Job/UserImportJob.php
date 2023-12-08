@@ -18,7 +18,6 @@
 
 declare(strict_types=1);
 
-
 namespace ILIAS\Plugin\CrsGrpEnrollment\Job;
 
 use ilCronJob;
@@ -27,6 +26,7 @@ use ilCrsGrpEnrollmentPlugin;
 use ilCSVWriter;
 use ilDatabaseException;
 use ilFileDataMail;
+use ilFileUtils;
 use ILIAS\DI\Container;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\AssociatedObjectNotFoundException;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\UserNotFoundException;
@@ -42,34 +42,22 @@ use ilObjectNotFoundException;
 use ilObjGroup;
 use ilObjUser;
 use ilPluginAdmin;
-use ilPluginException;
-use ilUtil;
 use ReflectionClass;
 
 /**
  * Class UserImportJob
+ *
  * @package ILIAS\Plugin\CrsGrpEnrollment\Job
- * @author Marvin Beym <mbeym@databay.de>
+ * @author  Marvin Beym <mbeym@databay.de>
  */
 class UserImportJob extends ilCronJob
 {
-    /**
-     * @var Container
-     */
-    private $dic;
-    /**
-     * @var ilPluginAdmin
-     */
-    private $pluginAdmin;
-    /**
-     * @var ilLogger
-     */
-    private $logger;
+    private Container $dic;
+    private ilPluginAdmin $pluginAdmin;
+    private ilLogger $logger;
 
-    /**
-     * @var Locker
-     */
-    private $lock;
+    private Locker $lock;
+    private ilCrsGrpEnrollmentPlugin $plugin;
 
     public function __construct()
     {
@@ -78,24 +66,35 @@ class UserImportJob extends ilCronJob
         $this->pluginAdmin = $this->dic['ilPluginAdmin'];
         $this->logger = $this->dic->logger()->root();
         $this->lock = $this->dic['plugin.crs_grp_enrol.cronjob.locker'];
+        $this->plugin = ilCrsGrpEnrollmentPlugin::getInstance();
     }
 
-    public function getId() : string
+    public function getTitle(): string
+    {
+        return $this->plugin->txt("job.title");
+    }
+
+    public function getDescription(): string
+    {
+        return $this->plugin->txt("job.description");
+    }
+
+    public function getId(): string
     {
         return (new ReflectionClass($this))->getShortName();
     }
 
-    public function hasAutoActivation() : bool
+    public function hasAutoActivation(): bool
     {
         return false;
     }
 
-    public function hasFlexibleSchedule() : bool
+    public function hasFlexibleSchedule(): bool
     {
         return true;
     }
 
-    public function getDefaultScheduleType() : int
+    public function getDefaultScheduleType(): int
     {
         return self::SCHEDULE_TYPE_IN_HOURS;
     }
@@ -103,7 +102,7 @@ class UserImportJob extends ilCronJob
     /**
      * @return int[]
      */
-    public function getAllScheduleTypes() : array
+    public function getAllScheduleTypes(): array
     {
         return [
             self::SCHEDULE_TYPE_IN_MINUTES,
@@ -112,41 +111,14 @@ class UserImportJob extends ilCronJob
         ];
     }
 
-    public function getDefaultScheduleValue() : int
+    public function getDefaultScheduleValue(): int
     {
         return 1;
     }
 
-    public function run() : ilCronJobResult
+    public function run(): ilCronJobResult
     {
-        $plugin = null;
         $cronResult = new ilCronJobResult();
-
-
-        try {
-            if (
-                $this->pluginAdmin->exists('Services', 'UIComponent', 'uihk', 'CrsGrpEnrollment') &&
-                $this->pluginAdmin->isActive('Services', 'UIComponent', 'uihk', 'CrsGrpEnrollment')
-            ) {
-                /**
-                 * @var ilCrsGrpEnrollmentPlugin $plugin
-                 */
-                $plugin = call_user_func(
-                    [get_class($this->pluginAdmin), 'getPluginObject'],
-                    'Services',
-                    'UIComponent',
-                    'uihk',
-                    'CrsGrpEnrollment'
-                );
-            }
-        } catch (ilPluginException $e) {
-        }
-
-        if (!$plugin) {
-            $cronResult->setStatus(ilCronJobResult::STATUS_FAIL);
-            $cronResult->setMessage('Fatal Error! Plugin not installed!');
-            return $cronResult;
-        }
 
         if ($this->lock->acquireLock()) {
             $this->logger->info('Acquired lock.');
@@ -163,13 +135,13 @@ class UserImportJob extends ilCronJob
 
 
         $userImportRepository = new UserImportRepository();
-        $userImportService = new UserImportService($plugin);
+        $userImportService = new UserImportService($this->plugin);
 
         $userImports = $userImportRepository->readAll();
 
         if (count($userImports) === 0) {
             $cronResult->setStatus(ilCronJobResult::STATUS_OK);
-            $cronResult->setMessage($plugin->txt("cronResult.noImports"));
+            $cronResult->setMessage($this->plugin->txt("cronResult.noImports"));
             return $cronResult;
         }
 
@@ -211,9 +183,15 @@ class UserImportJob extends ilCronJob
                     $csvWriter = $userImportService->importUserToGroup($object, $userImport);
                 }
             } catch (UserNotFoundException $e) {
-                $csvWriter->addColumn(sprintf($plugin->txt('report_csv_no_executive_user_found'), $userImport->getUser()));
-            } catch (AssociatedObjectNotFoundException | ilDatabaseException | ilObjectNotFoundException $e) {
-                $csvWriter->addColumn(sprintf($plugin->txt('report_csv_no_associated_object_found'), $userImport->getObjId()));
+                $csvWriter->addColumn(sprintf(
+                    $this->plugin->txt('report_csv_no_executive_user_found'),
+                    $userImport->getUser()
+                ));
+            } catch (AssociatedObjectNotFoundException|ilDatabaseException|ilObjectNotFoundException $e) {
+                $csvWriter->addColumn(sprintf(
+                    $this->plugin->txt('report_csv_no_associated_object_found'),
+                    $userImport->getObjId()
+                ));
             }
 
             if (!$user) {
@@ -224,16 +202,16 @@ class UserImportJob extends ilCronJob
 
             $pluginLngModule = "ui_uihk_crs_grp_enrol";
 
-            $tempFile = ilUtil::ilTempnam() . '.csv';
+            $tempFile = ilFileUtils::ilTempnam() . '.csv';
             file_put_contents($tempFile, $csvWriter->getCSVString());
 
-            $fileName = ilUtil::getASCIIFilename(implode('_', [
-                $plugin->txt('report_csv_export_name'),
-                $object !== null ? $object->getTitle() : "",
-                $objectType,
-                $userImport->getObjId(),
-                date('dmY_H_i'),
-            ])) . ".csv";
+            $fileName = ilFileUtils::getASCIIFilename(implode('_', [
+                    $this->plugin->txt('report_csv_export_name'),
+                    $object !== null ? $object->getTitle() : "",
+                    $objectType,
+                    $userImport->getObjId(),
+                    date('dmY_H_i'),
+                ])) . ".csv";
 
             $fileDataMail = new ilFileDataMail(ANONYMOUS_USER_ID);
             $fileDataMail->copyAttachmentFile($tempFile, $fileName);
@@ -243,11 +221,19 @@ class UserImportJob extends ilCronJob
                 "",
                 "",
                 sprintf(
-                    $this->dic->language()->txtlng($pluginLngModule, "{$pluginLngModule}_mail.message.title", $user->getLanguage()),
+                    $this->dic->language()->txtlng(
+                        $pluginLngModule,
+                        "{$pluginLngModule}_mail.message.title",
+                        $user->getLanguage()
+                    ),
                     $objectTypeName,
                     ilObject::_lookupTitle($userImport->getObjId())
                 ),
-                $this->dic->language()->txtlng($pluginLngModule, "{$pluginLngModule}_mail.message.text", $user->getLanguage()),
+                $this->dic->language()->txtlng(
+                    $pluginLngModule,
+                    "{$pluginLngModule}_mail.message.text",
+                    $user->getLanguage()
+                ),
                 [$fileName],
                 false
             );
@@ -269,13 +255,12 @@ class UserImportJob extends ilCronJob
         $cronResult->setStatus(ilCronJobResult::STATUS_OK);
         $cronResult->setMessage(
             sprintf(
-                $plugin->txt("cronResult"),
+                $this->plugin->txt("cronResult"),
                 count($userImports),
                 $failedMailDeliveries
             )
         );
         $this->lock->releaseLock();
-
 
 
         return $cronResult;

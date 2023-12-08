@@ -5,8 +5,8 @@
       {
         "action": "\\CaptainHook\\App\\Hook\\Message\\Action\\Beams",
         "options": {
-          "subjectLength": 50,
-          "bodyLineLength": 72
+          "subjectLength": 80,
+          "bodyLineLength": 100
         },
         "conditions": []
       },
@@ -20,7 +20,7 @@
     ]
   },
   "pre-push": {
-    "enabled": true,
+    "enabled": false,
     "actions": []
   },
   "pre-commit": {
@@ -32,7 +32,7 @@
         "conditions": []
       },
       {
-        "action": "vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --config=./CI/PHP-CS-Fixer/code-format.php_cs --using-cache=no --dry-run -vvv {$STAGED_FILES|of-type:php}",
+        "action": "vendor/bin/php-cs-fixer fix --dry-run -vvv {$STAGED_FILES|of-type:php}",
         "options": [],
         "conditions": []
       }
@@ -51,6 +51,14 @@
     "actions": []
   },
   "post-checkout": {
+    "enabled": false,
+    "actions": []
+  },
+  "post-rewrite": {
+    "enabled": false,
+    "actions": []
+  },
+  "post-change": {
     "enabled": false,
     "actions": []
   }

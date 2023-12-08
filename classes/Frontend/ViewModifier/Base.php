@@ -1,8 +1,15 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /* Copyright (c) 1998-2021 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend\ViewModifier;
 
+use ilAccessHandler;
+use ilCrsGrpEnrollmentUIHookGUI;
+use ilCtrl;
+use ilErrorHandling;
+use ilGlobalPageTemplate;
 use ILIAS\DI\Container;
 use ILIAS\Plugin\CrsGrpEnrollment\AccessControl\AccessHandler;
 use ILIAS\Plugin\CrsGrpEnrollment\Frontend\HttpContext;
@@ -10,58 +17,42 @@ use ILIAS\Plugin\CrsGrpEnrollment\Frontend\ViewModifier;
 use ILIAS\Plugin\CrsGrpEnrollment\Service\CrsGrpEnrollment\Impl;
 use ILIAS\UI\Factory;
 use ILIAS\UI\Renderer;
-use Psr\Http\Message\ServerRequestInterface;
+use ilLanguage;
+use ilObjUser;
+use ilToolbarGUI;
 use ReflectionClass;
 
 /**
  * Class ViewModifier
+ *
  * @package ILIAS\Plugin\CrsGrpEnrollment\Frontend\ViewModifier
- * @author Timo Müller <timomueller@databay.de>
+ * @author  Timo Müller <timomueller@databay.de>
  */
 abstract class Base implements ViewModifier
 {
     use HttpContext;
 
-    /** @var \ilTemplate */
-    protected $pageTemplate;
-    /** @var Factory */
-    protected $uiFactory;
-    /** @var \ilCtrl */
-    protected $ctrl;
-    /** @var Renderer */
-    protected $uiRenderer;
-    /** @var Container */
-    protected $dic;
-    /** @var \ilToolbarGUI */
-    protected $toolbar;
-    /** @var \ilObjuser */
-    protected $user;
-    /** @var \ilAccessHandler */
-    protected $coreAccessHandler;
-    /** @var \ilErrorHandling */
-    protected $errorHandler;
-    /** @var \ilLanguage */
-    protected $lng;
-    /** @var \ilCrsGrpEnrollmentUIHookGUI */
-    public $coreController;
-    /** @var \ilTemplate */
-    protected $mainTemplate;
-    /** @var Impl */
-    protected $service;
-    /** @var ServerRequestInterface */
-    protected $httpRequest;
+    protected ilGlobalPageTemplate $pageTemplate;
+    protected Factory $uiFactory;
+    protected ilCtrl $ctrl;
+    protected Renderer $uiRenderer;
+    protected Container $dic;
+    protected ilToolbarGUI $toolbar;
+    protected ilObjuser $user;
+    protected ilAccessHandler $coreAccessHandler;
+    protected ilErrorHandling $errorHandler;
+    protected ilLanguage $lng;
+    public ilCrsGrpEnrollmentUIHookGUI $coreController;
+    protected ilGlobalPageTemplate $mainTemplate;
+    protected Impl $service;
 
-    /**
-     * Base constructor.
-     * @param \ilCrsGrpEnrollmentUIHookGUI $controller
-     * @param Container $dic
-     */
-    final public function __construct(\ilCrsGrpEnrollmentUIHookGUI $controller, Container $dic)
+    final public function __construct(ilCrsGrpEnrollmentUIHookGUI $controller, Container $dic)
     {
         $this->coreController = $controller;
         $this->dic = $dic;
 
-        $this->httpRequest = $dic->http()->request();
+        $this->httpWrapper = $dic->http()->wrapper();
+        $this->refinery = $dic->refinery();
         $this->objectCache = $dic['ilObjDataCache'];
 
         $this->mainTemplate = $dic->ui()->mainTemplate();
@@ -76,36 +67,22 @@ abstract class Base implements ViewModifier
         $this->toolbar = $dic->toolbar();
     }
 
-    /**
-     * @return \ilCrsGrpEnrollmentUIHookGUI
-     */
-    public function getCoreController() : \ilCrsGrpEnrollmentUIHookGUI
+    public function getCoreController(): ilCrsGrpEnrollmentUIHookGUI
     {
         return $this->coreController;
     }
 
-    /**
-     * @return Container
-     */
-    public function getDic() : Container
+    public function getDic(): Container
     {
         return $this->dic;
     }
 
-    /**
-     * @return string
-     * @throws \ReflectionException
-     */
-    final public function getClassName() : string
+    final public function getClassName(): string
     {
         return (new ReflectionClass($this))->getShortName();
     }
 
-    /**
-     * @param string $html
-     * @return string
-     */
-    final protected function cleanHtmlString(string $html) : string
+    final protected function cleanHtmlString(string $html): string
     {
         return str_replace(['<body>', '</body>'], '', $html);
     }

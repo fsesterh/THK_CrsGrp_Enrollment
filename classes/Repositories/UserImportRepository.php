@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /* Copyright (c) 1998-2021 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Repositories;
@@ -9,15 +11,14 @@ use ILIAS\Plugin\CrsGrpEnrollment\Models\UserImport;
 
 /**
  * Class UserImportRepository
+ *
  * @package ILIAS\Plugin\CrsGrpEnrollment\Repositories
- * @author Timo Müller <timomueller@databay.de>
+ * @author  Timo Müller <timomueller@databay.de>
  */
 class UserImportRepository
 {
-    /** @var ilDBInterface */
-    private $db;
-    /** @var string */
-    private $table = 'xcge_user_import';
+    private ilDBInterface $db;
+    private string $table = 'xcge_user_import';
 
     /**
      * UserImportRepository constructor.
@@ -30,11 +31,9 @@ class UserImportRepository
     }
 
     /**
-     * @param UserImport $userImport
-     * @return UserImport
      * @throws DataNotFoundException
      */
-    public function save(UserImport $userImport) : UserImport
+    public function save(UserImport $userImport): UserImport
     {
         if ($userImport->getId() === null) {
             return $this->add($userImport);
@@ -46,10 +45,7 @@ class UserImportRepository
         return $userImport;
     }
 
-    /**
-     * @param UserImport $userImport
-     */
-    public function delete(UserImport $userImport) : void
+    public function delete(UserImport $userImport): void
     {
         $this->db->manipulateF(
             '
@@ -61,10 +57,7 @@ class UserImportRepository
         );
     }
 
-    /**
-     * @param UserImport $userImport
-     */
-    private function updateStatus(UserImport $userImport) : void
+    private function updateStatus(UserImport $userImport): void
     {
         $this->db->manipulateF(
             '
@@ -77,11 +70,7 @@ class UserImportRepository
         );
     }
 
-    /**
-     * @param UserImport $userImport
-     * @return UserImport
-     */
-    private function add(UserImport $userImport) : UserImport
+    private function add(UserImport $userImport): UserImport
     {
         $nextId = $this->db->nextId($this->table);
         $userImport->setId((int) $nextId);
@@ -107,11 +96,9 @@ class UserImportRepository
     }
 
     /**
-     * @param int $userImportId
-     * @return UserImport
      * @throws DataNotFoundException
      */
-    public function findOneById(int $userImportId) : UserImport
+    public function findOneById(int $userImportId): UserImport
     {
         $result = $this->db->queryF(
             'SELECT * FROM ' . $this->table . ' WHERE id = %s',
@@ -132,7 +119,7 @@ class UserImportRepository
     /**
      * @return UserImport[]
      */
-    public function readAll() : array
+    public function readAll(): array
     {
         $result = $this->db->query("SELECT * FROM " . $this->table);
 
@@ -145,10 +132,9 @@ class UserImportRepository
     }
 
     /**
-     * @param string $matriculation
      * @return int[]
      */
-    public function getUserIdsByMatriculation(string $matriculation) : array
+    public function getUserIdsByMatriculation(string $matriculation): array
     {
         $usrIds = [];
 
@@ -157,7 +143,7 @@ class UserImportRepository
             ['text'],
             [$matriculation]
         );
-        
+
         while ($row = $this->db->fetchAssoc($result)) {
             $usrIds[] = (int) $row['usr_id'];
         }

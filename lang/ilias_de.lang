@@ -29,3 +29,6 @@ lock.locked#:#Aktuell befindet sich ein Importvorgang in Bearbeitung. Bitte entf
 lock.release#:#Lock Entfernen
 lock.release.sure#:#Sind Sie sicher, dass Sie die Lock-Datei löschen möchten? Die Existenz dieser Datei verhindert, dass sich Import-Prozesse überlappen.
 lock.released#:#Die Lock-Datei wurde entfernt.
+
+job.title#:#CrsGrpEnrollment Benutzerimport
+job.description#:#Verarbeitet die Warteschlange.
