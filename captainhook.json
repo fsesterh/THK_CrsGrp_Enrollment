@@ -32,7 +32,7 @@
         "conditions": []
       },
       {
-        "action": "vendor/bin/php-cs-fixer fix",
+        "action": "vendor/bin/php-cs-fixer fix --dry-run -vvv {$STAGED_FILES|of-type:php}",
         "options": [],
         "conditions": []
       }
