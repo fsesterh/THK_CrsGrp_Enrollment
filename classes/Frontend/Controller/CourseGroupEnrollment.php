@@ -15,7 +15,7 @@ use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\InvalidCsvColumnDefinitionException
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\UploadRejectedException;
 use ILIAS\Plugin\CrsGrpEnrollment\Models\UserImport;
 use ILIAS\Plugin\CrsGrpEnrollment\Repositories\UserImportRepository;
-use ILIAS\Plugin\CrsGrpImport\Utils\UiUtil;
+use ILIAS\Plugin\CrsGrpEnrollment\Utils\UiUtil;
 use ilLink;
 use ilObjCourse;
 use ilObjCourseGUI;
