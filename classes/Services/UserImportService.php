@@ -82,6 +82,8 @@ class UserImportService
         $refId = current($refIds);
         $participant = ilParticipants::getInstance($refId);
 
+        /*
+        //Likely should be be executed
         $filteredUserIds = $DIC->access()->filterUserIdsByRbacOrPositionOfCurrentUser(
             'manage_members',
             'manage_members',
@@ -89,10 +91,13 @@ class UserImportService
             $userIds
         );
 
+
         $filteredOutUserIds = array_diff($userIds, $filteredUserIds);
-        foreach ($filteredOutUserIds as $filteredOutUserId) {
+
+        foreach ($userIds as $filteredOutUserId) {
             /** @var ilObjUser $user */
-            $user = ilObjectFactory::getInstanceByObjId($filteredOutUserId, false);
+        /*
+        $user = ilObjectFactory::getInstanceByObjId($filteredOutUserId, false);
             if (false === $user || !($user instanceof ilObjUser)) {
                 $this->csv->addColumn('[' . $user->getId() . '] ');
             } else {
@@ -101,8 +106,8 @@ class UserImportService
             $this->csv->addColumn($this->pluginObject->txt('report_csv_filtered_out_user_err_msg'));
             $this->csv->addRow();
         }
-
-        foreach ($filteredUserIds as $filteredUserId) {
+        */
+        foreach ($userIds as $filteredUserId) {
             $tmp_obj = ilObjectFactory::getInstanceByObjId($filteredUserId, false);
             if (false === $tmp_obj || !($tmp_obj instanceof ilObjUser)) {
                 $this->csv->addColumn('[' . $filteredUserId . '] ');
