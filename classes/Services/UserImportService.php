@@ -7,6 +7,7 @@ namespace ILIAS\Plugin\CrsGrpEnrollment\Services;
 
 use Exception;
 use ilCSVWriter;
+use ilDatabaseException;
 use ilGroupMembershipMailNotification;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\FileNotReadableException;
 use ILIAS\Plugin\CrsGrpEnrollment\Models\UserImport;
@@ -15,6 +16,7 @@ use ilLogger;
 use ilObjCourse;
 use ilObject;
 use ilObjectFactory;
+use ilObjectNotFoundException;
 use ilObjGroup;
 use ilObjUser;
 use ilParticipants;
@@ -82,50 +84,42 @@ class UserImportService
         $refId = current($refIds);
         $participant = ilParticipants::getInstance($refId);
 
-        /*
-        //Likely should be be executed
-        $filteredUserIds = $DIC->access()->filterUserIdsByRbacOrPositionOfCurrentUser(
-            'manage_members',
-            'manage_members',
-            $refId,
-            $userIds
-        );
+        $userHasPermission = $DIC->access()->checkAccessOfUser($userImport->getUser(), "manage_members", "", $refId);
 
-
-        $filteredOutUserIds = array_diff($userIds, $filteredUserIds);
-
-        foreach ($userIds as $filteredOutUserId) {
-            /** @var ilObjUser $user */
-        /*
-        $user = ilObjectFactory::getInstanceByObjId($filteredOutUserId, false);
-            if (false === $user || !($user instanceof ilObjUser)) {
-                $this->csv->addColumn('[' . $user->getId() . '] ');
-            } else {
-                $this->csv->addColumn('[' . $user->getId() . '] ' . $user->getFirstname() . ' ' . $user->getLastname());
+        foreach ($userIds as $userId) {
+            try {
+                $tmp_obj = ilObjectFactory::getInstanceByObjId($userId, false);
+            } catch (ilDatabaseException|ilObjectNotFoundException $e) {
+                $tmp_obj = null;
             }
-            $this->csv->addColumn($this->pluginObject->txt('report_csv_filtered_out_user_err_msg'));
-            $this->csv->addRow();
-        }
-        */
-        foreach ($userIds as $filteredUserId) {
-            $tmp_obj = ilObjectFactory::getInstanceByObjId($filteredUserId, false);
+            if (!$userHasPermission) {
+                if (!($tmp_obj instanceof ilObjUser)) {
+                    $this->csv->addColumn('[' . $userId . '] ');
+                } else {
+                    $this->csv->addColumn('[' . $tmp_obj->getId() . '] ' . $tmp_obj->getFirstname() . ' ' . $tmp_obj->getLastname());
+                }
+                $this->csv->addColumn($this->pluginObject->txt('report_csv_filtered_out_user_err_msg'));
+                $this->csv->addRow();
+                continue;
+            }
+
             if (false === $tmp_obj || !($tmp_obj instanceof ilObjUser)) {
-                $this->csv->addColumn('[' . $filteredUserId . '] ');
+                $this->csv->addColumn('[' . $userId . '] ');
                 $this->csv->addColumn($this->pluginObject->txt('report_csv_user_not_found_err_msg'));
                 $this->csv->addRow();
                 continue;
             }
-            if ($participant->isAssigned($filteredUserId)) {
+            if ($participant->isAssigned($userId)) {
                 $this->csv->addColumn('[' . $tmp_obj->getId() . '] ' . $tmp_obj->getFirstname() . ' ' . $tmp_obj->getLastname());
                 $this->csv->addColumn($this->pluginObject->txt('report_csv_user_already_assigned_err_msg'));
                 $this->csv->addRow();
                 continue;
             }
 
-            $participant->add($filteredUserId, ilParticipants::IL_CRS_MEMBER);
-            $participant->sendNotification(ilGroupMembershipMailNotification::TYPE_ADMISSION_MEMBER, $filteredUserId);
+            $participant->add($userId, ilParticipants::IL_CRS_MEMBER);
+            $participant->sendNotification(ilGroupMembershipMailNotification::TYPE_ADMISSION_MEMBER, $userId);
 
-            $courseObject->checkLPStatusSync($filteredUserId);
+            $courseObject->checkLPStatusSync($userId);
         }
 
         return $this->csv;
