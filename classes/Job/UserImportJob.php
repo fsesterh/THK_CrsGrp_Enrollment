@@ -33,6 +33,7 @@ use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\UserNotFoundException;
 use ILIAS\Plugin\CrsGrpEnrollment\Lock\Locker;
 use ILIAS\Plugin\CrsGrpEnrollment\Repositories\UserImportRepository;
 use ILIAS\Plugin\CrsGrpEnrollment\Services\UserImportService;
+use ilLink;
 use ilLogger;
 use ilMail;
 use ilObjCourse;
@@ -217,6 +218,10 @@ class UserImportJob extends ilCronJob
             $fileDataMail = new ilFileDataMail(ANONYMOUS_USER_ID);
             $fileDataMail->copyAttachmentFile($tempFile, $fileName);
             $mail = new ilMail(ANONYMOUS_USER_ID);
+
+            $refId = current(ilObject::_getAllReferences($userImport->getObjId()));
+
+            $gotoLinkToObject = ilLink::_getStaticLink($refId, ilObject::_lookupType($userImport->getObjId()));
             $errors = $mail->enqueue(
                 $user->getLogin(),
                 "",
@@ -230,10 +235,13 @@ class UserImportJob extends ilCronJob
                     $objectTypeName,
                     ilObject::_lookupTitle($userImport->getObjId())
                 ),
-                $this->dic->language()->txtlng(
-                    $pluginLngModule,
-                    "{$pluginLngModule}_mail.message.text",
-                    $user->getLanguage()
+                sprintf(
+                    $this->dic->language()->txtlng(
+                        $pluginLngModule,
+                        "{$pluginLngModule}_mail.message.text",
+                        $user->getLanguage()
+                    ),
+                    "<a href='$gotoLinkToObject'>$gotoLinkToObject</a>"
                 ),
                 [$fileName],
                 false
