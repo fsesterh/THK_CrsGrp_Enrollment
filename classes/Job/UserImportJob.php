@@ -241,7 +241,7 @@ class UserImportJob extends ilCronJob
                         "{$pluginLngModule}_mail.message.text",
                         $user->getLanguage()
                     ),
-                    "<a href='$gotoLinkToObject'>$gotoLinkToObject</a>"
+                    "$gotoLinkToObject"
                 ),
                 [$fileName],
                 false
