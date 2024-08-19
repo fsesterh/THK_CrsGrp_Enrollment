@@ -8,7 +8,7 @@ err_csv_file_different_row_width#:#Please upload a file that has only one column
 err_csv_file_cannot_be_read#:#Import file %s could not be read.
 err_csv_empty#:#The uploaded CSV file is empty.
 report_csv_filtered_out_user_err_msg#:#No permission to add user
-report_csv_user_not_found_err_msg#:#The user was not found
+report_csv_user_not_found_err_msg#:#The account could not be identified. Please make sure the account exists and - if used to enroll - the email or matriculation number is unique to one account only.
 report_csv_user_already_assigned_err_msg#:#The user was already assigned
 report_csv_field_name#:#User
 report_csv_field_error#:#Note
