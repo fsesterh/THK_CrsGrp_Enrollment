@@ -135,7 +135,6 @@ class UserImportJob extends ilCronJob
             return $cronResult;
         }
 
-
         $userImportRepository = new UserImportRepository();
         $userImportService = new UserImportService($this->plugin);
 
@@ -248,7 +247,6 @@ class UserImportJob extends ilCronJob
                 false
             );
 
-
             if (count($errors) !== 0) {
                 $this->logger->error(
                     sprintf(
@@ -271,7 +269,6 @@ class UserImportJob extends ilCronJob
             )
         );
         $this->lock->releaseLock();
-
 
         return $cronResult;
     }

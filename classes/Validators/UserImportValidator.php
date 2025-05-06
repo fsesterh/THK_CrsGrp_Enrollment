@@ -52,7 +52,6 @@ class UserImportValidator
             throw new CsvEmptyException('CSV empty');
         }
 
-
         if (is_resource($tmpFile)) {
             fclose($tmpFile);
         }

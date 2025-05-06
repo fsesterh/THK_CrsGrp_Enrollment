@@ -63,7 +63,6 @@ class ilCrsGrpEnrollmentConfigGUI extends \ilPluginConfigGUI
         $this->template->setContent($confirmation->getHTML());
     }
 
-
     private function configure(string $add = ''): void
     {
         $content = "";
@@ -75,7 +74,6 @@ class ilCrsGrpEnrollmentConfigGUI extends \ilPluginConfigGUI
             $this->uiUtil->sendInfo($this->getPluginObject()->txt('lock.locked'));
             $content .= $this->renderer->render($releaseLockButton);
         }
-
 
         $this->template->setContent($add . $content);
     }
