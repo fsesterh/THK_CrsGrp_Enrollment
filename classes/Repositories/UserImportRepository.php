@@ -24,20 +24,11 @@ use ilDBInterface;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\Repository\DataNotFoundException;
 use ILIAS\Plugin\CrsGrpEnrollment\Models\UserImport;
 
-/**
- * Class UserImportRepository
- *
- * @package ILIAS\Plugin\CrsGrpEnrollment\Repositories
- * @author  Timo Müller <timomueller@databay.de>
- */
 class UserImportRepository
 {
     private ilDBInterface $db;
     private string $table = 'xcge_user_import';
 
-    /**
-     * UserImportRepository constructor.
-     */
     public function __construct()
     {
         global $DIC;

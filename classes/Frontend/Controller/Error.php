@@ -20,12 +20,6 @@ declare(strict_types=1);
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller;
 
-/**
- * Class Error
- *
- * @package ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller
- * @author  Timo Müller <timomueller@databay.de>
- */
 class Error extends Base
 {
     public function getDefaultCommand(): string

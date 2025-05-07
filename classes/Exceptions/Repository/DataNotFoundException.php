@@ -22,12 +22,6 @@ namespace ILIAS\Plugin\CrsGrpEnrollment\Exceptions\Repository;
 
 use ilException;
 
-/**
- * Class DataNotFoundException
- *
- * @package ILIAS\Plugin\CrsGrpEnrollment
- * @author  Timo Müller <timomueller@databay.de>
- */
 class DataNotFoundException extends ilException
 {
 }

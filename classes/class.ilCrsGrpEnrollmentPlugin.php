@@ -22,11 +22,6 @@ use ILIAS\DI\Container;
 use ILIAS\Plugin\CrsGrpEnrollment\Job\UserImportJob;
 use ILIAS\Plugin\CrsGrpEnrollment\Lock\PidBasedLocker;
 
-/**
- * Class ilCrsGrpEnrollmentPlugin
- *
- * @author Timo Müller <timomueller@databay.de>
- */
 class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin implements ilCronJobProvider
 {
     public const ID = 'crs_grp_enrol';

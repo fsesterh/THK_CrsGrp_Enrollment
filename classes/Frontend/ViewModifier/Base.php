@@ -36,12 +36,6 @@ use ilObjUser;
 use ilToolbarGUI;
 use ReflectionClass;
 
-/**
- * Class ViewModifier
- *
- * @package ILIAS\Plugin\CrsGrpEnrollment\Frontend\ViewModifier
- * @author  Timo Müller <timomueller@databay.de>
- */
 abstract class Base implements ViewModifier
 {
     use HttpContext;

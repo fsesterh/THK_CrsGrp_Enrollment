@@ -20,12 +20,6 @@ declare(strict_types=1);
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend;
 
-/**
- * Interface ViewModifier
- *
- * @package ILIAS\Plugin\CrsGrpEnrollment\Frontend
- * @author  Timo Müller <timomueller@databay.de>
- */
 interface ViewModifier
 {
     public function shouldModifyHtml(string $component, string $part, array $parameters): bool;

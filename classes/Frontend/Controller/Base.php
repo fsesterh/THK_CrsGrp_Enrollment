@@ -37,9 +37,6 @@ use ilObjuser;
 use ilToolbarGUI;
 use ReflectionClass;
 
-/**
- * @author Timo Müller <timomueller@databay.de>
- */
 abstract class Base
 {
     use HttpContext;
@@ -92,10 +89,7 @@ abstract class Base
         }
     }
 
-    /**
-     * @return mixed
-     */
-    final public function __call(string $name, array $arguments)
+    final public function __call(string $name, array $arguments): mixed
     {
         return call_user_func_array([$this, $this->getDefaultCommand()], []);
     }

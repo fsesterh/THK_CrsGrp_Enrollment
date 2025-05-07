@@ -22,12 +22,6 @@ namespace ILIAS\Plugin\CrsGrpEnrollment\Exceptions;
 
 use ilException;
 
-/**
- * Class UserNotFoundException
- *
- * @package ILIAS\Plugin\CrsGrpEnrollment
- * @author  Timo Müller <timomueller@databay.de>
- */
 class UserNotFoundException extends ilException
 {
 }

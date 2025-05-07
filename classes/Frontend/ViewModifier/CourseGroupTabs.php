@@ -35,12 +35,6 @@ use ilTabsGUI;
 use ilUIPluginRouterGUI;
 use ilUsersGalleryGUI;
 
-/**
- * Class CourseGroupTabs
- *
- * @package ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller
- * @author  Timo Müller <timomueller@databay.de>
- */
 class CourseGroupTabs extends Base
 {
     private function getContainerRefId(): int

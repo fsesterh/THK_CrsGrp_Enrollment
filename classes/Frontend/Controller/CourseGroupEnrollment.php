@@ -41,12 +41,6 @@ use ilObjGroupGUI;
 use ilPropertyFormGUI;
 use ilUIPluginRouterGUI;
 
-/**
- * Class CourseGroupEnrollment
- *
- * @package ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller
- * @author  Timo Müller <timomueller@databay.de>
- */
 class CourseGroupEnrollment extends RepositoryObject
 {
     private ilObject $object;

@@ -24,12 +24,6 @@ use ilCrsGrpEnrollmentUIHookGUI;
 use ILIAS\DI\Container;
 use ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller\Base;
 
-/**
- * Class Dispatcher
- *
- * @package ILIAS\Plugin\CrsGrpEnrollment\Frontend
- * @author  Timo Müller <timomueller@databay.de>
- */
 class Dispatcher
 {
     private static ?self $instance = null;

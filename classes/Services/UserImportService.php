@@ -37,12 +37,6 @@ use ilObjUser;
 use ilParticipants;
 use ilUserInterfaceHookPlugin;
 
-/**
- * Class UserImportService
- *
- * @package ILIAS\Plugin\CrsGrpEnrollment\Services
- * @author  Timo Müller <timomueller@databay.de>
- */
 class UserImportService
 {
     protected ?ilCSVWriter $csv = null;

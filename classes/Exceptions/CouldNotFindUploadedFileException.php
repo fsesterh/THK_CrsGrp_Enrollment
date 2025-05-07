@@ -20,12 +20,6 @@ declare(strict_types=1);
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Exceptions;
 
-/**
- * Class CoulNotFindUploadedFileException
- *
- * @package ILIAS\Plugin\CrsGrpEnrollment
- * @author  Timo Müller <timomueller@databay.de>
- */
 class CoulNotFindUploadedFileException extends \ilException
 {
 }

@@ -46,12 +46,6 @@ use ilObjUser;
 use ilPluginAdmin;
 use ReflectionClass;
 
-/**
- * Class UserImportJob
- *
- * @package ILIAS\Plugin\CrsGrpEnrollment\Job
- * @author  Marvin Beym <mbeym@databay.de>
- */
 class UserImportJob extends ilCronJob
 {
     private Container $dic;

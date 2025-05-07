@@ -24,8 +24,7 @@ use ILIAS\Plugin\CrsGrpEnrollment\Frontend\ViewModifier;
 use ILIAS\Plugin\CrsGrpEnrollment\Frontend\ViewModifier\CourseGroupTabs;
 
 /**
- * @author            Timo Müller <timomueller@databay.de>
- * @ilCtrl_isCalledBy ilCrsGrpEnrollmentUIHookGUI: ilUIPluginRouterGUI
+  * @ilCtrl_isCalledBy ilCrsGrpEnrollmentUIHookGUI: ilUIPluginRouterGUI
  */
 class ilCrsGrpEnrollmentUIHookGUI extends ilUIHookPluginGUI
 {
@@ -33,9 +32,6 @@ class ilCrsGrpEnrollmentUIHookGUI extends ilUIHookPluginGUI
     /** @var ViewModifier[]|null */
     protected static ?array $modifiers = null;
 
-    /**
-     * ilCrsGrpEnrollmentUIHookGUI constructor.
-     */
     public function __construct()
     {
         global $DIC;
@@ -43,9 +39,6 @@ class ilCrsGrpEnrollmentUIHookGUI extends ilUIHookPluginGUI
         $this->dic = $DIC;
     }
 
-    /**
-     * The main entry point for own plugin controllers
-     */
     public function executeCommand(): void
     {
         $this->setPluginObject(ilCrsGrpEnrollmentPlugin::getInstance());

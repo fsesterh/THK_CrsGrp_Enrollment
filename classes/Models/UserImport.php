@@ -20,12 +20,6 @@ declare(strict_types=1);
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Models;
 
-/**
- * Class UserImport
- *
- * @package ILIAS\Plugin\CrsGrpEnrollment\Models
- * @author  Timo Müller <timomueller@databay.de>
- */
 class UserImport
 {
     private ?int $id = null;

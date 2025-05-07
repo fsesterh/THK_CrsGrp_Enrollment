@@ -9,12 +9,6 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
 
-/**
- * Class Course
- *
- * @package ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller
- * @author  Timo Müller <timomueller@databay.de>
- */
 abstract class RepositoryObject extends Base
 {
     abstract public function getObjectGuiClass(): string;

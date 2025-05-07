@@ -26,12 +26,6 @@ use ILIAS\Refinery\Factory;
 use ilObjectDataCache;
 use ReflectionClass;
 
-/**
- * Trait HttpContext
- *
- * @package ILIAS\Plugin\CrsGrpEnrollment\Frontend
- * @author  Timo Müller <timomueller@databay.de>
- */
 trait HttpContext
 {
     protected ilObjectDataCache $objectCache;

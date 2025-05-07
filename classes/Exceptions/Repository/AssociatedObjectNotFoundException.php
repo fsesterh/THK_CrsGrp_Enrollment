@@ -22,12 +22,6 @@ namespace ILIAS\Plugin\CrsGrpEnrollment\Exceptions;
 
 use ilException;
 
-/**
- * Class AssociatedObjectNotFoundException
- *
- * @package ILIAS\Plugin\CrsGrpEnrollment
- * @author  Timo Müller <timomueller@databay.de>
- */
 class AssociatedObjectNotFoundException extends ilException
 {
 }

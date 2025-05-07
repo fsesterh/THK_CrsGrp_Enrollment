@@ -22,12 +22,6 @@ namespace ILIAS\Plugin\CrsGrpEnrollment\Lock;
 
 use ilSetting;
 
-/**
- * Class PidBasedLocker
- *
- * @package ILIAS\Plugin\CrsGrpEnrollment\Lock
- * @author  Marvin Beym <mbeym@databay.de>
- */
 class PidBasedLocker implements Locker
 {
     protected ilSetting $settings;
