@@ -64,9 +64,6 @@ class ilCrsGrpEnrollmentUIHookGUI extends ilUIHookPluginGUI
         $this->dic->ui()->mainTemplate()->printToStdOut();
     }
 
-    /**
-     *
-     */
     private function initModifiers(): void
     {
         if (
@@ -105,9 +102,6 @@ class ilCrsGrpEnrollmentUIHookGUI extends ilUIHookPluginGUI
         ];
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getHTML($a_comp, $a_part, $a_par = []): array
     {
         $unmodified = ['mode' => ilUIHookPluginGUI::KEEP, 'html' => ''];
@@ -125,9 +119,6 @@ class ilCrsGrpEnrollmentUIHookGUI extends ilUIHookPluginGUI
         return $unmodified;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function modifyGUI($a_comp, $a_part, $a_par = []): void
     {
         parent::modifyGUI($a_comp, $a_part, $a_par);

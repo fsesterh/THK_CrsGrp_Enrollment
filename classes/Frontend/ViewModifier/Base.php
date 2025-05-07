@@ -26,7 +26,6 @@ use ilCtrl;
 use ilErrorHandling;
 use ilGlobalPageTemplate;
 use ILIAS\DI\Container;
-use ILIAS\Plugin\CrsGrpEnrollment\AccessControl\AccessHandler;
 use ILIAS\Plugin\CrsGrpEnrollment\Frontend\HttpContext;
 use ILIAS\Plugin\CrsGrpEnrollment\Frontend\ViewModifier;
 use ILIAS\Plugin\CrsGrpEnrollment\Service\CrsGrpEnrollment\Impl;

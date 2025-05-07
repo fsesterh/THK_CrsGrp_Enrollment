@@ -52,9 +52,6 @@ class CourseGroupEnrollment extends RepositoryObject
     private ilObject $object;
     private UiUtil $uiUtil;
 
-    /**
-     * @inheritdoc
-     */
     public function getDefaultCommand(): string
     {
         return 'showSettingsCmd';
@@ -78,9 +75,6 @@ class CourseGroupEnrollment extends RepositoryObject
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function init(): void
     {
         global $DIC;

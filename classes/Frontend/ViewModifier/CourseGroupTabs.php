@@ -98,25 +98,16 @@ class CourseGroupTabs extends Base
         return $isCourseMembershipSubTabContext;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function shouldModifyHtml(string $component, string $part, array $parameters): bool
     {
         return false;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function modifyHtml(string $component, string $part, array $parameters): array
     {
         return [];
     }
 
-    /**
-     * @inheritDoc
-     */
     public function shouldModifyGUI(string $component, string $part, array $parameters): bool
     {
         if ('tabs' !== $part && 'sub_tabs' !== $part) {
@@ -143,9 +134,6 @@ class CourseGroupTabs extends Base
         return true;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function modifyGUI(string $component, string $part, array $parameters): void
     {
         /** @var ilTabsGUI $tabs */

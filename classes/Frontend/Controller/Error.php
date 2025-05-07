@@ -28,17 +28,11 @@ namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller;
  */
 class Error extends Base
 {
-    /**
-     * @inheritdoc
-     */
     public function getDefaultCommand(): string
     {
         return 'showCmd';
     }
 
-    /**
-     * @inheritDoc
-     */
     public function init(): void
     {
         $this->pageTemplate->loadStandardTemplate();
