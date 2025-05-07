@@ -40,6 +40,7 @@ use ilObjGroup;
 use ilObjGroupGUI;
 use ilPropertyFormGUI;
 use ilUIPluginRouterGUI;
+use JsonException;
 
 class CourseGroupEnrollment extends RepositoryObject
 {
@@ -199,6 +200,9 @@ class CourseGroupEnrollment extends RepositoryObject
             } catch (UploadRejectedException $e) {
                 $form->getItemByPostVar('userImportFile')?->setAlert($e->getMessage());
                 $this->uiUtil->sendFailure($this->lng->txt('upload_error_file_not_found'));
+            } catch (JsonException $e) {
+                $form->getItemByPostVar('userImportFile')?->setAlert($e->getMessage());
+                $this->uiUtil->sendFailure($this->lng->txt('form_input_not_valid'));
             }
         }
 
