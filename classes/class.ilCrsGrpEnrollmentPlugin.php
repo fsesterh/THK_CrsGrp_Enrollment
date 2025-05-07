@@ -29,14 +29,6 @@ use ILIAS\Plugin\CrsGrpEnrollment\Lock\PidBasedLocker;
  */
 class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin implements ilCronJobProvider
 {
-    /** @var string */
-    public const CTYPE = 'Services';
-    /** @var string */
-    public const CNAME = 'UIComponent';
-    /** @var string */
-    public const SLOT_ID = 'uihk';
-    /** @var string */
-    public const PNAME = 'CrsGrpEnrollment';
     private static ?ilCrsGrpEnrollmentPlugin $instance = null;
     protected static bool $initialized = false;
     protected Container $dic;
@@ -47,11 +39,6 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin implements ilCr
         parent::__construct($db, $component_repository, $id);
 
         $this->dic = $DIC;
-    }
-
-    public function getPluginName(): string
-    {
-        return self::PNAME;
     }
 
     protected function init(): void
