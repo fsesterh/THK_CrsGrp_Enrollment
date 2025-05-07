@@ -30,7 +30,7 @@ use ILIAS\Plugin\CrsGrpEnrollment\Lock\PidBasedLocker;
 class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin implements ilCronJobProvider
 {
     public const ID = 'crs_grp_enrol';
-    private static ?ilCrsGrpEnrollmentPlugin $instance = null;
+    private static ilPlugin|ilCrsGrpEnrollmentPlugin|null $instance = null;
     protected static bool $initialized = false;
     protected Container $dic;
 
