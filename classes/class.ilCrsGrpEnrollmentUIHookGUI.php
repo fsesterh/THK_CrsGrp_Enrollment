@@ -24,7 +24,7 @@ use ILIAS\Plugin\CrsGrpEnrollment\Frontend\ViewModifier;
 use ILIAS\Plugin\CrsGrpEnrollment\Frontend\ViewModifier\CourseGroupTabs;
 
 /**
-  * @ilCtrl_isCalledBy ilCrsGrpEnrollmentUIHookGUI: ilUIPluginRouterGUI
+ * @ilCtrl_isCalledBy ilCrsGrpEnrollmentUIHookGUI: ilUIPluginRouterGUI
  */
 class ilCrsGrpEnrollmentUIHookGUI extends ilUIHookPluginGUI
 {

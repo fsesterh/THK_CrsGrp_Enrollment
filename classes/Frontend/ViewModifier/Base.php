@@ -22,9 +22,7 @@ namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend\ViewModifier;
 
 use ilAccessHandler;
 use ilCrsGrpEnrollmentUIHookGUI;
-use ilCtrl;
 use ilErrorHandling;
-use ilGlobalPageTemplate;
 use ilGlobalTemplateInterface;
 use ILIAS\DI\Container;
 use ILIAS\Plugin\CrsGrpEnrollment\Frontend\HttpContext;
