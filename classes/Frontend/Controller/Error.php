@@ -38,7 +38,7 @@ class Error extends Base
     {
         return $this->uiRenderer->render([
             $this->uiFactory->messageBox()->failure(
-                $this->getCoreController()->getPluginObject()->txt('controller_not_found')
+                $this->plugin->txt('controller_not_found')
             )
         ]);
     }

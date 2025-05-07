@@ -27,7 +27,7 @@ use ILIAS\Plugin\CrsGrpEnrollment\Models\UserImport;
 class UserImportRepository
 {
     private ilDBInterface $db;
-    private string $table = 'xcge_user_import';
+    public const TABLE_NAME = 'xcge_user_import';
 
     public function __construct()
     {
@@ -55,7 +55,7 @@ class UserImportRepository
     {
         $this->db->manipulateF(
             '
-                DELETE FROM ' . $this->table . '
+                DELETE FROM ' . self::TABLE_NAME . '
                 WHERE id = %s
             ',
             ['integer'],
@@ -67,22 +67,22 @@ class UserImportRepository
     {
         $this->db->manipulateF(
             '
-                UPDATE ' . $this->table . ' SET
+                UPDATE ' . self::TABLE_NAME . ' SET
                 status = %s,
                 WHERE id = %s
             ',
             ['integer', 'integer'],
-            [(int) $userImport->getStatus(), (int) $userImport->getStatus()]
+            [$userImport->getStatus(), $userImport->getStatus()]
         );
     }
 
     private function add(UserImport $userImport): UserImport
     {
-        $nextId = $this->db->nextId($this->table);
-        $userImport->setId((int) $nextId);
+        $nextId = $this->db->nextId(self::TABLE_NAME);
+        $userImport->setId($nextId);
         $this->db->manipulateF(
             '
-                INSERT INTO ' . $this->table . '
+                INSERT INTO ' . self::TABLE_NAME . '
                 (id, status, user, created_timestamp, data, obj_id)
                 VALUES
                 (%s, %s, %s, %s, %s, %s)
@@ -90,11 +90,11 @@ class UserImportRepository
             ['integer', 'integer', 'integer', 'integer', 'clob', 'integer'],
             [
                 (int) $userImport->getId(),
-                (int) $userImport->getStatus(),
-                (int) $userImport->getUser(),
-                (int) $userImport->getCreatedTimestamp(),
+                $userImport->getStatus(),
+                $userImport->getUser(),
+                $userImport->getCreatedTimestamp(),
                 $userImport->getData(),
-                (int) $userImport->getObjId()
+                $userImport->getObjId()
             ]
         );
 
@@ -107,19 +107,17 @@ class UserImportRepository
     public function findOneById(int $userImportId): UserImport
     {
         $result = $this->db->queryF(
-            'SELECT * FROM ' . $this->table . ' WHERE id = %s',
+            'SELECT * FROM ' . self::TABLE_NAME . ' WHERE id = %s',
             ['integer'],
             [$userImportId]
         );
 
-        if ($result->numRows() == 0) {
+        if ($result->numRows() === 0) {
             throw new DataNotFoundException('No UserImport with ID ' . $userImportId . ' found');
         }
 
         $row = $this->db->fetchAssoc($result);
-        $userImport = UserImport::fromRecord($row);
-
-        return $userImport;
+        return UserImport::fromRecord($row);
     }
 
     /**
@@ -127,7 +125,7 @@ class UserImportRepository
      */
     public function readAll(): array
     {
-        $result = $this->db->query("SELECT * FROM " . $this->table);
+        $result = $this->db->query("SELECT * FROM " . self::TABLE_NAME);
 
         $data = [];
         while ($row = $this->db->fetchAssoc($result)) {

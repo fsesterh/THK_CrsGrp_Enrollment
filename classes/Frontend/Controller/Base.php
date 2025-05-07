@@ -21,10 +21,12 @@ declare(strict_types=1);
 namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller;
 
 use ilAccessHandler;
+use ilCrsGrpEnrollmentPlugin;
 use ilCrsGrpEnrollmentUIHookGUI;
 use ilCtrl;
 use ilErrorHandling;
 use ilGlobalPageTemplate;
+use ilGlobalTemplateInterface;
 use ILIAS\DI\Container;
 use ILIAS\Plugin\CrsGrpEnrollment\Frontend\HttpContext;
 use ILIAS\Plugin\CrsGrpEnrollment\Services\UserImportService;
@@ -41,9 +43,8 @@ abstract class Base
 {
     use HttpContext;
 
-    public ilGlobalPageTemplate $pageTemplate;
+    public ilGlobalTemplateInterface $pageTemplate;
     protected Factory $uiFactory;
-    protected ilCtrl $ctrl;
     protected Renderer $uiRenderer;
     protected Container $dic;
     protected ilToolbarGUI $toolbar;
@@ -55,11 +56,13 @@ abstract class Base
     protected ilLogger $log;
     protected UserImportValidator $userImportValidator;
     protected UserImportService $userImportService;
+    protected ilCrsGrpEnrollmentPlugin $plugin;
 
     final public function __construct(ilCrsGrpEnrollmentUIHookGUI $controller, Container $dic)
     {
         $this->coreController = $controller;
         $this->dic = $dic;
+        $this->ctrl = $this->dic->ctrl();
 
         $this->httpWrapper = $dic->http()->wrapper();
         $this->refinery = $dic->refinery();
@@ -84,7 +87,8 @@ abstract class Base
 
     protected function init(): void
     {
-        if (!$this->getCoreController()->getPluginObject()->isActive()) {
+        $this->plugin = ilCrsGrpEnrollmentPlugin::getInstance();
+        if (!$this->plugin->isActive()) {
             $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
         }
     }

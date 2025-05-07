@@ -44,6 +44,7 @@ use ilObjectNotFoundException;
 use ilObjGroup;
 use ilObjUser;
 use ilPluginAdmin;
+use JsonException;
 use ReflectionClass;
 
 class UserImportJob extends ilCronJob
@@ -154,10 +155,10 @@ class UserImportJob extends ilCronJob
             try {
                 $this->logger->info(sprintf(
                     'Start User Import with this users: %s',
-                    json_encode($userImport->getData(), JSON_PRETTY_PRINT)
+                    json_encode($userImport->getData(), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT)
                 ));
 
-                if (ilObjUser::_lookupLogin($userImport->getUser()) === false) {
+                if (!ilObjUser::_lookupLogin($userImport->getUser())) {
                     throw new UserNotFoundException('Executive User not found');
                 }
                 $user = new ilObjUser($userImport->getUser());
@@ -178,14 +179,19 @@ class UserImportJob extends ilCronJob
                     $objectTypeName = $this->dic->language()->txtlng("common", "grp", $user->getLanguage());
                     $csvWriter = $userImportService->importUserToGroup($object, $userImport);
                 }
-            } catch (UserNotFoundException $e) {
+            } catch (UserNotFoundException) {
                 $csvWriter->addColumn(sprintf(
                     $this->plugin->txt('report_csv_no_executive_user_found'),
                     $userImport->getUser()
                 ));
-            } catch (AssociatedObjectNotFoundException|ilDatabaseException|ilObjectNotFoundException $e) {
+            } catch (AssociatedObjectNotFoundException|ilDatabaseException|ilObjectNotFoundException) {
                 $csvWriter->addColumn(sprintf(
                     $this->plugin->txt('report_csv_no_associated_object_found'),
+                    $userImport->getObjId()
+                ));
+            } catch (JsonException) {
+                $csvWriter->addColumn(sprintf(
+                    $this->plugin->txt('report_csv_json_encoding_error'),
                     $userImport->getObjId()
                 ));
             }
@@ -235,10 +241,9 @@ class UserImportJob extends ilCronJob
                         "{$pluginLngModule}_mail.message.text",
                         $user->getLanguage()
                     ),
-                    "$gotoLinkToObject"
+                    $gotoLinkToObject
                 ),
-                [$fileName],
-                false
+                [$fileName]
             );
 
             if (count($errors) !== 0) {

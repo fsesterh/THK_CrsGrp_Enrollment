@@ -113,7 +113,7 @@ trait HttpContext
                 $command = (new ReflectionClass($command))->getShortName();
             }
 
-            return strpos(strtolower((string) $this->ctrl->getCmd()), strtolower($command)) !== false;
+            return str_contains(strtolower((string) $this->ctrl->getCmd()), strtolower($command));
         })) > 0;
     }
 
@@ -137,10 +137,8 @@ trait HttpContext
                 $this->refinery->always("")
             ])
         );
-        if (preg_match('/^[a-zA-Z0-9]+_(\d+)$/', $target, $matches)) {
-            if (isset($matches[1]) && is_numeric($matches[1]) && $matches[1] > 0) {
-                return (int) $matches[1];
-            }
+        if (preg_match('/^[a-zA-Z0-9]+_(\d+)$/', $target, $matches) && isset($matches[1]) && is_numeric($matches[1]) && $matches[1] > 0) {
+            return (int) $matches[1];
         }
 
         return 0;
@@ -153,7 +151,7 @@ trait HttpContext
             return false;
         }
 
-        return ((int) $this->objectCache->lookupObjId($refId) === $objId);
+        return ($this->objectCache->lookupObjId($refId) === $objId);
     }
 
     final public function isObjectOfType(string $type): bool
@@ -163,7 +161,7 @@ trait HttpContext
             return false;
         }
 
-        $objId = (int) $this->objectCache->lookupObjId($refId);
+        $objId = $this->objectCache->lookupObjId($refId);
 
         return $this->objectCache->lookupType($objId) === $type;
     }
@@ -175,7 +173,7 @@ trait HttpContext
             return false;
         }
 
-        $objId = (int) $this->objectCache->lookupObjId($refId);
+        $objId = $this->objectCache->lookupObjId($refId);
 
         return $this->objectCache->lookupType($objId) === $type;
     }

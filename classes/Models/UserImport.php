@@ -98,7 +98,7 @@ class UserImport
     }
 
     /**
-     * @param array{int, int, string, int, int, int} $record
+     * @param array{id: int, created_timestamp: int, data: string, obj_id: int, status: int, user: int} $record
      */
     public static function fromRecord(array $record): self
     {

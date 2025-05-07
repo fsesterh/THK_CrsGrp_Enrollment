@@ -25,10 +25,10 @@ use ilCrsGrpEnrollmentUIHookGUI;
 use ilCtrl;
 use ilErrorHandling;
 use ilGlobalPageTemplate;
+use ilGlobalTemplateInterface;
 use ILIAS\DI\Container;
 use ILIAS\Plugin\CrsGrpEnrollment\Frontend\HttpContext;
 use ILIAS\Plugin\CrsGrpEnrollment\Frontend\ViewModifier;
-use ILIAS\Plugin\CrsGrpEnrollment\Service\CrsGrpEnrollment\Impl;
 use ILIAS\UI\Factory;
 use ILIAS\UI\Renderer;
 use ilLanguage;
@@ -40,9 +40,7 @@ abstract class Base implements ViewModifier
 {
     use HttpContext;
 
-    protected ilGlobalPageTemplate $pageTemplate;
     protected Factory $uiFactory;
-    protected ilCtrl $ctrl;
     protected Renderer $uiRenderer;
     protected Container $dic;
     protected ilToolbarGUI $toolbar;
@@ -51,22 +49,20 @@ abstract class Base implements ViewModifier
     protected ilErrorHandling $errorHandler;
     protected ilLanguage $lng;
     public ilCrsGrpEnrollmentUIHookGUI $coreController;
-    protected ilGlobalPageTemplate $mainTemplate;
-    protected Impl $service;
+    protected ilGlobalTemplateInterface $mainTemplate;
 
     final public function __construct(ilCrsGrpEnrollmentUIHookGUI $controller, Container $dic)
     {
         $this->coreController = $controller;
         $this->dic = $dic;
+        $this->ctrl = $this->dic->ctrl();
 
         $this->httpWrapper = $dic->http()->wrapper();
         $this->refinery = $dic->refinery();
         $this->objectCache = $dic['ilObjDataCache'];
 
         $this->mainTemplate = $dic->ui()->mainTemplate();
-        $this->ctrl = $dic->ctrl();
         $this->lng = $dic->language();
-        $this->pageTemplate = $dic->ui()->mainTemplate();
         $this->user = $dic->user();
         $this->uiRenderer = $dic->ui()->renderer();
         $this->uiFactory = $dic->ui()->factory();

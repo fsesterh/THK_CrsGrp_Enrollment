@@ -43,15 +43,10 @@ class ilCrsGrpEnrollmentUIHookGUI extends ilUIHookPluginGUI
     {
         $this->setPluginObject(ilCrsGrpEnrollmentPlugin::getInstance());
 
-        $nextClass = $this->dic->ctrl()->getNextClass();
-        switch (strtolower($nextClass)) {
-            default:
-                $dispatcher = Frontend\Dispatcher::getInstance($this);
-                $dispatcher->setDic($this->dic);
+        $dispatcher = Frontend\Dispatcher::getInstance($this);
+        $dispatcher->setDic($this->dic);
 
-                $response = $dispatcher->dispatch($this->dic->ctrl()->getCmd());
-                break;
-        }
+        $response = $dispatcher->dispatch($this->dic->ctrl()->getCmd());
 
         $this->dic->ui()->mainTemplate()->setContent($response);
         $this->dic->ui()->mainTemplate()->printToStdOut();
@@ -59,11 +54,7 @@ class ilCrsGrpEnrollmentUIHookGUI extends ilUIHookPluginGUI
 
     private function initModifiers(): void
     {
-        if (
-            !isset($this->dic['tpl']) ||
-            !isset($this->dic['refinery']) ||
-            !isset($this->dic['ilToolbar'])
-        ) {
+        if (!isset($this->dic['tpl'], $this->dic['refinery'], $this->dic['ilToolbar'])) {
             return;
         }
 
@@ -71,15 +62,15 @@ class ilCrsGrpEnrollmentUIHookGUI extends ilUIHookPluginGUI
             return;
         }
 
-        $phpSelf = (string) ($_SERVER['PHP_SELF'] ?? '');
+        $phpSelf = ($_SERVER['PHP_SELF'] ?? '');
         $urlParts = parse_url($phpSelf);
         $script = basename($phpSelf);
 
         $isLiveVotinRequest = (
-            strlen($phpSelf) > 0 &&
+            $phpSelf !== '' &&
             is_array($urlParts) &&
             isset($urlParts['path']) &&
-            strpos($urlParts['path'], '/LiveVoting/') !== false
+            str_contains($urlParts['path'], '/LiveVoting/')
         );
         if ($isLiveVotinRequest) {
             return;

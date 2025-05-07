@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Lock;
 
+use Exception;
 use ilSetting;
 
 class PidBasedLocker implements Locker
@@ -34,11 +35,11 @@ class PidBasedLocker implements Locker
     protected function isRunning(string $pid): bool
     {
         try {
-            $result = shell_exec(\sprintf("ps %d", $pid));
+            $result = shell_exec(sprintf("ps %d", $pid));
             if (count(explode("\n", $result)) > 2) {
                 return true;
             }
-        } catch (\Exception $e) {
+        } catch (Exception) {
         }
 
         return false;

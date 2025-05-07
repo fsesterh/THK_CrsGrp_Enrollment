@@ -14,7 +14,7 @@ use ILIAS\UI\Renderer;
  * @ilCtrl_Calls      ilCrsGrpEnrollmentConfigGUI: ilAdministrationGUI
  * @ilCtrl_IsCalledBy ilCrsGrpEnrollmentConfigGUI: ilObjComponentSettingsGUI
  */
-class ilCrsGrpEnrollmentConfigGUI extends \ilPluginConfigGUI
+class ilCrsGrpEnrollmentConfigGUI extends ilPluginConfigGUI
 {
     private Factory $factory;
     private Renderer $renderer;
@@ -23,6 +23,7 @@ class ilCrsGrpEnrollmentConfigGUI extends \ilPluginConfigGUI
     private Locker $lock;
     private ilLanguage $lng;
     private UiUtil $uiUtil;
+    private ilCrsGrpEnrollmentPlugin $plugin;
 
     public function __construct()
     {
@@ -35,6 +36,7 @@ class ilCrsGrpEnrollmentConfigGUI extends \ilPluginConfigGUI
         $this->lng = $DIC->language();
         $this->lock = $DIC['plugin.' . ilCrsGrpEnrollmentPlugin::ID . '.cronjob.locker'];
         $this->uiUtil = new UiUtil();
+        $this->plugin = ilCrsGrpEnrollmentPlugin::getInstance();
     }
 
     public function performCommand($cmd): void
@@ -46,7 +48,7 @@ class ilCrsGrpEnrollmentConfigGUI extends \ilPluginConfigGUI
     {
         if ($this->lock->isLocked()) {
             $this->lock->releaseLock();
-            $this->uiUtil->sendSuccess($this->getPluginObject()->txt('lock.released'), true);
+            $this->uiUtil->sendSuccess($this->plugin->txt('lock.released'), true);
         }
 
         $this->ctrl->redirect($this, 'configure');
@@ -58,7 +60,7 @@ class ilCrsGrpEnrollmentConfigGUI extends \ilPluginConfigGUI
         $confirmation->setFormAction($this->ctrl->getFormAction($this, 'configure'));
         $confirmation->setConfirm($this->lng->txt('confirm'), 'performReleaseLock');
         $confirmation->setCancel($this->lng->txt('cancel'), 'configure');
-        $confirmation->setHeaderText($this->getPluginObject()->txt('lock.release.sure'));
+        $confirmation->setHeaderText($this->plugin->txt('lock.release.sure'));
 
         $this->template->setContent($confirmation->getHTML());
     }
@@ -71,7 +73,7 @@ class ilCrsGrpEnrollmentConfigGUI extends \ilPluginConfigGUI
                 $this->txt('lock.release'),
                 $this->ctrl->getLinkTarget($this, 'confirmReleaseLock')
             );
-            $this->uiUtil->sendInfo($this->getPluginObject()->txt('lock.locked'));
+            $this->uiUtil->sendInfo($this->plugin->txt('lock.locked'));
             $content .= $this->renderer->render($releaseLockButton);
         }
 
@@ -80,6 +82,6 @@ class ilCrsGrpEnrollmentConfigGUI extends \ilPluginConfigGUI
 
     private function txt(string $txt): string
     {
-        return \ilCrsGrpEnrollmentPlugin::getInstance()->txt($txt);
+        return ilCrsGrpEnrollmentPlugin::getInstance()->txt($txt);
     }
 }

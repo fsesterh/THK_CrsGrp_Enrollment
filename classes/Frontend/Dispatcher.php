@@ -28,7 +28,7 @@ class Dispatcher
 {
     private static ?self $instance = null;
     private ilCrsGrpEnrollmentUIHookGUI $coreController;
-    private string $defaultController = '';
+    private string $defaultController;
     private Container $dic;
 
     private function __clone()
@@ -72,7 +72,7 @@ class Dispatcher
             return $parts[0];
         }
 
-        return $this->defaultController ? $this->defaultController : 'Error';
+        return $this->defaultController ?: 'Error';
     }
 
     protected function getCommand(string $cmd): string

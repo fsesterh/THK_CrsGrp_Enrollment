@@ -64,16 +64,14 @@ class UserImportService
         $i = 0;
         $dataArray = [];
         while (($row = fgetcsv($tmpFile, 0, ';')) !== false) {
-            if ($i === 0 && strpos($row[0], chr(hexdec('EF')) . chr(hexdec('BB')) . chr(hexdec('BF'))) === 0) {
+            if ($i === 0 && str_starts_with($row[0], chr(hexdec('EF')) . chr(hexdec('BB')) . chr(hexdec('BF')))) {
                 $row[0] = substr($row[0], 3);
             }
             $dataArray[] = trim($row[0]);
             $i++;
         }
 
-        if (is_resource($tmpFile)) {
-            fclose($tmpFile);
-        }
+        fclose($tmpFile);
 
         return $dataArray;
     }
@@ -98,7 +96,7 @@ class UserImportService
         foreach ($userIds as $userId) {
             try {
                 $tmp_obj = ilObjectFactory::getInstanceByObjId($userId, false);
-            } catch (ilDatabaseException|ilObjectNotFoundException $e) {
+            } catch (ilDatabaseException|ilObjectNotFoundException) {
                 $tmp_obj = null;
             }
             if (!$userHasPermission) {
@@ -112,7 +110,7 @@ class UserImportService
                 continue;
             }
 
-            if (false === $tmp_obj || !($tmp_obj instanceof ilObjUser)) {
+            if (!($tmp_obj instanceof ilObjUser)) {
                 $this->csv->addColumn('[' . $userId . '] ');
                 $this->csv->addColumn($this->pluginObject->txt('report_csv_user_not_found_err_msg'));
                 $this->csv->addRow();
@@ -148,9 +146,9 @@ class UserImportService
 
         $userIds = $this->getUserIds($userImport);
 
-        foreach ((array) $userIds as $new_member) {
+        foreach ($userIds as $new_member) {
             $tmp_obj = ilObjectFactory::getInstanceByObjId($new_member, false);
-            if (false === $tmp_obj || !($tmp_obj instanceof ilObjUser)) {
+            if (!($tmp_obj instanceof ilObjUser)) {
                 $this->csv->addColumn('[' . $new_member . '] ');
                 $this->csv->addColumn($this->pluginObject->txt('report_csv_user_not_found_err_msg'));
                 $this->csv->addRow();
@@ -165,7 +163,6 @@ class UserImportService
             }
 
             $participant->add($new_member, ilParticipants::IL_GRP_MEMBER);
-            include_once './Modules/Group/classes/class.ilGroupMembershipMailNotification.php';
             $participant->sendNotification(
                 ilGroupMembershipMailNotification::TYPE_ADMISSION_MEMBER,
                 $new_member

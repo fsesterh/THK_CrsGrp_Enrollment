@@ -20,6 +20,8 @@ declare(strict_types=1);
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Exceptions;
 
-class UploadRejectedException extends \ilException
+use ilException;
+
+class UploadRejectedException extends ilException
 {
 }

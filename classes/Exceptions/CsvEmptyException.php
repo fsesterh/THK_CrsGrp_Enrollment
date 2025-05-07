@@ -20,6 +20,8 @@ declare(strict_types=1);
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Exceptions;
 
-class CsvEmptyException extends \ilException
+use ilException;
+
+class CsvEmptyException extends ilException
 {
 }

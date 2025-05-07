@@ -26,9 +26,14 @@ use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\InvalidCsvColumnDefinitionException
 
 class UserImportValidator
 {
-    public function validate($importFile)
+    /**
+     * @throws FileNotReadableException
+     * @throws CsvEmptyException
+     * @throws InvalidCsvColumnDefinitionException
+     */
+    public function validate($importFile): void
     {
-        $tmpFile = fopen($importFile, "r");
+        $tmpFile = fopen($importFile, 'rb');
 
         if (!$tmpFile || !is_resource($tmpFile)) {
             throw new FileNotReadableException('CSV not readable');
@@ -46,8 +51,6 @@ class UserImportValidator
             throw new CsvEmptyException('CSV empty');
         }
 
-        if (is_resource($tmpFile)) {
-            fclose($tmpFile);
-        }
+        fclose($tmpFile);
     }
 }
