@@ -29,6 +29,7 @@ use ILIAS\Plugin\CrsGrpEnrollment\Lock\PidBasedLocker;
  */
 class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin implements ilCronJobProvider
 {
+    public const ID = 'crs_grp_enrol';
     private static ?ilCrsGrpEnrollmentPlugin $instance = null;
     protected static bool $initialized = false;
     protected Container $dic;
@@ -49,7 +50,7 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin implements ilCr
         if (!self::$initialized) {
             self::$initialized = true;
 
-            $GLOBALS['DIC']['plugin.crs_grp_enrol.cronjob.locker'] = function () {
+            $GLOBALS['DIC']['plugin.' . self::ID . '.cronjob.locker'] = function () {
                 return new PidBasedLocker(
                     new ilSetting($this->getPluginName())
                 );
@@ -81,7 +82,7 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin implements ilCr
 
         /** @var ilComponentFactory $componentFactory */
         $componentFactory = $DIC['component.factory'];
-        self::$instance = $componentFactory->getPlugin('crs_grp_enrol');
+        self::$instance = $componentFactory->getPlugin(self::ID);
         return self::$instance;
     }
 

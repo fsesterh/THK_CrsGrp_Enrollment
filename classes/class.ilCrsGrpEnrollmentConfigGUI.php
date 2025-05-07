@@ -33,7 +33,7 @@ class ilCrsGrpEnrollmentConfigGUI extends \ilPluginConfigGUI
         $this->template = $DIC->ui()->mainTemplate();
         $this->ctrl = $DIC->ctrl();
         $this->lng = $DIC->language();
-        $this->lock = $DIC['plugin.crs_grp_enrol.cronjob.locker'];
+        $this->lock = $DIC['plugin.' . ilCrsGrpEnrollmentPlugin::ID . '.cronjob.locker'];
         $this->uiUtil = new UiUtil();
     }
 

@@ -67,7 +67,7 @@ class UserImportJob extends ilCronJob
         $this->dic = $DIC;
         $this->pluginAdmin = $this->dic['ilPluginAdmin'];
         $this->logger = $this->dic->logger()->root();
-        $this->lock = $this->dic['plugin.crs_grp_enrol.cronjob.locker'];
+        $this->lock = $this->dic['plugin.' . ilCrsGrpEnrollmentPlugin::ID . '.cronjob.locker'];
         $this->plugin = ilCrsGrpEnrollmentPlugin::getInstance();
     }
 
@@ -202,7 +202,7 @@ class UserImportJob extends ilCronJob
                 continue;
             }
 
-            $pluginLngModule = "ui_uihk_crs_grp_enrol";
+            $pluginLngModule = 'ui_uihk_' . ilCrsGrpEnrollmentPlugin::ID;
 
             $tempFile = ilFileUtils::ilTempnam() . '.csv';
             file_put_contents($tempFile, $csvWriter->getCSVString());
