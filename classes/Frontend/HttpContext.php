@@ -137,7 +137,7 @@ trait HttpContext
                 $this->refinery->always("")
             ])
         );
-        if (preg_match('/^[a-zA-Z0-9]+_(\d+)$/', $target, $matches) && isset($matches[1]) && is_numeric($matches[1]) && $matches[1] > 0) {
+        if (preg_match('/^[a-zA-Z0-9]+_(\d+)$/', $target, $matches) && $matches[1] > 0) {
             return (int) $matches[1];
         }
 

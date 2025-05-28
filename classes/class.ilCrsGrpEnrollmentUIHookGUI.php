@@ -62,7 +62,7 @@ class ilCrsGrpEnrollmentUIHookGUI extends ilUIHookPluginGUI
             return;
         }
 
-        $phpSelf = ($_SERVER['PHP_SELF'] ?? '');
+        $phpSelf = $_SERVER['PHP_SELF'] ?? '';
         $urlParts = parse_url($phpSelf);
         $script = basename($phpSelf);
 
