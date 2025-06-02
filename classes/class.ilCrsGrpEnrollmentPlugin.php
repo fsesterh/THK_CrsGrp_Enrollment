@@ -37,6 +37,11 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin implements ilCr
         $this->dic = $DIC;
     }
 
+    public function run(): ilCronJobResult
+    {
+        return (new UserImportJob())->run();
+    }
+
     protected function init(): void
     {
         parent::init();
