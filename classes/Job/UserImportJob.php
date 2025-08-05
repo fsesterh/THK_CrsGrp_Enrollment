@@ -197,7 +197,7 @@ class UserImportJob extends ilCronJob
             }
 
             if (!$user) {
-                $this->logger->error("Unable to deliver csv result to executive used with id '{$user->getId()}'. User does not exist");
+                $this->logger->error("Unable to deliver csv result to executive used with id '{$userImport->getUser()}'. User does not exist");
                 $userImportRepository->delete($userImport);
                 continue;
             }
