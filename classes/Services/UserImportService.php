@@ -21,7 +21,6 @@ declare(strict_types=1);
 namespace ILIAS\Plugin\CrsGrpEnrollment\Services;
 
 use Exception;
-use ilCSVWriter;
 use ilDatabaseException;
 use ilGroupMembershipMailNotification;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\FileNotReadableException;
@@ -39,186 +38,198 @@ use ilUserInterfaceHookPlugin;
 
 class UserImportService
 {
-    protected ?ilCSVWriter $csv = null;
-    protected ?ilUserInterfaceHookPlugin $pluginObject = null;
-    private ilLogger $logger;
+    private readonly ilLogger $logger;
 
-    public function __construct(ilUserInterfaceHookPlugin $pluginObject)
+    public function __construct(private readonly ilUserInterfaceHookPlugin $plugin_object)
     {
         global $DIC;
-        $this->pluginObject = $pluginObject;
         $this->logger = $DIC->logger()->root();
     }
 
     /**
      * @throws FileNotReadableException
+     * @return list<string>
      */
-    public function convertCSVToArray(string $importFile): array
+    public function convertCSVToArray(string $import_filename): array
     {
-        $tmpFile = fopen($importFile, 'rb');
-
-        if (!$tmpFile || !is_resource($tmpFile)) {
+        $tmp_filename = fopen($import_filename, 'rb');
+        if (!$tmp_filename || !\is_resource($tmp_filename)) {
             throw new FileNotReadableException('CSV not readable');
         }
 
         $i = 0;
-        $dataArray = [];
-        while (($row = fgetcsv($tmpFile, 0, ';')) !== false) {
-            if ($i === 0 && str_starts_with($row[0], chr(hexdec('EF')) . chr(hexdec('BB')) . chr(hexdec('BF')))) {
+        $data_array = [];
+        while (($row = fgetcsv($tmp_filename, 0, ';', '"')) !== false) {
+            $i++;
+
+            if ($row === [] || !array_is_list($row)) {
+                continue;
+            }
+
+            /** @var non-empty-list<string> $row */
+            if ($i === 1 && str_starts_with($row[0], \chr(hexdec('EF')) . \chr(hexdec('BB')) . \chr(hexdec('BF')))) {
                 $row[0] = substr($row[0], 3);
             }
-            $dataArray[] = trim($row[0]);
-            $i++;
+
+            $data_array[] = trim($row[0]);
         }
 
-        fclose($tmpFile);
+        fclose($tmp_filename);
 
-        return $dataArray;
+        return $data_array;
     }
 
-    public function importUserToCourse(ilObjCourse $courseObject, UserImport $userImport): ilCSVWriter
-    {
+    public function importUserToCourse(
+        ilObjCourse $crs,
+        UserImport $user_import,
+        \ILIAS\Plugin\CrsGrpEnrollment\Report\UserImportReport $report
+    ): void {
         global $DIC;
 
-        $this->csv = new ilCSVWriter();
-        $this->csv->addColumn($this->pluginObject->txt('report_csv_field_name'));
-        $this->csv->addColumn($this->pluginObject->txt('report_csv_field_error'));
-        $this->csv->addRow();
+        $usr_ids = $this->getUserIds($user_import, $report);
 
-        $userIds = $this->getUserIds($userImport);
+        $ref_ids = ilObject::_getAllReferences($crs->getId());
+        $ref_id = current($ref_ids);
 
-        $refIds = ilObject::_getAllReferences($courseObject->getId());
-        $refId = current($refIds);
-        $participant = ilParticipants::getInstance($refId);
+        /** @var \ilCourseParticipants $participant */
+        $participant = ilParticipants::getInstance($ref_id);
 
-        $userHasPermission = $DIC->access()->checkAccessOfUser($userImport->getUser(), "manage_members", "", $refId);
+        $user_has_permission = $DIC->access()->checkAccessOfUser($user_import->getUser(), 'manage_members', '', $ref_id);
 
-        foreach ($userIds as $userId) {
+        foreach ($usr_ids as $usr_id) {
             try {
-                $tmp_obj = ilObjectFactory::getInstanceByObjId($userId, false);
+                $tmp_obj = ilObjectFactory::getInstanceByObjId($usr_id, false);
             } catch (ilDatabaseException|ilObjectNotFoundException) {
                 $tmp_obj = null;
             }
-            if (!$userHasPermission) {
-                if (!($tmp_obj instanceof ilObjUser)) {
-                    $this->csv->addColumn('[' . $userId . '] ');
+
+            if (!$user_has_permission) {
+                if ($tmp_obj instanceof ilObjUser) {
+                    $report->addError(
+                        '[' . $tmp_obj->getId() . '] ' . $tmp_obj->getFirstname() . ' ' . $tmp_obj->getLastname(),
+                        $this->plugin_object->txt('report_filtered_out_user_err_msg')
+                    );
                 } else {
-                    $this->csv->addColumn('[' . $tmp_obj->getId() . '] ' . $tmp_obj->getFirstname() . ' ' . $tmp_obj->getLastname());
+                    $report->addError(
+                        '[' . $usr_id . '] ',
+                        $this->plugin_object->txt('report_filtered_out_user_err_msg')
+                    );
                 }
-                $this->csv->addColumn($this->pluginObject->txt('report_csv_filtered_out_user_err_msg'));
-                $this->csv->addRow();
                 continue;
             }
 
             if (!($tmp_obj instanceof ilObjUser)) {
-                $this->csv->addColumn('[' . $userId . '] ');
-                $this->csv->addColumn($this->pluginObject->txt('report_csv_user_not_found_err_msg'));
-                $this->csv->addRow();
-                continue;
-            }
-            if ($participant->isAssigned($userId)) {
-                $this->csv->addColumn('[' . $tmp_obj->getId() . '] ' . $tmp_obj->getFirstname() . ' ' . $tmp_obj->getLastname());
-                $this->csv->addColumn($this->pluginObject->txt('report_csv_user_already_assigned_err_msg'));
-                $this->csv->addRow();
+                $report->addError(
+                    '[' . $usr_id . '] ',
+                    $this->plugin_object->txt('report_user_not_found_err_msg')
+                );
                 continue;
             }
 
-            $participant->add($userId, ilParticipants::IL_CRS_MEMBER);
-            $participant->sendNotification(ilGroupMembershipMailNotification::TYPE_ADMISSION_MEMBER, $userId);
+            if ($participant->isAssigned($usr_id)) {
+                $report->addError(
+                    '[' . $usr_id . '] ',
+                    $this->plugin_object->txt('report_user_already_assigned_err_msg')
+                );
+                continue;
+            }
 
-            $courseObject->checkLPStatusSync($userId);
+            $participant->add($usr_id, ilParticipants::IL_CRS_MEMBER);
+            $participant->sendNotification(ilGroupMembershipMailNotification::TYPE_ADMISSION_MEMBER, $usr_id);
+
+            $crs->checkLPStatusSync($usr_id);
         }
-
-        return $this->csv;
     }
 
-    public function importUserToGroup(ilObjGroup $groupObject, UserImport $userImport): ilCSVWriter
-    {
-        $refIds = ilObject::_getAllReferences($groupObject->getId());
-        $refId = current($refIds);
+    public function importUserToGroup(
+        ilObjGroup $grp,
+        UserImport $usr_import,
+        \ILIAS\Plugin\CrsGrpEnrollment\Report\UserImportReport $report
+    ): void {
+        $usr_ids = $this->getUserIds($usr_import, $report);
 
-        $participant = ilParticipants::getInstance($refId);
+        $ref_ids = ilObject::_getAllReferences($grp->getId());
+        $ref_id = current($ref_ids);
 
-        $this->csv = new ilCSVWriter();
-        $this->csv->addColumn($this->pluginObject->txt('report_csv_field_name'));
-        $this->csv->addColumn($this->pluginObject->txt('report_csv_field_error'));
-        $this->csv->addRow();
+        /** @var \ilGroupParticipants $participant */
+        $participant = ilParticipants::getInstance($ref_id);
 
-        $userIds = $this->getUserIds($userImport);
-
-        foreach ($userIds as $new_member) {
-            $tmp_obj = ilObjectFactory::getInstanceByObjId($new_member, false);
+        foreach ($usr_ids as $usr_id) {
+            $tmp_obj = ilObjectFactory::getInstanceByObjId($usr_id, false);
             if (!($tmp_obj instanceof ilObjUser)) {
-                $this->csv->addColumn('[' . $new_member . '] ');
-                $this->csv->addColumn($this->pluginObject->txt('report_csv_user_not_found_err_msg'));
-                $this->csv->addRow();
+                $report->addError(
+                    '[' . $usr_id . '] ',
+                    $this->plugin_object->txt('report_user_not_found_err_msg')
+                );
                 continue;
             }
 
-            if ($participant->isAssigned($new_member)) {
-                $this->csv->addColumn('[' . $tmp_obj->getId() . '] ' . $tmp_obj->getFirstname() . ' ' . $tmp_obj->getLastname());
-                $this->csv->addColumn($this->pluginObject->txt('report_csv_user_already_assigned_err_msg'));
-                $this->csv->addRow();
+            if ($participant->isAssigned($usr_id)) {
+                $report->addError(
+                    '[' . $tmp_obj->getId() . '] ' . $tmp_obj->getFirstname() . ' ' . $tmp_obj->getLastname(),
+                    $this->plugin_object->txt('report_user_already_assigned_err_msg')
+                );
                 continue;
             }
 
-            $participant->add($new_member, ilParticipants::IL_GRP_MEMBER);
+            $participant->add($usr_id, ilParticipants::IL_GRP_MEMBER);
             $participant->sendNotification(
                 ilGroupMembershipMailNotification::TYPE_ADMISSION_MEMBER,
-                $new_member
+                $usr_id
             );
         }
-
-        return $this->csv;
     }
 
     /**
-     * @return int[]
+     * @return list<int>
      */
-    private function getUserIds(UserImport $userImport): array
-    {
-        $userImportRepository = new UserImportRepository();
-        $usrIds = [];
+    private function getUserIds(
+        UserImport $usr_import,
+        \ILIAS\Plugin\CrsGrpEnrollment\Report\UserImportReport $report
+    ): array {
+        $user_import_repo = new UserImportRepository();
+        $usr_ids = [];
 
         try {
-            $data = json_decode($userImport->getData(), true, 512, JSON_THROW_ON_ERROR);
+            $data = json_decode($usr_import->getData(), true, 512, JSON_THROW_ON_ERROR);
         } catch (Exception $ex) {
             $this->logger->error("Unable to decode UserImport data. Ex.: {$ex->getMessage()}");
             return [];
         }
 
-        foreach ($data as $userData) {
-            if (!$userData) {
+        foreach ($data as $user_identifier) {
+            if (!$user_identifier) {
                 continue;
             }
 
-            $userId = ilObjUser::getUserIdByLogin($userData);
-            if ($userId > 0) {
-                $usrIds[] = $userId;
+            $usr_id = ilObjUser::getUserIdByLogin($user_identifier);
+            if ($usr_id > 0) {
+                $usr_ids[] = $usr_id;
                 continue;
             }
 
-            $userIds = ilObjUser::getUserIdsByEmail($userData);
-            if (1 === count($userIds)) {
-                foreach ($userIds as $userId) {
-                    $usrIds[] = $userId;
+            $usr_ids = ilObjUser::getUserIdsByEmail($user_identifier);
+            if (\count($usr_ids) === 1) {
+                foreach ($usr_ids as $usr_id) {
+                    $usr_ids[] = $usr_id;
                 }
                 continue;
             }
 
-            $userIds = $userImportRepository->getUserIdsByMatriculation($userData);
-            if (1 === count($userIds)) {
-                foreach ($userIds as $userId) {
-                    $usrIds[] = $userId;
+            $usr_ids = $user_import_repo->getUserIdsByMatriculation($user_identifier);
+            if (\count($usr_ids) === 1) {
+                foreach ($usr_ids as $usr_id) {
+                    $usr_ids[] = $usr_id;
                 }
                 continue;
             }
 
-            $this->csv->addColumn('[' . $userData . '] ');
-            $this->csv->addColumn($this->pluginObject->txt('report_csv_user_not_found_err_msg'));
-            $this->csv->addRow();
+            $report->addError(
+                '[' . $user_identifier . '] ',
+                $this->plugin_object->txt('report_user_not_found_err_msg')
+            );
         }
 
-        return $usrIds;
+        return $usr_ids;
     }
 }

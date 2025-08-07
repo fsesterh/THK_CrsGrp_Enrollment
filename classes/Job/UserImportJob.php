@@ -68,12 +68,12 @@ class UserImportJob extends ilCronJob
 
     public function getTitle(): string
     {
-        return $this->plugin->txt("job.title");
+        return $this->plugin->txt('job.title');
     }
 
     public function getDescription(): string
     {
-        return $this->plugin->txt("job.description");
+        return $this->plugin->txt('job.description');
     }
 
     public function getId(): string
@@ -96,9 +96,6 @@ class UserImportJob extends ilCronJob
         return CronJobScheduleType::SCHEDULE_TYPE_IN_HOURS;
     }
 
-    /**
-     * @return int[]
-     */
     public function getAllScheduleTypes(): array
     {
         return [
@@ -115,160 +112,186 @@ class UserImportJob extends ilCronJob
 
     public function run(): ilCronJobResult
     {
-        $cronResult = new ilCronJobResult();
+        $cron_result = new ilCronJobResult();
 
         if ($this->lock->acquireLock()) {
             $this->logger->info('Acquired lock.');
         } else {
-            $message = sprintf(
+            $message = \sprintf(
                 'Terminated import script: %s',
                 'Script is probably running, please remove the lock if you are sure no task is running.'
             );
             $this->logger->info($message);
-            $cronResult->setStatus(ilCronJobResult::STATUS_NO_ACTION);
-            $cronResult->setMessage($message);
-            return $cronResult;
+            $cron_result->setStatus(ilCronJobResult::STATUS_NO_ACTION);
+            $cron_result->setMessage($message);
+            return $cron_result;
         }
 
-        $userImportRepository = new UserImportRepository();
-        $userImportService = new UserImportService($this->plugin);
+        $user_import_repo = new UserImportRepository();
+        $user_import_service = new UserImportService($this->plugin);
 
-        $userImports = $userImportRepository->readAll();
+        $user_imports = $user_import_repo->readAll();
 
-        if (count($userImports) === 0) {
-            $cronResult->setStatus(ilCronJobResult::STATUS_OK);
-            $cronResult->setMessage($this->plugin->txt("cronResult.noImports"));
+        if (\count($user_imports) === 0) {
+            $cron_result->setStatus(ilCronJobResult::STATUS_OK);
+            $cron_result->setMessage($this->plugin->txt('cronResult.noImports'));
             $this->lock->releaseLock();
-            return $cronResult;
+            return $cron_result;
         }
 
-        $failedMailDeliveries = 0;
+        $num_failed_mail_deliveries = 0;
 
-        foreach ($userImports as $userImport) {
-            $csvWriter = new ilCSVWriter();
+        /** @var array<int, int> $ref_id_by_object_id */
+        $ref_id_by_object_id = [];
+
+        foreach ($user_imports as $user_import) {
+            $report = new \ILIAS\Plugin\CrsGrpEnrollment\Report\UserImportReport(
+                new ilCSVWriter(),
+                $this->plugin->txt('report_identification_element_txt'),
+                $this->plugin->txt('report_field_error')
+            );
 
             $user = null;
             $object = null;
-            $objectType = "unsupported";
-            $objectTypeName = "Unsupported";
+            $object_type = 'unsupported';
+            $object_name = 'Unsupported';
 
             try {
-                $this->logger->info(sprintf(
-                    'Start User Import with this users: %s',
-                    json_encode($userImport->getData(), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT)
-                ));
+                $this->logger->info(
+                    \sprintf(
+                        'Start User Import with this users: %s',
+                        json_encode($user_import->getData(), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT)
+                    )
+                );
 
-                if (!ilObjUser::_lookupLogin($userImport->getUser())) {
+                if (!ilObjUser::_lookupLogin($user_import->getUser())) {
                     throw new UserNotFoundException('Executive User not found');
                 }
-                $user = new ilObjUser($userImport->getUser());
+                $user = new ilObjUser($user_import->getUser());
 
-                $object = ilObjectFactory::getInstanceByObjId($userImport->getObjId());
+                $object = ilObjectFactory::getInstanceByObjId($user_import->getObjId(), false);
                 if (($object instanceof ilObjCourse || $object instanceof ilObjGroup) === false) {
                     throw new AssociatedObjectNotFoundException('Associated object not found');
                 }
 
                 if ($object instanceof ilObjCourse) {
-                    $objectType = "crs";
-                    $objectTypeName = $this->dic->language()->txtlng("common", "crs", $user->getLanguage());
-                    $csvWriter = $userImportService->importUserToCourse($object, $userImport);
+                    $object_type = 'crs';
+                    $object_name = $this->dic->language()->txtlng('common', 'crs', $user->getLanguage());
+                    $user_import_service->importUserToCourse($object, $user_import, $report);
                 }
 
                 if ($object instanceof ilObjGroup) {
-                    $objectType = "grp";
-                    $objectTypeName = $this->dic->language()->txtlng("common", "grp", $user->getLanguage());
-                    $csvWriter = $userImportService->importUserToGroup($object, $userImport);
+                    $object_type = 'grp';
+                    $object_name = $this->dic->language()->txtlng('common', 'grp', $user->getLanguage());
+                    $user_import_service->importUserToGroup($object, $user_import, $report);
                 }
             } catch (UserNotFoundException) {
-                $csvWriter->addColumn(sprintf(
-                    $this->plugin->txt('report_csv_no_executive_user_found'),
-                    $userImport->getUser()
-                ));
+                $report->addError(
+                    (string) $user_import->getUser(),
+                    \sprintf(
+                        $this->plugin->txt('report_no_executive_user_found'),
+                        $user_import->getUser()
+                    )
+                );
             } catch (AssociatedObjectNotFoundException|ilDatabaseException|ilObjectNotFoundException) {
-                $csvWriter->addColumn(sprintf(
-                    $this->plugin->txt('report_csv_no_associated_object_found'),
-                    $userImport->getObjId()
-                ));
+                $report->addError(
+                    (string) $user_import->getObjId(),
+                    \sprintf(
+                        $this->plugin->txt('report_no_associated_object_found'),
+                        $user_import->getObjId()
+                    )
+                );
             } catch (JsonException) {
-                $csvWriter->addColumn(sprintf(
-                    $this->plugin->txt('report_csv_json_encoding_error'),
-                    $userImport->getObjId()
-                ));
+                $report->addError(
+                    (string) $user_import->getObjId(),
+                    \sprintf(
+                        $this->plugin->txt('report_json_encoding_error'),
+                        $user_import->getObjId()
+                    )
+                );
             }
 
             if (!$user) {
-                $this->logger->error("Unable to deliver csv result to executive used with id '{$userImport->getUser()}'. User does not exist");
-                $userImportRepository->delete($userImport);
+                $this->logger->error("Unable to deliver CSV result to executive used with id '{$user_import->getUser()}'. User does not exist");
+                $user_import_repo->delete($user_import);
                 continue;
             }
 
-            $pluginLngModule = 'ui_uihk_' . ilCrsGrpEnrollmentPlugin::ID;
+            $plugin_lng_module = 'ui_uihk_' . ilCrsGrpEnrollmentPlugin::ID;
 
-            $tempFile = ilFileUtils::ilTempnam() . '.csv';
-            file_put_contents($tempFile, $csvWriter->getCSVString());
+            $attachments = [];
+            if ($report->hasErrors()) {
+                $tmp_filename = ilFileUtils::ilTempnam() . '.csv';
+                file_put_contents($tmp_filename, $report->asText());
 
-            $fileName = ilFileUtils::getASCIIFilename(implode('_', [
-                    $this->plugin->txt('report_csv_export_name'),
-                    $object !== null ? $object->getTitle() : "",
-                    $objectType,
-                    $userImport->getObjId(),
-                    date('dmY_H_i'),
-                ])) . ".csv";
+                $filename = ilFileUtils::getASCIIFilename(implode('_', [
+                        $this->plugin->txt('report_export_name'),
+                        $object !== null ? $object->getTitle() : '',
+                        $object_type,
+                        $user_import->getObjId(),
+                        date('dmY_H_i'),
+                    ])) . '.csv';
 
-            $fileDataMail = new ilFileDataMail(ANONYMOUS_USER_ID);
-            $fileDataMail->copyAttachmentFile($tempFile, $fileName);
+                $mail_file_service = new ilFileDataMail(ANONYMOUS_USER_ID);
+                $mail_file_service->copyAttachmentFile($tmp_filename, $filename);
+                $attachments[] = $filename;
+            }
+
+            if (!isset($ref_id_by_object_id[$user_import->getObjId()])) {
+                $refId = current(ilObject::_getAllReferences($user_import->getObjId()));
+                $ref_id_by_object_id[$user_import->getObjId()] = $refId;
+            }
+
+            $permanent_link = ilLink::_getStaticLink($ref_id_by_object_id[$user_import->getObjId()]);
+
             $mail = new ilMail(ANONYMOUS_USER_ID);
-
-            $refId = current(ilObject::_getAllReferences($userImport->getObjId()));
-
-            $gotoLinkToObject = ilLink::_getStaticLink($refId, ilObject::_lookupType($userImport->getObjId()));
             $errors = $mail->enqueue(
                 $user->getLogin(),
-                "",
-                "",
-                sprintf(
+                '',
+                '',
+                \sprintf(
                     $this->dic->language()->txtlng(
-                        $pluginLngModule,
-                        "{$pluginLngModule}_mail.message.title",
+                        $plugin_lng_module,
+                        "{$plugin_lng_module}_mail.message.title",
                         $user->getLanguage()
                     ),
-                    $objectTypeName,
-                    ilObject::_lookupTitle($userImport->getObjId())
+                    $object_name,
+                    ilObject::_lookupTitle($user_import->getObjId())
                 ),
-                sprintf(
+                \sprintf(
                     $this->dic->language()->txtlng(
-                        $pluginLngModule,
-                        "{$pluginLngModule}_mail.message.text",
+                        $plugin_lng_module,
+                        "{$plugin_lng_module}_mail.message.text",
                         $user->getLanguage()
                     ),
-                    $gotoLinkToObject
+                    $permanent_link
                 ),
-                [$fileName]
+                $attachments
             );
 
-            if (count($errors) !== 0) {
+            if (\count($errors) !== 0) {
                 $this->logger->error(
-                    sprintf(
-                        "Mail delivery of import results failed. ID of import: %s, ID of receiving user: %s",
-                        $userImport->getId(),
+                    \sprintf(
+                        'Mail delivery of import results failed. ID of import: %s, ID of receiving user: %s',
+                        $user_import->getId(),
                         $user->getId()
                     )
                 );
-                $failedMailDeliveries++;
+                $num_failed_mail_deliveries++;
             }
-            $userImportRepository->delete($userImport);
+            $user_import_repo->delete($user_import);
         }
 
-        $cronResult->setStatus(ilCronJobResult::STATUS_OK);
-        $cronResult->setMessage(
-            sprintf(
-                $this->plugin->txt("cronResult"),
-                count($userImports),
-                $failedMailDeliveries
+        $cron_result->setStatus(ilCronJobResult::STATUS_OK);
+        $cron_result->setMessage(
+            \sprintf(
+                $this->plugin->txt('cron_result'),
+                \count($user_imports),
+                $num_failed_mail_deliveries
             )
         );
         $this->lock->releaseLock();
 
-        return $cronResult;
+        return $cron_result;
     }
 }
