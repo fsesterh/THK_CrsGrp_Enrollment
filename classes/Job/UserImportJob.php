@@ -222,7 +222,7 @@ class UserImportJob extends ilCronJob
             $attachments = [];
             if ($report->hasErrors()) {
                 $tmp_filename = ilFileUtils::ilTempnam() . '.csv';
-                file_put_contents($tmp_filename, $report->asText());
+                file_put_contents($tmp_filename, "\xEF\xBB\xBF" . $report->asText()); // Prefix with UTF-8 BOM for Excel compatibility
 
                 $filename = ilFileUtils::getASCIIFilename(implode('_', [
                         $this->plugin->txt('report_export_name'),
@@ -285,7 +285,7 @@ class UserImportJob extends ilCronJob
         $cron_result->setStatus(ilCronJobResult::STATUS_OK);
         $cron_result->setMessage(
             \sprintf(
-                $this->plugin->txt('cron_result'),
+                $this->plugin->txt('cronResult'),
                 \count($user_imports),
                 $num_failed_mail_deliveries
             )
