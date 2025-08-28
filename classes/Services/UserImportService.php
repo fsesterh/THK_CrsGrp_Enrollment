@@ -202,25 +202,21 @@ class UserImportService
                 continue;
             }
 
-            $usr_id = ilObjUser::getUserIdByLogin($user_identifier);
-            if ($usr_id > 0) {
-                $usr_ids[] = $usr_id;
+            $by_login = ilObjUser::getUserIdByLogin($user_identifier);
+            if ($by_login > 0) {
+                $usr_ids[] = $by_login;
                 continue;
             }
 
-            $usr_ids = ilObjUser::getUserIdsByEmail($user_identifier);
-            if (\count($usr_ids) === 1) {
-                foreach ($usr_ids as $usr_id) {
-                    $usr_ids[] = $usr_id;
-                }
+            $by_email = ilObjUser::getUserIdsByEmail($user_identifier);
+            if (count($by_email) === 1) {
+                $usr_ids[] = $by_email[0];
                 continue;
             }
 
-            $usr_ids = $user_import_repo->getUserIdsByMatriculation($user_identifier);
-            if (\count($usr_ids) === 1) {
-                foreach ($usr_ids as $usr_id) {
-                    $usr_ids[] = $usr_id;
-                }
+            $by_matric = $user_import_repo->getUserIdsByMatriculation($user_identifier);
+            if (count($by_matric) === 1) {
+                $usr_ids[] = $by_matric[0];
                 continue;
             }
 
