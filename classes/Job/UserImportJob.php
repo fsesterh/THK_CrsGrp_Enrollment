@@ -285,7 +285,7 @@ class UserImportJob extends ilCronJob
         $cron_result->setStatus(ilCronJobResult::STATUS_OK);
         $cron_result->setMessage(
             \sprintf(
-                $this->plugin->txt('cron_result'),
+                $this->plugin->txt('cronResult'),
                 \count($user_imports),
                 $num_failed_mail_deliveries
             )
