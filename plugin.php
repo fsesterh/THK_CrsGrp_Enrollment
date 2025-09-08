@@ -20,7 +20,7 @@
  * @author Timo Müller <timomueller@databay.de>
  */
 $id = 'crs_grp_enrol';
-$version = '9.0.0';
+$version = '9.0.1';
 $ilias_min_version = '9';
 $ilias_max_version = '9.999';
 $responsible = 'Fabian Sesterhenn';
