@@ -1,5 +1,10 @@
 # Change-Log
 
+## 9.0.2
+
+Fixed: typo in UPDATE-query syntax
+Fixed: using status instead of id for user import
+
 ## 9.0.1
 
 Fixed: Github-5: Problems with non-existent accounts
