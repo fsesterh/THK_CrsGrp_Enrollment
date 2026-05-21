@@ -7,7 +7,7 @@
 
 ## 9.0.1
 
-Fixed: Github-5: Problems with non-existent accounts
+* Fixed: Github-5: Problems with non-existent accounts
 
 ## 9.0.0
 
