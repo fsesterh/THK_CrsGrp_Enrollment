@@ -2,8 +2,8 @@
 
 ## 9.0.2
 
-Fixed: typo in UPDATE-query syntax
-Fixed: using status instead of id for user import
+* Fixed: typo in UPDATE-query syntax
+* Fixed: using status instead of id for user import
 
 ## 9.0.1
 
