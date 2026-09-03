@@ -10,7 +10,8 @@
   },
   "require-dev": {
     "captainhook/plugin-composer": "^5.1",
-    "friendsofphp/php-cs-fixer": "^3.11"
+    "friendsofphp/php-cs-fixer": "^3.11",
+    "rector/rector": "^2.6"
   },
   "config": {
     "optimize-autoloader": true,
