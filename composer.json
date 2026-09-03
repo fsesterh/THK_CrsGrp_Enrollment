@@ -9,15 +9,16 @@
     "exclude-from-classmap": []
   },
   "require-dev": {
-    "captainhook/plugin-composer": "^5.1",
     "friendsofphp/php-cs-fixer": "^3.11",
-    "rector/rector": "^2.6"
+    "rector/rector": "^2.6",
+    "captainhook/captainhook": "^5.29",
+    "captainhook/hook-installer": "^1.0"
   },
   "config": {
     "optimize-autoloader": true,
     "classmap-authoritative": true,
     "allow-plugins": {
-      "captainhook/plugin-composer": true
+      "captainhook/hook-installer": true
     }
   }
 }
