@@ -35,6 +35,7 @@ use ilObjGroup;
 use ilObjUser;
 use ilParticipants;
 use ilUserInterfaceHookPlugin;
+use ILIAS\Plugin\CrsGrpEnrollment\Report\UserImportReport;
 
 class UserImportService
 {
@@ -82,7 +83,7 @@ class UserImportService
     public function importUserToCourse(
         ilObjCourse $crs,
         UserImport $user_import,
-        \ILIAS\Plugin\CrsGrpEnrollment\Report\UserImportReport $report
+        UserImportReport $report
     ): void {
         global $DIC;
 
@@ -144,7 +145,7 @@ class UserImportService
     public function importUserToGroup(
         ilObjGroup $grp,
         UserImport $usr_import,
-        \ILIAS\Plugin\CrsGrpEnrollment\Report\UserImportReport $report
+        UserImportReport $report
     ): void {
         $usr_ids = $this->getUserIds($usr_import, $report);
 
@@ -185,7 +186,7 @@ class UserImportService
      */
     private function getUserIds(
         UserImport $usr_import,
-        \ILIAS\Plugin\CrsGrpEnrollment\Report\UserImportReport $report
+        UserImportReport $report
     ): array {
         $user_import_repo = new UserImportRepository();
         $usr_ids = [];

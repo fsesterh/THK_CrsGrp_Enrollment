@@ -46,6 +46,7 @@ use ilObjUser;
 use ilPluginAdmin;
 use JsonException;
 use ReflectionClass;
+use ILIAS\Plugin\CrsGrpEnrollment\Report\UserImportReport;
 
 class UserImportJob extends ilCronJob
 {
@@ -145,7 +146,7 @@ class UserImportJob extends ilCronJob
         $ref_id_by_object_id = [];
 
         foreach ($user_imports as $user_import) {
-            $report = new \ILIAS\Plugin\CrsGrpEnrollment\Report\UserImportReport(
+            $report = new UserImportReport(
                 new ilCSVWriter(),
                 $this->plugin->txt('report_identification_element_txt'),
                 $this->plugin->txt('report_field_error')

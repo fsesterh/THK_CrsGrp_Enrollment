@@ -42,7 +42,7 @@ abstract class Base implements ViewModifier
     protected Renderer $uiRenderer;
     protected Container $dic;
     protected ilToolbarGUI $toolbar;
-    protected ilObjuser $user;
+    protected ilObjUser $user;
     protected ilAccessHandler $coreAccessHandler;
     protected ilErrorHandling $errorHandler;
     protected ilLanguage $lng;
