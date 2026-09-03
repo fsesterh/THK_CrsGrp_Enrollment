@@ -3,10 +3,10 @@
 require_once __DIR__ . "/vendor/autoload.php";
 
 $dirs = array_filter([
+    __DIR__ . "/src",
     __DIR__ . "/classes"
-], static function (string $dir): bool {
-    return is_dir($dir);
-});
+], is_dir(...));
+
 
 $finder = PhpCsFixer\Finder::create()
     ->exclude([__DIR__ . "/vendor"])
@@ -25,6 +25,8 @@ return (new PhpCsFixer\Config())
         "type_declaration_spaces" => true,
         "binary_operator_spaces" => true,
         "array_syntax" => ["syntax" => "short"],
+        "function_declaration" => ["closure_fn_spacing" => "none"],
+        "fully_qualified_strict_types" => ["import_symbols" => true],
         "no_superfluous_phpdoc_tags" => [
             "allow_mixed" => true,
             "remove_inheritdoc" => true,
