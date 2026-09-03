@@ -133,12 +133,12 @@ class CourseGroupTabs extends Base
         /** @var ilTabsGUI $tabs */
         $tabs = $parameters['tabs'];
 
-        $this->ctrl->setParameterByClass(get_class($this->getCoreController()), 'ref_id', $this->getContainerRefId());
+        $this->ctrl->setParameterByClass($this->getCoreController()::class, 'ref_id', $this->getContainerRefId());
         $tabs->addSubTab(
             'course_group_import',
             $this->getCoreController()->getPluginObject()->txt("course_group_import"),
             $this->ctrl->getLinkTargetByClass(
-                [ilUIPluginRouterGUI::class, get_class($this->getCoreController())],
+                [ilUIPluginRouterGUI::class, $this->getCoreController()::class],
                 'CourseGroupEnrollment.showImportForm'
             ),
         );

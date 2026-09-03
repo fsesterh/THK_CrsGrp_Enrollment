@@ -16,14 +16,14 @@ use ILIAS\UI\Renderer;
  */
 class ilCrsGrpEnrollmentConfigGUI extends ilPluginConfigGUI
 {
-    private Factory $factory;
-    private Renderer $renderer;
-    private ilGlobalTemplateInterface $template;
-    private ilCtrl $ctrl;
-    private Locker $lock;
-    private ilLanguage $lng;
-    private UiUtil $uiUtil;
-    private ilCrsGrpEnrollmentPlugin $plugin;
+    private readonly Factory $factory;
+    private readonly Renderer $renderer;
+    private readonly ilGlobalTemplateInterface $template;
+    private readonly ilCtrl $ctrl;
+    private readonly Locker $lock;
+    private readonly ilLanguage $lng;
+    private readonly UiUtil $uiUtil;
+    private readonly ilCrsGrpEnrollmentPlugin $plugin;
 
     public function __construct()
     {

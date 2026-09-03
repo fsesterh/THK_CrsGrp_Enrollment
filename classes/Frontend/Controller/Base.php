@@ -50,15 +50,13 @@ abstract class Base
     protected ilAccessHandler $coreAccessHandler;
     protected ilErrorHandling $errorHandler;
     public ilLanguage $lng;
-    public ilCrsGrpEnrollmentUIHookGUI $coreController;
     protected ilLogger $log;
     protected UserImportValidator $userImportValidator;
     protected UserImportService $userImportService;
     protected ilCrsGrpEnrollmentPlugin $plugin;
 
-    final public function __construct(ilCrsGrpEnrollmentUIHookGUI $controller, Container $dic)
+    final public function __construct(public ilCrsGrpEnrollmentUIHookGUI $coreController, Container $dic)
     {
-        $this->coreController = $controller;
         $this->dic = $dic;
         $this->ctrl = $this->dic->ctrl();
 

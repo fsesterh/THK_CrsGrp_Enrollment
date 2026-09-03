@@ -26,7 +26,7 @@ use ILIAS\Plugin\CrsGrpEnrollment\Models\UserImport;
 
 class UserImportRepository
 {
-    private ilDBInterface $db;
+    private readonly ilDBInterface $db;
     public const TABLE_NAME = 'xcge_user_import';
 
     public function __construct()

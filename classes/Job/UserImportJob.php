@@ -51,11 +51,11 @@ use ILIAS\Plugin\CrsGrpEnrollment\Report\UserImportReport;
 class UserImportJob extends ilCronJob
 {
     private Container $dic;
-    private ilPluginAdmin $pluginAdmin;
-    private ilLogger $logger;
+    private readonly ilPluginAdmin $pluginAdmin;
+    private readonly ilLogger $logger;
 
-    private Locker $lock;
-    private ilCrsGrpEnrollmentPlugin $plugin;
+    private readonly Locker $lock;
+    private readonly ilCrsGrpEnrollmentPlugin $plugin;
 
     public function __construct()
     {

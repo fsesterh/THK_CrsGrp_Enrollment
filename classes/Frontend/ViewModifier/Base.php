@@ -46,12 +46,10 @@ abstract class Base implements ViewModifier
     protected ilAccessHandler $coreAccessHandler;
     protected ilErrorHandling $errorHandler;
     protected ilLanguage $lng;
-    public ilCrsGrpEnrollmentUIHookGUI $coreController;
     protected ilGlobalTemplateInterface $mainTemplate;
 
-    final public function __construct(ilCrsGrpEnrollmentUIHookGUI $controller, Container $dic)
+    final public function __construct(public ilCrsGrpEnrollmentUIHookGUI $coreController, Container $dic)
     {
-        $this->coreController = $controller;
         $this->dic = $dic;
         $this->ctrl = $this->dic->ctrl();
 

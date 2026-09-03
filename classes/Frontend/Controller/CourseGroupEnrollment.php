@@ -104,11 +104,11 @@ class CourseGroupEnrollment extends RepositoryObject
     private function buildForm(): ilPropertyFormGUI
     {
         $form = new ilPropertyFormGUI();
-        $this->ctrl->setParameterByClass(get_class($this->getCoreController()), 'ref_id', $this->object->getRefId());
+        $this->ctrl->setParameterByClass($this->getCoreController()::class, 'ref_id', $this->object->getRefId());
         $form->setFormAction($this->ctrl->getFormActionByClass(
             [
                 ilUIPluginRouterGUI::class,
-                get_class($this->getCoreController()),
+                $this->getCoreController()::class,
             ],
             $this->getControllerName() . '.submitImportForm'
         ));
@@ -182,7 +182,7 @@ class CourseGroupEnrollment extends RepositoryObject
                 );
 
                 $this->ctrl->redirectByClass(
-                    [ilUIPluginRouterGUI::class, get_class($this->getCoreController())],
+                    [ilUIPluginRouterGUI::class, $this->getCoreController()::class],
                     $this->getControllerName() . '.showImportForm'
                 );
             } catch (InvalidCsvColumnDefinitionException) {

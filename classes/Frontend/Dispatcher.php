@@ -27,18 +27,14 @@ use ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller\Base;
 class Dispatcher
 {
     private static ?self $instance = null;
-    private ilCrsGrpEnrollmentUIHookGUI $coreController;
-    private string $defaultController;
     private Container $dic;
 
     private function __clone()
     {
     }
 
-    private function __construct(ilCrsGrpEnrollmentUIHookGUI $baseController, string $defaultController = '')
+    private function __construct(private ilCrsGrpEnrollmentUIHookGUI $coreController, private readonly string $defaultController = '')
     {
-        $this->coreController = $baseController;
-        $this->defaultController = $defaultController;
     }
 
     public function setDic(Container $dic): void
@@ -48,9 +44,7 @@ class Dispatcher
 
     public static function getInstance(ilCrsGrpEnrollmentUIHookGUI $baseController): self
     {
-        if (self::$instance === null) {
-            self::$instance = new self($baseController);
-        }
+        self::$instance ??= new self($baseController);
 
         return self::$instance;
     }

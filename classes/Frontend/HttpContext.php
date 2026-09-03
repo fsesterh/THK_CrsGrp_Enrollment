@@ -87,7 +87,7 @@ trait HttpContext
         );
 
         return in_array(strtolower($cmdClass), array_map(
-            'strtolower',
+            strtolower(...),
             $cmdClasses
         ), true);
     }
@@ -98,7 +98,7 @@ trait HttpContext
     final public function isOneOfCommands(array $commands): bool
     {
         return in_array(strtolower((string) $this->ctrl->getCmd()), array_map(
-            'strtolower',
+            strtolower(...),
             $commands
         ), true);
     }
