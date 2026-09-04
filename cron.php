@@ -26,7 +26,6 @@ if ($_SERVER['argc'] < 3) {
     die("Usage:  " . basename(__FILE__) . " username client \n");
 }
 
-
 chdir(dirname(__FILE__));
 $iliasRootDir = './';
 while (!file_exists($iliasRootDir . 'ilias.ini.php')) {
