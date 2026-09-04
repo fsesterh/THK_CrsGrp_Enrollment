@@ -20,14 +20,14 @@ declare(strict_types=1);
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Job;
 
-use ilCronJob;
-use ilCronJobResult;
 use ilCrsGrpEnrollmentPlugin;
 use ilCSVWriter;
 use ilDatabaseException;
 use ilFileDataMail;
 use ilFileUtils;
-use ILIAS\Cron\Schedule\CronJobScheduleType;
+use ILIAS\Cron\CronJob;
+use ILIAS\Cron\Job\JobResult;
+use ILIAS\Cron\Job\Schedule\JobScheduleType;
 use ILIAS\DI\Container;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\AssociatedObjectNotFoundException;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\UserNotFoundException;
@@ -48,7 +48,7 @@ use JsonException;
 use ReflectionClass;
 use ILIAS\Plugin\CrsGrpEnrollment\Report\UserImportReport;
 
-class UserImportJob extends ilCronJob
+class UserImportJob extends CronJob
 {
     private Container $dic;
     private readonly ilPluginAdmin $pluginAdmin;
@@ -92,17 +92,17 @@ class UserImportJob extends ilCronJob
         return true;
     }
 
-    public function getDefaultScheduleType(): CronJobScheduleType
+    public function getDefaultScheduleType(): JobScheduleType
     {
-        return CronJobScheduleType::SCHEDULE_TYPE_IN_HOURS;
+        return JobScheduleType::IN_HOURS;
     }
 
     public function getAllScheduleTypes(): array
     {
         return [
-            CronJobScheduleType::SCHEDULE_TYPE_IN_MINUTES,
-            CronJobScheduleType::SCHEDULE_TYPE_IN_HOURS,
-            CronJobScheduleType::SCHEDULE_TYPE_DAILY,
+            JobScheduleType::IN_MINUTES,
+            JobScheduleType::IN_HOURS,
+            JobScheduleType::DAILY,
         ];
     }
 
@@ -111,9 +111,9 @@ class UserImportJob extends ilCronJob
         return 1;
     }
 
-    public function run(): ilCronJobResult
+    public function run(): JobResult
     {
-        $cron_result = new ilCronJobResult();
+        $cron_result = new JobResult();
 
         if ($this->lock->acquireLock()) {
             $this->logger->info('Acquired lock.');
@@ -123,7 +123,7 @@ class UserImportJob extends ilCronJob
                 'Script is probably running, please remove the lock if you are sure no task is running.'
             );
             $this->logger->info($message);
-            $cron_result->setStatus(ilCronJobResult::STATUS_NO_ACTION);
+            $cron_result->setStatus(JobResult::STATUS_NO_ACTION);
             $cron_result->setMessage($message);
             return $cron_result;
         }
@@ -134,7 +134,7 @@ class UserImportJob extends ilCronJob
         $user_imports = $user_import_repo->readAll();
 
         if (\count($user_imports) === 0) {
-            $cron_result->setStatus(ilCronJobResult::STATUS_OK);
+            $cron_result->setStatus(JobResult::STATUS_OK);
             $cron_result->setMessage($this->plugin->txt('cronResult.noImports'));
             $this->lock->releaseLock();
             return $cron_result;
@@ -283,7 +283,7 @@ class UserImportJob extends ilCronJob
             $user_import_repo->delete($user_import);
         }
 
-        $cron_result->setStatus(ilCronJobResult::STATUS_OK);
+        $cron_result->setStatus(JobResult::STATUS_OK);
         $cron_result->setMessage(
             \sprintf(
                 $this->plugin->txt('cronResult'),

@@ -22,6 +22,11 @@ if (PHP_SAPI !== 'cli') {
     die("Cronjob can only be run from the command line.\n");
 }
 
+if ($_SERVER['argc'] < 3) {
+    die("Usage:  " . basename(__FILE__) . " username client \n");
+}
+
+
 chdir(dirname(__FILE__));
 $iliasRootDir = './';
 while (!file_exists($iliasRootDir . 'ilias.ini.php')) {
@@ -29,40 +34,30 @@ while (!file_exists($iliasRootDir . 'ilias.ini.php')) {
 }
 chdir($iliasRootDir);
 
-if ($_SERVER['argc'] < 3) {
-    die("Usage:  " . basename(__FILE__) . " username client \n");
-}
+require_once 'vendor/composer/vendor/autoload.php';
 
-include_once './Services/Cron/classes/class.ilCronStartUp.php';
-require_once __DIR__ . '/vendor/autoload.php';
+use ILIAS\Cron\CLI\StartUp;
+use ILIAS\Cron\Job\JobResult;
 
-$cron = new ilCronStartUp($_SERVER['argv'][2], $_SERVER['argv'][1]);
+$cron = new StartUp($_SERVER['argv'][2], $_SERVER['argv'][1]);
 
 try {
+
+    if (!defined('ILIAS_HTTP_PATH')) {
+        define('ILIAS_HTTP_PATH', ilUtil::_getHttpPath());
+    }
+
     $cron->authenticate();
     $cronResult = ilCrsGrpEnrollmentPlugin::getInstance()->run();
     $cron->logout();
-    switch ($cronResult->getStatus()) {
-        case ilCronJobResult::STATUS_INVALID_CONFIGURATION:
-            $status = "INVALID CONFIGURATION";
-            break;
-        case ilCronJobResult::STATUS_NO_ACTION:
-            $status = "NO ACTION";
-            break;
-        case ilCronJobResult::STATUS_OK:
-            $status = "OK";
-            break;
-        case ilCronJobResult::STATUS_CRASHED:
-            $status = "CRASHED";
-            break;
-        case ilCronJobResult::STATUS_RESET:
-            $status = "RESET";
-            break;
-        case ilCronJobResult::STATUS_FAIL:
-        default:
-            $status = "FAILED";
-            break;
-    }
+    $status = match ($cronResult->getStatus()) {
+        JobResult::STATUS_INVALID_CONFIGURATION => "INVALID CONFIGURATION",
+        JobResult::STATUS_NO_ACTION => "NO ACTION",
+        JobResult::STATUS_OK => "OK",
+        JobResult::STATUS_CRASHED => "CRASHED",
+        JobResult::STATUS_RESET => "RESET",
+        default => "FAILED",
+    };
 
     echo "[$status]: {$cronResult->getMessage()}\n";
     exit;

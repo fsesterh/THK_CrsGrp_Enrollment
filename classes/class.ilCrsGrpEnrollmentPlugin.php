@@ -18,11 +18,14 @@
 
 declare(strict_types=1);
 
+use ILIAS\Cron\CronJob;
+use ILIAS\Cron\Job\JobProvider;
+use ILIAS\Cron\Job\JobResult;
 use ILIAS\DI\Container;
 use ILIAS\Plugin\CrsGrpEnrollment\Job\UserImportJob;
 use ILIAS\Plugin\CrsGrpEnrollment\Lock\PidBasedLocker;
 
-class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin implements ilCronJobProvider
+class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin implements JobProvider
 {
     public const ID = 'crs_grp_enrol';
     private static ilPlugin|ilCrsGrpEnrollmentPlugin|null $instance = null;
@@ -37,7 +40,7 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin implements ilCr
         $this->dic = $DIC;
     }
 
-    public function run(): ilCronJobResult
+    public function run(): JobResult
     {
         return (new UserImportJob())->run();
     }
@@ -96,7 +99,7 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin implements ilCr
     /**
      * @throws Exception
      */
-    public function getCronJobInstance(string $jobId): ilCronJob
+    public function getCronJobInstance(string $jobId): CronJob
     {
         foreach ($this->getCronJobInstances() as $cronJobInstance) {
             if ($cronJobInstance->getId() === $jobId) {
