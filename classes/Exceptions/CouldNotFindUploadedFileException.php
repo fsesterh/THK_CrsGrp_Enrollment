@@ -22,6 +22,6 @@ namespace ILIAS\Plugin\CrsGrpEnrollment\Exceptions;
 
 use ilException;
 
-class CoulNotFindUploadedFileException extends ilException
+class CouldNotFindUploadedFileException extends ilException
 {
 }

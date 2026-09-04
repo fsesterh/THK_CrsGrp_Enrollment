@@ -23,7 +23,7 @@ namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller;
 use ilFileInputGUI;
 use ILIAS\FileUpload\DTO\ProcessingStatus;
 use ILIAS\FileUpload\DTO\UploadResult;
-use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\CoulNotFindUploadedFileException;
+use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\CouldNotFindUploadedFileException;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\CsvEmptyException;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\FileNotReadableException;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\InvalidCsvColumnDefinitionException;
@@ -145,13 +145,13 @@ class CourseGroupEnrollment extends RepositoryObject
                 }
 
                 if (false === $DIC->upload()->hasUploads()) {
-                    throw new CoulNotFindUploadedFileException($this->lng->txt('upload_error_file_not_found'));
+                    throw new CouldNotFindUploadedFileException($this->lng->txt('upload_error_file_not_found'));
                 }
 
                 $uploadResults = $DIC->upload()->getResults();
                 $uploadResult = array_values($uploadResults)[0];
                 if (!($uploadResult instanceof UploadResult)) {
-                    throw new CoulNotFindUploadedFileException('Could not find upload result');
+                    throw new CouldNotFindUploadedFileException('Could not find upload result');
                 }
 
                 if ($uploadResult->getStatus()->getCode() === ProcessingStatus::REJECTED) {
@@ -194,7 +194,7 @@ class CourseGroupEnrollment extends RepositoryObject
             } catch (CsvEmptyException) {
                 $form->getItemByPostVar('userImportFile')?->setAlert($this->plugin->txt('err_csv_empty'));
                 $this->uiUtil->sendFailure($this->lng->txt('form_input_not_valid'));
-            } catch (CoulNotFindUploadedFileException) {
+            } catch (CouldNotFindUploadedFileException) {
                 $form->getItemByPostVar('userImportFile')?->setAlert($this->plugin->txt('err_csv_empty'));
                 $this->uiUtil->sendFailure($this->lng->txt('upload_error_file_not_found'));
             } catch (UploadRejectedException $e) {
