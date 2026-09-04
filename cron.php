@@ -18,16 +18,16 @@
 
 declare(strict_types=1);
 
+if (PHP_SAPI !== 'cli') {
+    die("Cronjob can only be run from the command line.\n");
+}
+
 chdir(dirname(__FILE__));
 $iliasRootDir = './';
 while (!file_exists($iliasRootDir . 'ilias.ini.php')) {
     $iliasRootDir .= '../';
 }
 chdir($iliasRootDir);
-
-if (PHP_SAPI !== 'cli') {
-    die("Cronjob can only be run from the command line.\n");
-}
 
 if ($_SERVER['argc'] < 3) {
     die("Usage:  " . basename(__FILE__) . " username client \n");
