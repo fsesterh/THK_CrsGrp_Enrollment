@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Repositories;
 
+use ilDBConstants;
 use ilDBInterface;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\Repository\DataNotFoundException;
 use ILIAS\Plugin\CrsGrpEnrollment\Models\UserImport;
@@ -27,7 +28,7 @@ use ILIAS\Plugin\CrsGrpEnrollment\Models\UserImport;
 class UserImportRepository
 {
     private readonly ilDBInterface $db;
-    public const TABLE_NAME = 'xcge_user_import';
+    public const string TABLE_NAME = 'xcge_user_import';
 
     public function __construct()
     {
@@ -54,11 +55,8 @@ class UserImportRepository
     public function delete(UserImport $userImport): void
     {
         $this->db->manipulateF(
-            '
-                DELETE FROM ' . self::TABLE_NAME . '
-                WHERE id = %s
-            ',
-            ['integer'],
+            'DELETE FROM ' . self::TABLE_NAME . ' WHERE id = %s',
+            [ilDBConstants::T_INTEGER],
             [(int) $userImport->getId()]
         );
     }
@@ -71,7 +69,7 @@ class UserImportRepository
                 status = %s
                 WHERE id = %s
             ',
-            ['integer', 'integer'],
+            [ilDBConstants::T_INTEGER, ilDBConstants::T_INTEGER],
             [$userImport->getStatus(), (int) $userImport->getId()]
         );
     }
@@ -87,7 +85,14 @@ class UserImportRepository
                 VALUES
                 (%s, %s, %s, %s, %s, %s)
             ',
-            ['integer', 'integer', 'integer', 'integer', 'clob', 'integer'],
+            [
+                ilDBConstants::T_INTEGER,
+                ilDBConstants::T_INTEGER,
+                ilDBConstants::T_INTEGER,
+                ilDBConstants::T_INTEGER,
+                ilDBConstants::T_CLOB,
+                ilDBConstants::T_INTEGER
+            ],
             [
                 (int) $userImport->getId(),
                 $userImport->getStatus(),
@@ -108,7 +113,7 @@ class UserImportRepository
     {
         $result = $this->db->queryF(
             'SELECT * FROM ' . self::TABLE_NAME . ' WHERE id = %s',
-            ['integer'],
+            [ilDBConstants::T_INTEGER],
             [$userImportId]
         );
 
@@ -144,7 +149,7 @@ class UserImportRepository
 
         $result = $this->db->queryF(
             'SELECT usr_id FROM usr_data WHERE matriculation = %s',
-            ['text'],
+            [ilDBConstants::T_TEXT],
             [$matriculation]
         );
 
