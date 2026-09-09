@@ -70,7 +70,7 @@ class UserImportRepository
                 WHERE id = %s
             ',
             [ilDBConstants::T_INTEGER, ilDBConstants::T_INTEGER],
-            [$userImport->getStatus(), (int) $userImport->getId()]
+            [$userImport->getStatus()->value, (int) $userImport->getId()]
         );
     }
 
@@ -95,7 +95,7 @@ class UserImportRepository
             ],
             [
                 (int) $userImport->getId(),
-                $userImport->getStatus(),
+                $userImport->getStatus()->value,
                 $userImport->getUser(),
                 $userImport->getCreatedTimestamp(),
                 $userImport->getData(),

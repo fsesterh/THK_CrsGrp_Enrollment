@@ -23,6 +23,7 @@ namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend\Controller;
 use ilFileInputGUI;
 use ILIAS\FileUpload\DTO\ProcessingStatus;
 use ILIAS\FileUpload\DTO\UploadResult;
+use ILIAS\Plugin\CrsGrpEnrollment\Enum\ImportStatus;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\CouldNotFindUploadedFileException;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\CsvEmptyException;
 use ILIAS\Plugin\CrsGrpEnrollment\Exceptions\FileNotReadableException;
@@ -163,7 +164,7 @@ class CourseGroupEnrollment extends RepositoryObject
                 $dataArray = $this->userImportService->convertCSVToArray($uploadResult->getPath());
 
                 $userImport = new UserImport();
-                $userImport->setStatus(UserImport::STATUS_PENDING);
+                $userImport->setStatus(ImportStatus::PENDING);
                 $userImport->setUser($DIC->user()->getId());
                 $userImport->setCreatedTimestamp(time());
                 $userImport->setData(json_encode($dataArray, JSON_THROW_ON_ERROR));

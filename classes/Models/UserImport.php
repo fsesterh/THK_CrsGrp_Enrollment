@@ -20,11 +20,13 @@ declare(strict_types=1);
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Models;
 
+use ILIAS\Plugin\CrsGrpEnrollment\Enum\ImportStatus;
+
 class UserImport
 {
     private ?int $id = null;
 
-    private int $status;
+    private ImportStatus $status;
 
     private int $user;
 
@@ -33,9 +35,6 @@ class UserImport
     private string $data;
 
     private int $objId;
-
-    public const STATUS_PENDING = 0;
-    public const STATUS_COMPLETED = 1;
 
     public function getId(): ?int
     {
@@ -47,12 +46,12 @@ class UserImport
         $this->id = $id;
     }
 
-    public function getStatus(): int
+    public function getStatus(): ImportStatus
     {
         return $this->status;
     }
 
-    public function setStatus(int $status): void
+    public function setStatus(ImportStatus $status): void
     {
         $this->status = $status;
     }
@@ -107,7 +106,7 @@ class UserImport
         $import->setCreatedTimestamp((int) $record['created_timestamp']);
         $import->setData($record['data']);
         $import->setObjId((int) $record['obj_id']);
-        $import->setStatus((int) $record['status']);
+        $import->setStatus(ImportStatus::tryFrom((int) $record['status']) ?? ImportStatus::PENDING);
         $import->setUser((int) $record['user']);
         return $import;
     }
