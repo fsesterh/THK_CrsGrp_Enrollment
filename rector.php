@@ -34,11 +34,7 @@ return RectorConfig::configure()
     ->withPaths($dirs)
     ->withoutParallel()
     ->withPhpVersion(PhpVersion::PHP_83)
-    ->withSets([
-        SetList::PHP_83,
-        SetList::PHP_84,
-        LevelSetList::UP_TO_PHP_83,
-    ])
+    ->withPhpSets()
     ->withSkip([
         AddOverrideAttributeToOverriddenMethodsRector::class,
         ClosureToArrowFunctionRector::class
