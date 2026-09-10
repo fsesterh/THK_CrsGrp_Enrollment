@@ -8,17 +8,17 @@
 if (!$ilDB->tableExists('xcge_user_import')) {
     $fields = [
         'id' => [
-            'type' => 'integer',
+            'type' => ilDBConstants::T_INTEGER,
             'length' => 4,
             'notnull' => false,
         ],
         'status' => [
-            'type' => 'integer',
+            'type' => ilDBConstants::T_INTEGER,
             'length' => 4,
             'notnull' => false,
         ],
         'data' => [
-            'type' => 'clob',
+            'type' => ilDBConstants::T_CLOB,
             'notnull' => false,
         ],
     ];
@@ -37,7 +37,7 @@ if (!$ilDB->tableColumnExists('xcge_user_import', 'user')) {
         'xcge_user_import',
         'user',
         [
-            'type' => 'integer',
+            'type' => ilDBConstants::T_INTEGER,
             'length' => 4,
             'notnull' => false,
         ]
@@ -51,7 +51,7 @@ if (!$ilDB->tableColumnExists('xcge_user_import', 'created_timestamp')) {
         'xcge_user_import',
         'created_timestamp',
         [
-            'type' => 'timestamp',
+            'type' => ilDBConstants::T_TIMESTAMP,
             'notnull' => false,
             'default' => null
         ]
@@ -69,7 +69,7 @@ if (!$ilDB->tableColumnExists('xcge_user_import', 'created_timestamp')) {
         'xcge_user_import',
         'created_timestamp',
         [
-            'type' => 'integer',
+            'type' => ilDBConstants::T_INTEGER,
             'length' => 8,
             'notnull' => true,
         ]
@@ -83,7 +83,7 @@ if (!$ilDB->tableColumnExists('xcge_user_import', 'obj_id')) {
         'xcge_user_import',
         'obj_id',
         [
-            'type' => 'integer',
+            'type' => ilDBConstants::T_INTEGER,
             'length' => 4,
             'notnull' => true,
         ]
@@ -98,7 +98,7 @@ $bucket_ids = [];
 $result = $ilDB->query(
     'SELECT id, bucket_id FROM il_bt_task WHERE ' . $ilDB->like(
         'type',
-        'text',
+            ilDBConstants::T_TEXT,
         '%ILIAS\\\\Plugin\\\\CrsGrpEnrollment%'
     )
 );
@@ -112,7 +112,7 @@ $ilDB->manipulate(
         'task_id',
         $task_ids,
         false,
-        'integer'
+        ilDBConstants::T_INTEGER
     ) . ')'
 );
 
@@ -121,7 +121,7 @@ $ilDB->manipulate(
         'task_id',
         $task_ids,
         false,
-        'integer'
+        ilDBConstants::T_INTEGER
     )
 );
 
@@ -130,7 +130,7 @@ $ilDB->manipulate(
         'id',
         $bucket_ids,
         false,
-        'integer'
+        ilDBConstants::T_INTEGER
     )
 );
 
@@ -139,7 +139,7 @@ $ilDB->manipulate(
         'id',
         $task_ids,
         false,
-        'integer'
+        ilDBConstants::T_INTEGER
     )
 );
 

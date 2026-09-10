@@ -26,10 +26,10 @@ use ilContainerStartObjectsGUI;
 use ilCourseMembershipGUI;
 use ilCourseParticipantsGroupsGUI;
 use ilGroupMembershipGUI;
+use ILIAS\User\Profile\PublicProfileGUI;
 use ilMailMemberSearchGUI;
 use ilMemberExportGUI;
 use ilObjectCustomUserFieldsGUI;
-use ilPublicUserProfileGUI;
 use ilRepositoryGUI;
 use ilTabsGUI;
 use ilUIPluginRouterGUI;
@@ -64,7 +64,7 @@ class CourseGroupTabs extends Base
             $this->isCommandClass(ilContainerStartObjectsGUI::class) ||
             $this->isCommandClass(ilCalendarPresentationGUI::class) ||
             $this->isCommandClass(ilCalendarCategoryGUI::class) ||
-            $this->isCommandClass(ilPublicUserProfileGUI::class) ||
+            $this->isCommandClass(PublicProfileGUI::class) ||
             $this->isCommandClass(ilMailMemberSearchGUI::class) || (
                 $this->isOneOfCommands(['create',]) &&
                 $this->isBaseClass(ilRepositoryGUI::class)
@@ -81,15 +81,13 @@ class CourseGroupTabs extends Base
             return false;
         }
 
-        $isCourseMembershipSubTabContext = (
+        return (
             $this->isCommandClass(ilCourseMembershipGUI::class) ||
             $this->isCommandClass(ilGroupMembershipGUI::class) ||
             $this->isCommandClass(ilCourseParticipantsGroupsGUI::class) ||
             $this->isCommandClass(ilUsersGalleryGUI::class) ||
             $this->isCommandClass(ilMemberExportGUI::class)
         );
-
-        return $isCourseMembershipSubTabContext;
     }
 
     public function shouldModifyHtml(string $component, string $part, array $parameters): bool
