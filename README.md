@@ -47,10 +47,10 @@ The CrsGrpEnrollment plugin will create a report file (CSV) which is send to the
 
 ## Installation
 
-1. Clone this repository to **Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/CrsGrpEnrollment**
+1. Clone this repository to **public/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/CrsGrpEnrollment**
 2. Install the Composer dependencies
    ```bash
-   cd Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/CrsGrpEnrollment
+   cd public/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/CrsGrpEnrollment
    composer install --no-dev
    ```
    Developers **MUST** omit the `--no-dev` argument.
