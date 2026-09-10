@@ -97,7 +97,7 @@ class UserImportJob extends CronJob
         return JobScheduleType::IN_HOURS;
     }
 
-    public function getAllScheduleTypes(): array
+    public function getValidScheduleTypes(): array
     {
         return [
             JobScheduleType::IN_MINUTES,
