@@ -24,6 +24,7 @@ use ILIAS\Cron\Job\JobResult;
 use ILIAS\DI\Container;
 use ILIAS\Plugin\CrsGrpEnrollment\Job\UserImportJob;
 use ILIAS\Plugin\CrsGrpEnrollment\Lock\PidBasedLocker;
+use ILIAS\Plugin\CrsGrpEnrollment\Setup\DBUpdateSteps;
 
 class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin implements JobProvider
 {
@@ -107,5 +108,24 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin implements JobP
             }
         }
         throw new Exception("No cron job found with the id '$jobId'.");
+    }
+
+    public function install(): void
+    {
+        (new DBUpdateSteps())->install($this->db);
+        parent::install();
+    }
+
+    public function update(): bool
+    {
+        //DbUpdateSteps should be executed before the parent update so potential exceptions result in no il_plugin db changes
+        (new DBUpdateSteps())->install($this->db);
+
+        return parent::update();
+    }
+
+    protected function uninstallCustom(): void
+    {
+        (new DBUpdateSteps())->uninstall($this->db);
     }
 }

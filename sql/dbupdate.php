@@ -5,142 +5,25 @@
 ?>
 <#2>
 <?php
-if (!$ilDB->tableExists('xcge_user_import')) {
-    $fields = [
-        'id' => [
-            'type' => ilDBConstants::T_INTEGER,
-            'length' => 4,
-            'notnull' => false,
-        ],
-        'status' => [
-            'type' => ilDBConstants::T_INTEGER,
-            'length' => 4,
-            'notnull' => false,
-        ],
-        'data' => [
-            'type' => ilDBConstants::T_CLOB,
-            'notnull' => false,
-        ],
-    ];
-
-    $tableName = "xcge_user_import";
-
-    $ilDB->createTable($tableName, $fields);
-    $ilDB->addPrimaryKey($tableName, ["id"]);
-    $ilDB->createSequence($tableName);
-}
+//Kept empty for compatibility
 ?>
 <#3>
 <?php
-if (!$ilDB->tableColumnExists('xcge_user_import', 'user')) {
-    $ilDB->addTableColumn(
-        'xcge_user_import',
-        'user',
-        [
-            'type' => ilDBConstants::T_INTEGER,
-            'length' => 4,
-            'notnull' => false,
-        ]
-    );
-}
+//Kept empty for compatibility
 ?>
 <#4>
 <?php
-if (!$ilDB->tableColumnExists('xcge_user_import', 'created_timestamp')) {
-    $ilDB->addTableColumn(
-        'xcge_user_import',
-        'created_timestamp',
-        [
-            'type' => ilDBConstants::T_TIMESTAMP,
-            'notnull' => false,
-            'default' => null
-        ]
-    );
-}
+//Kept empty for compatibility
 ?>
 <#5>
 <?php
-if ($ilDB->tableColumnExists('xcge_user_import', 'created_timestamp')) {
-    $ilDB->dropTableColumn('xcge_user_import', 'created_timestamp');
-}
-
-if (!$ilDB->tableColumnExists('xcge_user_import', 'created_timestamp')) {
-    $ilDB->addTableColumn(
-        'xcge_user_import',
-        'created_timestamp',
-        [
-            'type' => ilDBConstants::T_INTEGER,
-            'length' => 8,
-            'notnull' => true,
-        ]
-    );
-}
+//Kept empty for compatibility
 ?>
 <#6>
 <?php
-if (!$ilDB->tableColumnExists('xcge_user_import', 'obj_id')) {
-    $ilDB->addTableColumn(
-        'xcge_user_import',
-        'obj_id',
-        [
-            'type' => ilDBConstants::T_INTEGER,
-            'length' => 4,
-            'notnull' => true,
-        ]
-    );
-}
+//Kept empty for compatibility
 ?>
 <#7>
 <?php
-$task_ids = [];
-$bucket_ids = [];
-
-$result = $ilDB->query(
-    'SELECT id, bucket_id FROM il_bt_task WHERE ' . $ilDB->like(
-        'type',
-            ilDBConstants::T_TEXT,
-        '%ILIAS\\\\Plugin\\\\CrsGrpEnrollment%'
-    )
-);
-while ($row = $ilDB->fetchAssoc($result)) {
-    $task_ids[(int) $row['id']] = (int) $row['id'];
-    $bucket_ids[(int) $row['bucket_id']] = (int) $row['bucket_id'];
-}
-
-$ilDB->manipulate(
-    'DELETE FROM il_bt_value WHERE id IN (SELECT value_id FROM il_bt_value_to_task WHERE ' . $ilDB->in(
-        'task_id',
-        $task_ids,
-        false,
-        ilDBConstants::T_INTEGER
-    ) . ')'
-);
-
-$ilDB->manipulate(
-    'DELETE FROM il_bt_value_to_task WHERE ' . $ilDB->in(
-        'task_id',
-        $task_ids,
-        false,
-        ilDBConstants::T_INTEGER
-    )
-);
-
-$ilDB->manipulate(
-    'DELETE FROM il_bt_bucket WHERE ' . $ilDB->in(
-        'id',
-        $bucket_ids,
-        false,
-        ilDBConstants::T_INTEGER
-    )
-);
-
-$ilDB->manipulate(
-    'DELETE FROM il_bt_task WHERE ' . $ilDB->in(
-        'id',
-        $task_ids,
-        false,
-        ilDBConstants::T_INTEGER
-    )
-);
-
+//Kept empty for compatibility
 ?>
