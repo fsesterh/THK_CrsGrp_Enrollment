@@ -20,7 +20,7 @@ declare(strict_types=1);
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Frontend;
 
-use ilCtrl;
+use ilCtrlInterface;
 use ILIAS\HTTP\Wrapper\WrapperFactory;
 use ILIAS\Refinery\Factory;
 use ilObjectDataCache;
@@ -31,7 +31,7 @@ trait HttpContext
     protected ilObjectDataCache $object_cache;
     protected WrapperFactory $http_wrapper;
     protected Factory $refinery;
-    protected ilCtrl $ctrl;
+    protected ilCtrlInterface $ctrl;
 
     final public function isBaseClass(string $class): bool
     {

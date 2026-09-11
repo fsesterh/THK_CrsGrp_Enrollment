@@ -35,7 +35,7 @@ class ilCrsGrpEnrollmentConfigGUI extends ilPluginConfigGUI
     private readonly Factory $factory;
     private readonly Renderer $renderer;
     private readonly ilGlobalTemplateInterface $template;
-    private readonly ilCtrl $ctrl;
+    private readonly ilCtrlInterface $ctrl;
     private readonly Locker $lock;
     private readonly ilLanguage $lng;
     private readonly UiUtil $ui_util;

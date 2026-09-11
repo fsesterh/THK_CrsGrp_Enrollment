@@ -26,7 +26,7 @@ use ilContainerStartObjectsGUI;
 use ilCourseMembershipGUI;
 use ilCourseParticipantsGroupsGUI;
 use ilGroupMembershipGUI;
-use ILIAS\User\Profile\PublicProfileGUI;
+use ilPublicUserProfileGUI;
 use ilMailMemberSearchGUI;
 use ilMemberExportGUI;
 use ilObjectCustomUserFieldsGUI;
@@ -64,7 +64,7 @@ class CourseGroupTabs extends Base
             $this->isCommandClass(ilContainerStartObjectsGUI::class) ||
             $this->isCommandClass(ilCalendarPresentationGUI::class) ||
             $this->isCommandClass(ilCalendarCategoryGUI::class) ||
-            $this->isCommandClass(PublicProfileGUI::class) ||
+            $this->isCommandClass(ilPublicUserProfileGUI::class) ||
             $this->isCommandClass(ilMailMemberSearchGUI::class) || (
                 $this->isOneOfCommands(['create',]) &&
                 $this->isBaseClass(ilRepositoryGUI::class)

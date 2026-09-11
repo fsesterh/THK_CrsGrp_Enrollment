@@ -35,10 +35,7 @@ chdir($iliasRootDir);
 
 require_once 'vendor/composer/vendor/autoload.php';
 
-use ILIAS\Cron\CLI\StartUp;
-use ILIAS\Cron\Job\JobResult;
-
-$cron = new StartUp($_SERVER['argv'][2], $_SERVER['argv'][1]);
+$cron = new ilCronStartUp($_SERVER['argv'][2], $_SERVER['argv'][1]);
 
 try {
 
@@ -50,11 +47,11 @@ try {
     $cronResult = ilCrsGrpEnrollmentPlugin::getInstance()->run();
     $cron->logout();
     $status = match ($cronResult->getStatus()) {
-        JobResult::STATUS_INVALID_CONFIGURATION => "INVALID CONFIGURATION",
-        JobResult::STATUS_NO_ACTION => "NO ACTION",
-        JobResult::STATUS_OK => "OK",
-        JobResult::STATUS_CRASHED => "CRASHED",
-        JobResult::STATUS_RESET => "RESET",
+        ilCronJobResult::STATUS_INVALID_CONFIGURATION => "INVALID CONFIGURATION",
+        ilCronJobResult::STATUS_NO_ACTION => "NO ACTION",
+        ilCronJobResult::STATUS_OK => "OK",
+        ilCronJobResult::STATUS_CRASHED => "CRASHED",
+        ilCronJobResult::STATUS_RESET => "RESET",
         default => "FAILED",
     };
 
