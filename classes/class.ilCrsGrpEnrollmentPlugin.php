@@ -84,9 +84,9 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin implements JobP
 
         global $DIC;
 
-        /** @var ilComponentFactory $componentFactory */
-        $componentFactory = $DIC['component.factory'];
-        self::$instance = $componentFactory->getPlugin(self::ID);
+        /** @var ilComponentFactory $component_factory */
+        $component_factory = $DIC['component.factory'];
+        self::$instance = $component_factory->getPlugin(self::ID);
         return self::$instance;
     }
 
@@ -100,14 +100,14 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin implements JobP
     /**
      * @throws Exception
      */
-    public function getCronJobInstance(string $jobId): CronJob
+    public function getCronJobInstance(string $job_id): CronJob
     {
-        foreach ($this->getCronJobInstances() as $cronJobInstance) {
-            if ($cronJobInstance->getId() === $jobId) {
-                return $cronJobInstance;
+        foreach ($this->getCronJobInstances() as $cron_job_instance) {
+            if ($cron_job_instance->getId() === $job_id) {
+                return $cron_job_instance;
             }
         }
-        throw new Exception("No cron job found with the id '$jobId'.");
+        throw new Exception("No cron job found with the id '$job_id'.");
     }
 
     public function install(): void

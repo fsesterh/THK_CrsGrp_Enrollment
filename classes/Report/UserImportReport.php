@@ -22,8 +22,8 @@ namespace ILIAS\Plugin\CrsGrpEnrollment\Report;
 
 class UserImportReport
 {
-    private bool $hasErrors = false;
-    private bool $hasMessages = false;
+    private bool $has_errors = false;
+    private bool $has_messages = false;
 
     public function __construct(
         private readonly \ilCSVWriter $csv,
@@ -40,7 +40,7 @@ class UserImportReport
         $this->csv->addColumn($identification);
         $this->csv->addColumn($txt);
         $this->csv->addRow();
-        $this->hasMessages = true;
+        $this->has_messages = true;
     }
 
     public function addError(string $identification, string $txt): void
@@ -48,7 +48,7 @@ class UserImportReport
         $this->csv->addColumn($identification);
         $this->csv->addColumn($txt);
         $this->csv->addRow();
-        $this->hasErrors = true;
+        $this->has_errors = true;
     }
 
     public function asText(): string
@@ -58,16 +58,16 @@ class UserImportReport
 
     public function hasErrors(): bool
     {
-        return $this->hasErrors;
+        return $this->has_errors;
     }
 
     public function hasMessages(): bool
     {
-        return $this->hasMessages;
+        return $this->has_messages;
     }
 
     public function isEmpty(): bool
     {
-        return !$this->hasErrors && !$this->hasMessages;
+        return !$this->has_errors && !$this->has_messages;
     }
 }

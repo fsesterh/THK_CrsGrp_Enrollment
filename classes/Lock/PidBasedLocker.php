@@ -61,8 +61,8 @@ class PidBasedLocker implements Locker
 
         $pid = (string) $this->settings->get('cron_lock_pid', '');
         if ($this->isRunning($pid)) {
-            $lastLockTimestamp = (int) $this->settings->get('cron_lock_ts', (string) time());
-            if ($lastLockTimestamp > time() - (60 * 60 * 1)) {
+            $last_lock_timestamp = (int) $this->settings->get('cron_lock_ts', (string) time());
+            if ($last_lock_timestamp > time() - (60 * 60 * 1)) {
                 return false;
             }
         }

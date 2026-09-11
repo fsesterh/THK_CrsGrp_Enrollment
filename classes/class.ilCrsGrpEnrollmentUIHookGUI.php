@@ -62,22 +62,22 @@ class ilCrsGrpEnrollmentUIHookGUI extends ilUIHookPluginGUI
             return;
         }
 
-        $phpSelf = $_SERVER['PHP_SELF'] ?? '';
-        $urlParts = parse_url($phpSelf);
-        $script = basename($phpSelf);
+        $php_self = $_SERVER['PHP_SELF'] ?? '';
+        $url_parts = parse_url($php_self);
+        $script = basename($php_self);
 
-        $isLiveVotinRequest = (
-            $phpSelf !== '' &&
-            is_array($urlParts) &&
-            isset($urlParts['path']) &&
-            str_contains($urlParts['path'], '/LiveVoting/')
+        $is_live_votin_request = (
+            $php_self !== '' &&
+            is_array($url_parts) &&
+            isset($url_parts['path']) &&
+            str_contains($url_parts['path'], '/LiveVoting/')
         );
-        if ($isLiveVotinRequest) {
+        if ($is_live_votin_request) {
             return;
         }
 
-        $isBootstrappedRequest = in_array($script, ['login.php', 'goto.php', 'ilias.php']);
-        if (!$isBootstrappedRequest) {
+        $is_bootstrapped_request = in_array($script, ['login.php', 'goto.php', 'ilias.php']);
+        if (!$is_bootstrapped_request) {
             return;
         }
 

@@ -29,15 +29,15 @@ class Error extends Base
 
     public function init(): void
     {
-        $this->pageTemplate->loadStandardTemplate();
+        $this->page_template->loadStandardTemplate();
 
         parent::init();
     }
 
     public function showCmd(): string
     {
-        return $this->uiRenderer->render([
-            $this->uiFactory->messageBox()->failure(
+        return $this->ui_renderer->render([
+            $this->ui_factory->messageBox()->failure(
                 $this->plugin->txt('controller_not_found')
             )
         ]);

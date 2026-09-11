@@ -33,7 +33,7 @@ class Dispatcher
     {
     }
 
-    private function __construct(private ilCrsGrpEnrollmentUIHookGUI $coreController, private readonly string $defaultController = '')
+    private function __construct(private ilCrsGrpEnrollmentUIHookGUI $core_controller, private readonly string $default_controller = '')
     {
     }
 
@@ -42,9 +42,9 @@ class Dispatcher
         $this->dic = $dic;
     }
 
-    public static function getInstance(ilCrsGrpEnrollmentUIHookGUI $baseController): self
+    public static function getInstance(ilCrsGrpEnrollmentUIHookGUI $base_controller): self
     {
-        self::$instance ??= new self($baseController);
+        self::$instance ??= new self($base_controller);
 
         return self::$instance;
     }
@@ -66,7 +66,7 @@ class Dispatcher
             return $parts[0];
         }
 
-        return $this->defaultController ?: 'Error';
+        return $this->default_controller ?: 'Error';
     }
 
     protected function getCommand(string $cmd): string
@@ -110,11 +110,11 @@ class Dispatcher
 
     public function getCoreController(): ilCrsGrpEnrollmentUIHookGUI
     {
-        return $this->coreController;
+        return $this->core_controller;
     }
 
-    public function setCoreController(ilCrsGrpEnrollmentUIHookGUI $coreController): void
+    public function setCoreController(ilCrsGrpEnrollmentUIHookGUI $core_controller): void
     {
-        $this->coreController = $coreController;
+        $this->core_controller = $core_controller;
     }
 }

@@ -28,14 +28,14 @@ use ReflectionClass;
 
 trait HttpContext
 {
-    protected ilObjectDataCache $objectCache;
-    protected WrapperFactory $httpWrapper;
+    protected ilObjectDataCache $object_cache;
+    protected WrapperFactory $http_wrapper;
     protected Factory $refinery;
     protected ilCtrl $ctrl;
 
     final public function isBaseClass(string $class): bool
     {
-        $baseClass = $this->httpWrapper->query()->retrieve(
+        $base_class = $this->http_wrapper->query()->retrieve(
             "baseClass",
             $this->refinery->byTrying([
                 $this->refinery->kindlyTo()->string(),
@@ -43,17 +43,17 @@ trait HttpContext
             ])
         );
 
-        return strtolower($class) === strtolower($baseClass);
+        return strtolower($class) === strtolower($base_class);
     }
 
     final public function hasBaseClass(): bool
     {
-        return $this->httpWrapper->query()->has("baseClass");
+        return $this->http_wrapper->query()->has("baseClass");
     }
 
     final public function isCommandClass(string $class): bool
     {
-        $cmdClass = $this->httpWrapper->query()->retrieve(
+        $cmd_class = $this->http_wrapper->query()->retrieve(
             "cmdClass",
             $this->refinery->byTrying([
                 $this->refinery->kindlyTo()->string(),
@@ -61,24 +61,24 @@ trait HttpContext
             ])
         );
 
-        return strtolower($class) === strtolower($cmdClass);
+        return strtolower($class) === strtolower($cmd_class);
     }
 
     final public function hasCommandClass(): bool
     {
-        return $this->httpWrapper->query()->has("cmdClass");
+        return $this->http_wrapper->query()->has("cmdClass");
     }
 
     /**
-     * @param string[] $cmdClasses
+     * @param string[] $cmd_classes
      */
-    final public function isOneOfCommandClasses(array $cmdClasses): bool
+    final public function isOneOfCommandClasses(array $cmd_classes): bool
     {
         if (!$this->hasCommandClass()) {
             return false;
         }
 
-        $cmdClass = $this->httpWrapper->query()->retrieve(
+        $cmd_class = $this->http_wrapper->query()->retrieve(
             "cmdClass",
             $this->refinery->byTrying([
                 $this->refinery->kindlyTo()->string(),
@@ -86,9 +86,9 @@ trait HttpContext
             ])
         );
 
-        return in_array(strtolower($cmdClass), array_map(
+        return in_array(strtolower($cmd_class), array_map(
             strtolower(...),
-            $cmdClasses
+            $cmd_classes
         ), true);
     }
 
@@ -119,7 +119,7 @@ trait HttpContext
 
     final public function getRefId(): int
     {
-        return $this->httpWrapper->query()->retrieve(
+        return $this->http_wrapper->query()->retrieve(
             "ref_id",
             $this->refinery->byTrying([
                 $this->refinery->kindlyTo()->int(),
@@ -130,7 +130,7 @@ trait HttpContext
 
     final public function getTargetRefId(): int
     {
-        $target = $this->httpWrapper->query()->retrieve(
+        $target = $this->http_wrapper->query()->retrieve(
             "target",
             $this->refinery->byTrying([
                 $this->refinery->kindlyTo()->string(),
@@ -144,37 +144,37 @@ trait HttpContext
         return 0;
     }
 
-    final public function isObjectOfId(int $objId): bool
+    final public function isObjectOfId(int $obj_id): bool
     {
-        $refId = $this->getRefId();
-        if ($refId <= 0) {
+        $ref_id = $this->getRefId();
+        if ($ref_id <= 0) {
             return false;
         }
 
-        return ($this->objectCache->lookupObjId($refId) === $objId);
+        return ($this->object_cache->lookupObjId($ref_id) === $obj_id);
     }
 
     final public function isObjectOfType(string $type): bool
     {
-        $refId = $this->getRefId();
-        if ($refId <= 0) {
+        $ref_id = $this->getRefId();
+        if ($ref_id <= 0) {
             return false;
         }
 
-        $objId = $this->objectCache->lookupObjId($refId);
+        $obj_id = $this->object_cache->lookupObjId($ref_id);
 
-        return $this->objectCache->lookupType($objId) === $type;
+        return $this->object_cache->lookupType($obj_id) === $type;
     }
 
     final public function isTargetObjectOfType(string $type): bool
     {
-        $refId = $this->getTargetRefId();
-        if ($refId <= 0) {
+        $ref_id = $this->getTargetRefId();
+        if ($ref_id <= 0) {
             return false;
         }
 
-        $objId = $this->objectCache->lookupObjId($refId);
+        $obj_id = $this->object_cache->lookupObjId($ref_id);
 
-        return $this->objectCache->lookupType($objId) === $type;
+        return $this->object_cache->lookupType($obj_id) === $type;
     }
 }

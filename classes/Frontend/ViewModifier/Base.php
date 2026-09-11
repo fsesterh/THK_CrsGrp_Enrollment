@@ -38,38 +38,38 @@ abstract class Base implements ViewModifier
 {
     use HttpContext;
 
-    protected Factory $uiFactory;
-    protected Renderer $uiRenderer;
+    protected Factory $ui_factory;
+    protected Renderer $ui_renderer;
     protected Container $dic;
     protected ilToolbarGUI $toolbar;
     protected ilObjUser $user;
-    protected ilAccessHandler $coreAccessHandler;
-    protected ilErrorHandling $errorHandler;
+    protected ilAccessHandler $core_access_handler;
+    protected ilErrorHandling $error_handler;
     protected ilLanguage $lng;
-    protected ilGlobalTemplateInterface $mainTemplate;
+    protected ilGlobalTemplateInterface $main_template;
 
-    final public function __construct(public ilCrsGrpEnrollmentUIHookGUI $coreController, Container $dic)
+    final public function __construct(public ilCrsGrpEnrollmentUIHookGUI $core_controller, Container $dic)
     {
         $this->dic = $dic;
         $this->ctrl = $this->dic->ctrl();
 
-        $this->httpWrapper = $dic->http()->wrapper();
+        $this->http_wrapper = $dic->http()->wrapper();
         $this->refinery = $dic->refinery();
-        $this->objectCache = $dic['ilObjDataCache'];
+        $this->object_cache = $dic['ilObjDataCache'];
 
-        $this->mainTemplate = $dic->ui()->mainTemplate();
+        $this->main_template = $dic->ui()->mainTemplate();
         $this->lng = $dic->language();
         $this->user = $dic->user();
-        $this->uiRenderer = $dic->ui()->renderer();
-        $this->uiFactory = $dic->ui()->factory();
-        $this->errorHandler = $dic['ilErr'];
-        $this->coreAccessHandler = $dic->access();
+        $this->ui_renderer = $dic->ui()->renderer();
+        $this->ui_factory = $dic->ui()->factory();
+        $this->error_handler = $dic['ilErr'];
+        $this->core_access_handler = $dic->access();
         $this->toolbar = $dic->toolbar();
     }
 
     public function getCoreController(): ilCrsGrpEnrollmentUIHookGUI
     {
-        return $this->coreController;
+        return $this->core_controller;
     }
 
     public function getDic(): Container

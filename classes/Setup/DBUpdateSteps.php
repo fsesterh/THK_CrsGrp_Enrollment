@@ -79,14 +79,14 @@ class DBUpdateSteps implements ilDatabaseUpdateSteps
 
     public function step_1(): void
     {
-        $tableName = "xcge_user_import";
+        $table_name = "xcge_user_import";
 
-        if ($this->db->tableExists($tableName)) {
+        if ($this->db->tableExists($table_name)) {
             return;
         }
 
         $this->db->createTable(
-            $tableName,
+            $table_name,
             [
                 'id' => [
                     'type' => ilDBConstants::T_INTEGER,
@@ -105,8 +105,8 @@ class DBUpdateSteps implements ilDatabaseUpdateSteps
             ]
         );
 
-        $this->db->addPrimaryKey($tableName, ["id"]);
-        $this->db->createSequence($tableName);
+        $this->db->addPrimaryKey($table_name, ["id"]);
+        $this->db->createSequence($table_name);
     }
 
     public function step_2(): void

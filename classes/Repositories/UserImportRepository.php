@@ -40,28 +40,28 @@ class UserImportRepository
     /**
      * @throws DataNotFoundException
      */
-    public function save(UserImport $userImport): UserImport
+    public function save(UserImport $user_import): UserImport
     {
-        if ($userImport->getId() === null) {
-            return $this->add($userImport);
+        if ($user_import->getId() === null) {
+            return $this->add($user_import);
         }
 
-        $this->findOneById($userImport->getId());
-        $this->updateStatus($userImport);
+        $this->findOneById($user_import->getId());
+        $this->updateStatus($user_import);
 
-        return $userImport;
+        return $user_import;
     }
 
-    public function delete(UserImport $userImport): void
+    public function delete(UserImport $user_import): void
     {
         $this->db->manipulateF(
             'DELETE FROM ' . self::TABLE_NAME . ' WHERE id = %s',
             [ilDBConstants::T_INTEGER],
-            [(int) $userImport->getId()]
+            [(int) $user_import->getId()]
         );
     }
 
-    private function updateStatus(UserImport $userImport): void
+    private function updateStatus(UserImport $user_import): void
     {
         $this->db->manipulateF(
             '
@@ -70,14 +70,14 @@ class UserImportRepository
                 WHERE id = %s
             ',
             [ilDBConstants::T_INTEGER, ilDBConstants::T_INTEGER],
-            [$userImport->getStatus()->value, (int) $userImport->getId()]
+            [$user_import->getStatus()->value, (int) $user_import->getId()]
         );
     }
 
-    private function add(UserImport $userImport): UserImport
+    private function add(UserImport $user_import): UserImport
     {
-        $nextId = $this->db->nextId(self::TABLE_NAME);
-        $userImport->setId($nextId);
+        $next_id = $this->db->nextId(self::TABLE_NAME);
+        $user_import->setId($next_id);
         $this->db->manipulateF(
             '
                 INSERT INTO ' . self::TABLE_NAME . '
@@ -94,31 +94,31 @@ class UserImportRepository
                 ilDBConstants::T_INTEGER
             ],
             [
-                (int) $userImport->getId(),
-                $userImport->getStatus()->value,
-                $userImport->getUser(),
-                $userImport->getCreatedTimestamp(),
-                $userImport->getData(),
-                $userImport->getObjId()
+                (int) $user_import->getId(),
+                $user_import->getStatus()->value,
+                $user_import->getUser(),
+                $user_import->getCreatedTimestamp(),
+                $user_import->getData(),
+                $user_import->getObjId()
             ]
         );
 
-        return $userImport;
+        return $user_import;
     }
 
     /**
      * @throws DataNotFoundException
      */
-    public function findOneById(int $userImportId): UserImport
+    public function findOneById(int $user_import_id): UserImport
     {
         $result = $this->db->queryF(
             'SELECT * FROM ' . self::TABLE_NAME . ' WHERE id = %s',
             [ilDBConstants::T_INTEGER],
-            [$userImportId]
+            [$user_import_id]
         );
 
         if ($result->numRows() === 0) {
-            throw new DataNotFoundException('No UserImport with ID ' . $userImportId . ' found');
+            throw new DataNotFoundException('No UserImport with ID ' . $user_import_id . ' found');
         }
 
         $row = $this->db->fetchAssoc($result);
@@ -145,7 +145,7 @@ class UserImportRepository
      */
     public function getUserIdsByMatriculation(string $matriculation): array
     {
-        $usrIds = [];
+        $usr_ids = [];
 
         $result = $this->db->queryF(
             'SELECT usr_id FROM usr_data WHERE matriculation = %s',
@@ -154,9 +154,9 @@ class UserImportRepository
         );
 
         while ($row = $this->db->fetchAssoc($result)) {
-            $usrIds[] = (int) $row['usr_id'];
+            $usr_ids[] = (int) $row['usr_id'];
         }
 
-        return $usrIds;
+        return $usr_ids;
     }
 }

@@ -41,42 +41,42 @@ abstract class Base
 {
     use HttpContext;
 
-    public ilGlobalTemplateInterface $pageTemplate;
-    protected Factory $uiFactory;
-    protected Renderer $uiRenderer;
+    public ilGlobalTemplateInterface $page_template;
+    protected Factory $ui_factory;
+    protected Renderer $ui_renderer;
     protected Container $dic;
     protected ilToolbarGUI $toolbar;
     protected ilObjuser $user;
-    protected ilAccessHandler $coreAccessHandler;
-    protected ilErrorHandling $errorHandler;
+    protected ilAccessHandler $core_access_handler;
+    protected ilErrorHandling $error_handler;
     public ilLanguage $lng;
     protected ilLogger $log;
-    protected UserImportValidator $userImportValidator;
-    protected UserImportService $userImportService;
+    protected UserImportValidator $user_import_validator;
+    protected UserImportService $user_import_service;
     protected ilCrsGrpEnrollmentPlugin $plugin;
 
-    final public function __construct(public ilCrsGrpEnrollmentUIHookGUI $coreController, Container $dic)
+    final public function __construct(public ilCrsGrpEnrollmentUIHookGUI $core_controller, Container $dic)
     {
         $this->dic = $dic;
         $this->ctrl = $this->dic->ctrl();
 
-        $this->httpWrapper = $dic->http()->wrapper();
+        $this->http_wrapper = $dic->http()->wrapper();
         $this->refinery = $dic->refinery();
-        $this->objectCache = $dic['ilObjDataCache'];
+        $this->object_cache = $dic['ilObjDataCache'];
 
         $this->ctrl = $dic->ctrl();
         $this->lng = $dic->language();
-        $this->pageTemplate = $dic->ui()->mainTemplate();
+        $this->page_template = $dic->ui()->mainTemplate();
         $this->user = $dic->user();
-        $this->uiRenderer = $dic->ui()->renderer();
-        $this->uiFactory = $dic->ui()->factory();
-        $this->coreAccessHandler = $dic->access();
-        $this->errorHandler = $dic['ilErr'];
+        $this->ui_renderer = $dic->ui()->renderer();
+        $this->ui_factory = $dic->ui()->factory();
+        $this->core_access_handler = $dic->access();
+        $this->error_handler = $dic['ilErr'];
         $this->toolbar = $dic->toolbar();
         $this->log = $dic->logger()->root();
 
-        $this->userImportValidator = new UserImportValidator();
-        $this->userImportService = new UserImportService($this->getCoreController()->getPluginObject());
+        $this->user_import_validator = new UserImportValidator();
+        $this->user_import_service = new UserImportService($this->getCoreController()->getPluginObject());
 
         $this->init();
     }
@@ -85,7 +85,7 @@ abstract class Base
     {
         $this->plugin = ilCrsGrpEnrollmentPlugin::getInstance();
         if (!$this->plugin->isActive()) {
-            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
+            $this->error_handler->raiseError($this->lng->txt('permission_denied'), $this->error_handler->MESSAGE);
         }
     }
 
@@ -98,7 +98,7 @@ abstract class Base
 
     public function getCoreController(): ilCrsGrpEnrollmentUIHookGUI
     {
-        return $this->coreController;
+        return $this->core_controller;
     }
 
     public function getDic(): Container

@@ -51,7 +51,7 @@ use ILIAS\Plugin\CrsGrpEnrollment\Report\UserImportReport;
 class UserImportJob extends CronJob
 {
     private Container $dic;
-    private readonly ilPluginAdmin $pluginAdmin;
+    private readonly ilPluginAdmin $plugin_admin;
     private readonly ilLogger $logger;
 
     private readonly Locker $lock;
@@ -61,7 +61,7 @@ class UserImportJob extends CronJob
     {
         global $DIC;
         $this->dic = $DIC;
-        $this->pluginAdmin = $this->dic['ilPluginAdmin'];
+        $this->plugin_admin = $this->dic['ilPluginAdmin'];
         $this->logger = $this->dic->logger()->root();
         $this->lock = $this->dic['plugin.' . ilCrsGrpEnrollmentPlugin::ID . '.cronjob.locker'];
         $this->plugin = ilCrsGrpEnrollmentPlugin::getInstance();
@@ -239,8 +239,8 @@ class UserImportJob extends CronJob
             }
 
             if (!isset($ref_id_by_object_id[$user_import->getObjId()])) {
-                $refId = current(ilObject::_getAllReferences($user_import->getObjId()));
-                $ref_id_by_object_id[$user_import->getObjId()] = $refId;
+                $ref_id = current(ilObject::_getAllReferences($user_import->getObjId()));
+                $ref_id_by_object_id[$user_import->getObjId()] = $ref_id;
             }
 
             $permanent_link = ilLink::_getStaticLink($ref_id_by_object_id[$user_import->getObjId()]);

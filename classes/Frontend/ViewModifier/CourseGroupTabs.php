@@ -39,18 +39,18 @@ class CourseGroupTabs extends Base
 {
     private function getContainerRefId(): int
     {
-        $refId = $this->getRefId();
+        $ref_id = $this->getRefId();
 
-        if ($refId <= 0) {
-            $refId = $this->getTargetRefId();
+        if ($ref_id <= 0) {
+            $ref_id = $this->getTargetRefId();
         }
 
-        return $refId;
+        return $ref_id;
     }
 
     private function shouldRenderCustomCourseOrGroupTabs(): bool
     {
-        $isBlackListedCommandClass = (
+        $is_black_listed_command_class = (
             (
                 $this->isCommandClass(ilObjectCustomUserFieldsGUI::class) &&
                 $this->isOneOfCommands(['editMember', 'saveMember', 'cancelEditMember',])
@@ -71,13 +71,13 @@ class CourseGroupTabs extends Base
             )
         );
 
-        return !$isBlackListedCommandClass;
+        return !$is_black_listed_command_class;
     }
 
     private function shouldRenderCourseOrGroupTabs(): bool
     {
-        $shouldRenderCustomCourseTabs = $this->shouldRenderCustomCourseOrGroupTabs();
-        if (!$shouldRenderCustomCourseTabs) {
+        $should_render_custom_course_tabs = $this->shouldRenderCustomCourseOrGroupTabs();
+        if (!$should_render_custom_course_tabs) {
             return false;
         }
 
@@ -119,7 +119,7 @@ class CourseGroupTabs extends Base
             return false;
         }
 
-        if (!$this->coreAccessHandler->checkAccess('manage_members', '', $this->getContainerRefId())) {
+        if (!$this->core_access_handler->checkAccess('manage_members', '', $this->getContainerRefId())) {
             return false;
         }
 

@@ -30,11 +30,11 @@ class UserImport
 
     private int $user;
 
-    private int $createdTimestamp;
+    private int $created_timestamp;
 
     private string $data;
 
-    private int $objId;
+    private int $obj_id;
 
     public function getId(): ?int
     {
@@ -68,12 +68,12 @@ class UserImport
 
     public function getCreatedTimestamp(): int
     {
-        return $this->createdTimestamp;
+        return $this->created_timestamp;
     }
 
-    public function setCreatedTimestamp(int $createdTimestamp): void
+    public function setCreatedTimestamp(int $created_timestamp): void
     {
-        $this->createdTimestamp = $createdTimestamp;
+        $this->created_timestamp = $created_timestamp;
     }
 
     public function getData(): string
@@ -88,12 +88,12 @@ class UserImport
 
     public function getObjId(): int
     {
-        return $this->objId;
+        return $this->obj_id;
     }
 
-    public function setObjId(int $objId): void
+    public function setObjId(int $obj_id): void
     {
-        $this->objId = $objId;
+        $this->obj_id = $obj_id;
     }
 
     /**

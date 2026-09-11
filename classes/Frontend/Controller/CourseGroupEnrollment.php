@@ -46,7 +46,7 @@ use JsonException;
 class CourseGroupEnrollment extends RepositoryObject
 {
     private ilObject $object;
-    private UiUtil $uiUtil;
+    private UiUtil $ui_util;
 
     public function getDefaultCommand(): string
     {
@@ -75,20 +75,20 @@ class CourseGroupEnrollment extends RepositoryObject
     {
         global $DIC;
 
-        $this->uiUtil = new UiUtil();
+        $this->ui_util = new UiUtil();
 
-        $this->pageTemplate->loadStandardTemplate();
+        $this->page_template->loadStandardTemplate();
 
         parent::init();
 
         $this->drawHeader();
 
-        if (0 === $this->getRefId() || !$this->coreAccessHandler->checkAccess(
+        if (0 === $this->getRefId() || !$this->core_access_handler->checkAccess(
             'manage_members',
             '',
             $this->getRefId()
         )) {
-            $this->errorHandler->raiseError($this->lng->txt('permission_denied'), $this->errorHandler->MESSAGE);
+            $this->error_handler->raiseError($this->lng->txt('permission_denied'), $this->error_handler->MESSAGE);
         }
         $this->object = ilObjectFactory::getInstanceByRefId($this->getRefId());
 
@@ -114,14 +114,14 @@ class CourseGroupEnrollment extends RepositoryObject
             $this->getControllerName() . '.submitImportForm'
         ));
         $form->setTitle($this->plugin->txt('course_group_import'));
-        $fileInput = new ilFileInputGUI(
+        $file_input = new ilFileInputGUI(
             $this->plugin->txt('course_group_import_field'),
             'userImportFile'
         );
-        $fileInput->setRequired(true);
-        $fileInput->setSuffixes(['csv']);
-        $fileInput->setInfo($this->plugin->txt('course_group_import_field_description'));
-        $form->addItem($fileInput);
+        $file_input->setRequired(true);
+        $file_input->setSuffixes(['csv']);
+        $file_input->setInfo($this->plugin->txt('course_group_import_field_description'));
+        $form->addItem($file_input);
         $form->addCommandButton('CourseGroupEnrollment.submitImportForm', $this->lng->txt('import'));
 
         return $form;
@@ -136,7 +136,7 @@ class CourseGroupEnrollment extends RepositoryObject
     {
         global $DIC;
 
-        $userImportRepository = new UserImportRepository();
+        $user_import_repository = new UserImportRepository();
         $form = $this->buildForm();
 
         if ($form->checkInput()) {
@@ -149,35 +149,35 @@ class CourseGroupEnrollment extends RepositoryObject
                     throw new CouldNotFindUploadedFileException($this->lng->txt('upload_error_file_not_found'));
                 }
 
-                $uploadResults = $DIC->upload()->getResults();
-                $uploadResult = array_values($uploadResults)[0];
-                if (!($uploadResult instanceof UploadResult)) {
+                $upload_results = $DIC->upload()->getResults();
+                $upload_result = array_values($upload_results)[0];
+                if (!($upload_result instanceof UploadResult)) {
                     throw new CouldNotFindUploadedFileException('Could not find upload result');
                 }
 
-                if ($uploadResult->getStatus()->getCode() === ProcessingStatus::REJECTED) {
-                    throw new UploadRejectedException($uploadResult->getStatus()->getMessage());
+                if ($upload_result->getStatus()->getCode() === ProcessingStatus::REJECTED) {
+                    throw new UploadRejectedException($upload_result->getStatus()->getMessage());
                 }
 
-                $this->userImportValidator->validate($uploadResult->getPath());
+                $this->user_import_validator->validate($upload_result->getPath());
 
-                $dataArray = $this->userImportService->convertCSVToArray($uploadResult->getPath());
+                $data_array = $this->user_import_service->convertCSVToArray($upload_result->getPath());
 
-                $userImport = new UserImport();
-                $userImport->setStatus(ImportStatus::PENDING);
-                $userImport->setUser($DIC->user()->getId());
-                $userImport->setCreatedTimestamp(time());
-                $userImport->setData(json_encode($dataArray, JSON_THROW_ON_ERROR));
-                $userImport->setObjId($this->object->getId());
+                $user_import = new UserImport();
+                $user_import->setStatus(ImportStatus::PENDING);
+                $user_import->setUser($DIC->user()->getId());
+                $user_import->setCreatedTimestamp(time());
+                $user_import->setData(json_encode($data_array, JSON_THROW_ON_ERROR));
+                $user_import->setObjId($this->object->getId());
 
-                $userImport = $userImportRepository->save($userImport);
+                $user_import = $user_import_repository->save($user_import);
 
-                $object = ilObjectFactory::getInstanceByObjId($userImport->getObjId());
+                $object = ilObjectFactory::getInstanceByObjId($user_import->getObjId());
                 if (($object instanceof ilObjCourse || $object instanceof ilObjGroup) === false) {
-                    $csvExportName = $this->plugin->txt('err_csv_empty') . '_' . date('dmY_H_i');
+                    $csv_export_name = $this->plugin->txt('err_csv_empty') . '_' . date('dmY_H_i');
                 }
 
-                $this->uiUtil->sendSuccess(
+                $this->ui_util->sendSuccess(
                     $this->plugin->txt('import_successfully_enqueued'),
                     true
                 );
@@ -188,22 +188,22 @@ class CourseGroupEnrollment extends RepositoryObject
                 );
             } catch (InvalidCsvColumnDefinitionException) {
                 $form->getItemByPostVar('userImportFile')?->setAlert($this->plugin->txt('err_csv_file_different_row_width'));
-                $this->uiUtil->sendFailure($this->lng->txt('form_input_not_valid'));
+                $this->ui_util->sendFailure($this->lng->txt('form_input_not_valid'));
             } catch (FileNotReadableException) {
                 $form->getItemByPostVar('userImportFile')?->setAlert($this->plugin->txt('err_csv_file_cannot_be_read'));
-                $this->uiUtil->sendFailure($this->lng->txt('form_input_not_valid'));
+                $this->ui_util->sendFailure($this->lng->txt('form_input_not_valid'));
             } catch (CsvEmptyException) {
                 $form->getItemByPostVar('userImportFile')?->setAlert($this->plugin->txt('err_csv_empty'));
-                $this->uiUtil->sendFailure($this->lng->txt('form_input_not_valid'));
+                $this->ui_util->sendFailure($this->lng->txt('form_input_not_valid'));
             } catch (CouldNotFindUploadedFileException) {
                 $form->getItemByPostVar('userImportFile')?->setAlert($this->plugin->txt('err_csv_empty'));
-                $this->uiUtil->sendFailure($this->lng->txt('upload_error_file_not_found'));
+                $this->ui_util->sendFailure($this->lng->txt('upload_error_file_not_found'));
             } catch (UploadRejectedException $e) {
                 $form->getItemByPostVar('userImportFile')?->setAlert($e->getMessage());
-                $this->uiUtil->sendFailure($this->lng->txt('upload_error_file_not_found'));
+                $this->ui_util->sendFailure($this->lng->txt('upload_error_file_not_found'));
             } catch (JsonException $e) {
                 $form->getItemByPostVar('userImportFile')?->setAlert($e->getMessage());
-                $this->uiUtil->sendFailure($this->lng->txt('form_input_not_valid'));
+                $this->ui_util->sendFailure($this->lng->txt('form_input_not_valid'));
             }
         }
 

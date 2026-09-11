@@ -39,10 +39,10 @@ abstract class RepositoryObject extends Base
         $refl = new ReflectionClass($class);
         $object = $refl->newInstanceArgs($this->getConstructorArgs());
 
-        $reflectionMethod = new ReflectionMethod($class, 'setTitleAndDescription');
-        $reflectionMethod->invoke($object);
+        $reflection_method = new ReflectionMethod($class, 'setTitleAndDescription');
+        $reflection_method->invoke($object);
 
         $this->dic['ilLocator']->addRepositoryItems($this->getRefId());
-        $this->pageTemplate->setLocator();
+        $this->page_template->setLocator();
     }
 }

@@ -31,26 +31,26 @@ class UserImportValidator
      * @throws CsvEmptyException
      * @throws InvalidCsvColumnDefinitionException
      */
-    public function validate($importFile): void
+    public function validate($import_file): void
     {
-        $tmpFile = fopen($importFile, 'rb');
+        $tmp_file = fopen($import_file, 'rb');
 
-        if (!$tmpFile || !is_resource($tmpFile)) {
+        if (!$tmp_file || !is_resource($tmp_file)) {
             throw new FileNotReadableException('CSV not readable');
         }
 
-        $noElementsFlag = true;
-        while (($row = fgetcsv($tmpFile, 0, ';')) !== false) {
-            $noElementsFlag = false;
+        $no_elements_flag = true;
+        while (($row = fgetcsv($tmp_file, 0, ';')) !== false) {
+            $no_elements_flag = false;
             if (count($row) > 1) {
                 throw new InvalidCsvColumnDefinitionException("Data format not correct");
             }
         }
 
-        if ($noElementsFlag) {
+        if ($no_elements_flag) {
             throw new CsvEmptyException('CSV empty');
         }
 
-        fclose($tmpFile);
+        fclose($tmp_file);
     }
 }

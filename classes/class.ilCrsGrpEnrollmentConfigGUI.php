@@ -38,7 +38,7 @@ class ilCrsGrpEnrollmentConfigGUI extends ilPluginConfigGUI
     private readonly ilCtrl $ctrl;
     private readonly Locker $lock;
     private readonly ilLanguage $lng;
-    private readonly UiUtil $uiUtil;
+    private readonly UiUtil $ui_util;
     private readonly ilCrsGrpEnrollmentPlugin $plugin;
 
     public function __construct()
@@ -51,7 +51,7 @@ class ilCrsGrpEnrollmentConfigGUI extends ilPluginConfigGUI
         $this->ctrl = $DIC->ctrl();
         $this->lng = $DIC->language();
         $this->lock = $DIC['plugin.' . ilCrsGrpEnrollmentPlugin::ID . '.cronjob.locker'];
-        $this->uiUtil = new UiUtil();
+        $this->ui_util = new UiUtil();
         $this->plugin = ilCrsGrpEnrollmentPlugin::getInstance();
     }
 
@@ -64,7 +64,7 @@ class ilCrsGrpEnrollmentConfigGUI extends ilPluginConfigGUI
     {
         if ($this->lock->isLocked()) {
             $this->lock->releaseLock();
-            $this->uiUtil->sendSuccess($this->plugin->txt('lock.released'), true);
+            $this->ui_util->sendSuccess($this->plugin->txt('lock.released'), true);
         }
 
         $this->ctrl->redirect($this, 'configure');
@@ -85,12 +85,12 @@ class ilCrsGrpEnrollmentConfigGUI extends ilPluginConfigGUI
     {
         $content = "";
         if ($this->lock->isLocked()) {
-            $releaseLockButton = $this->factory->button()->standard(
+            $release_lock_button = $this->factory->button()->standard(
                 $this->txt('lock.release'),
                 $this->ctrl->getLinkTarget($this, 'confirmReleaseLock')
             );
-            $this->uiUtil->sendInfo($this->plugin->txt('lock.locked'));
-            $content .= $this->renderer->render($releaseLockButton);
+            $this->ui_util->sendInfo($this->plugin->txt('lock.locked'));
+            $content .= $this->renderer->render($release_lock_button);
         }
 
         $this->template->setContent($add . $content);
