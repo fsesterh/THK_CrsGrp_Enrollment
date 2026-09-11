@@ -22,8 +22,8 @@ declare(strict_types=1);
  * @author Timo Müller <timomueller@databay.de>
  */
 $id = 'crs_grp_enrol';
-$version = '11.0.0';
-$ilias_min_version = '11';
-$ilias_max_version = '11.999';
+$version = '10.0.0';
+$ilias_min_version = '10';
+$ilias_max_version = '10.999';
 $responsible = 'Fabian Sesterhenn';
 $responsible_mail = 'fabian.sesterhenn@th-koeln.de';
