@@ -60,7 +60,7 @@ class UserImportService
 
         $i = 0;
         $data_array = [];
-        while (($row = fgetcsv($tmp_filename, 0, ';', '"')) !== false) {
+        while (($row = fgetcsv($tmp_filename, 0, ';', '"', '\\')) !== false) {
             $i++;
 
             if ($row === [] || !array_is_list($row)) {

@@ -40,7 +40,7 @@ class UserImportValidator
         }
 
         $no_elements_flag = true;
-        while (($row = fgetcsv($tmp_file, 0, ';')) !== false) {
+        while (($row = fgetcsv($tmp_file, 0, ';', '"', '\\')) !== false) {
             $no_elements_flag = false;
             if (count($row) > 1) {
                 throw new InvalidCsvColumnDefinitionException("Data format not correct");
