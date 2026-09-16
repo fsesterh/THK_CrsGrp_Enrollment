@@ -136,27 +136,6 @@ class DBUpdateSteps implements ilDatabaseUpdateSteps
             'xcge_user_import',
             'created_timestamp',
             [
-                'type' => ilDBConstants::T_TIMESTAMP,
-                'notnull' => false,
-                'default' => null
-            ]
-        );
-    }
-
-    public function step_4(): void
-    {
-        if ($this->db->tableColumnExists('xcge_user_import', 'created_timestamp')) {
-            $this->db->dropTableColumn('xcge_user_import', 'created_timestamp');
-        }
-
-        if ($this->db->tableColumnExists('xcge_user_import', 'created_timestamp')) {
-            return;
-        }
-
-        $this->db->addTableColumn(
-            'xcge_user_import',
-            'created_timestamp',
-            [
                 'type' => ilDBConstants::T_INTEGER,
                 'length' => 8,
                 'notnull' => true,
@@ -164,7 +143,7 @@ class DBUpdateSteps implements ilDatabaseUpdateSteps
         );
     }
 
-    public function step_5(): void
+    public function step_4(): void
     {
         if ($this->db->tableColumnExists('xcge_user_import', 'obj_id')) {
             return;
@@ -181,7 +160,7 @@ class DBUpdateSteps implements ilDatabaseUpdateSteps
         );
     }
 
-    public function step_6(): void
+    public function step_5(): void
     {
         $task_ids = [];
         $bucket_ids = [];
