@@ -124,8 +124,10 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin implements JobP
         return parent::update();
     }
 
-    protected function uninstallCustom(): void
+    protected function beforeUninstall(): bool
     {
         (new DBUpdateSteps())->uninstall($this->db);
+
+        return true;
     }
 }
