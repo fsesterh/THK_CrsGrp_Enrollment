@@ -121,8 +121,10 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin implements ilCr
         return parent::update();
     }
 
-    protected function uninstallCustom(): void
+    protected function beforeUninstall(): bool
     {
         (new DBUpdateSteps())->uninstall($this->db);
+
+        return true;
     }
 }
