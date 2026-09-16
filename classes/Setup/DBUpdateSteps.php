@@ -102,6 +102,21 @@ class DBUpdateSteps implements ilDatabaseUpdateSteps
                     'type' => ilDBConstants::T_CLOB,
                     'notnull' => false,
                 ],
+                'user' => [
+                    'type' => ilDBConstants::T_INTEGER,
+                    'length' => 4,
+                    'notnull' => false,
+                ],
+                'created_timestamp' => [
+                    'type' => ilDBConstants::T_INTEGER,
+                    'length' => 8,
+                    'notnull' => true,
+                ],
+                'obj_id' => [
+                    'type' => ilDBConstants::T_INTEGER,
+                    'length' => 4,
+                    'notnull' => true,
+                ]
             ]
         );
 
@@ -110,57 +125,6 @@ class DBUpdateSteps implements ilDatabaseUpdateSteps
     }
 
     public function step_2(): void
-    {
-        if ($this->db->tableColumnExists('xcge_user_import', 'user')) {
-            return;
-        }
-
-        $this->db->addTableColumn(
-            'xcge_user_import',
-            'user',
-            [
-                'type' => ilDBConstants::T_INTEGER,
-                'length' => 4,
-                'notnull' => false,
-            ]
-        );
-    }
-
-    public function step_3(): void
-    {
-        if ($this->db->tableColumnExists('xcge_user_import', 'created_timestamp')) {
-            return;
-        }
-
-        $this->db->addTableColumn(
-            'xcge_user_import',
-            'created_timestamp',
-            [
-                'type' => ilDBConstants::T_INTEGER,
-                'length' => 8,
-                'notnull' => true,
-            ]
-        );
-    }
-
-    public function step_4(): void
-    {
-        if ($this->db->tableColumnExists('xcge_user_import', 'obj_id')) {
-            return;
-        }
-
-        $this->db->addTableColumn(
-            'xcge_user_import',
-            'obj_id',
-            [
-                'type' => ilDBConstants::T_INTEGER,
-                'length' => 4,
-                'notnull' => true,
-            ]
-        );
-    }
-
-    public function step_5(): void
     {
         $task_ids = [];
         $bucket_ids = [];
