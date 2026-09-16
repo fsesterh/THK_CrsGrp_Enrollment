@@ -95,7 +95,7 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin implements ilCr
     }
 
     /**
-     * @throws Exception
+     * @throws OutOfBoundsException
      */
     public function getCronJobInstance(string $job_id): ilCronJob
     {
@@ -104,7 +104,7 @@ class ilCrsGrpEnrollmentPlugin extends ilUserInterfaceHookPlugin implements ilCr
                 return $cron_job_instance;
             }
         }
-        throw new Exception("No cron job found with the id '$job_id'.");
+        throw new OutOfBoundsException("No cron job found with the id '$job_id'.");
     }
 
     public function install(): void
