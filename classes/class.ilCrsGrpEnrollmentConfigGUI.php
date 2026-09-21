@@ -39,7 +39,7 @@ class ilCrsGrpEnrollmentConfigGUI extends ilPluginConfigGUI
         $this->plugin = ilCrsGrpEnrollmentPlugin::getInstance();
     }
 
-    public function performCommand($cmd): void
+    public function performCommand(string $cmd): void
     {
         $this->$cmd();
     }

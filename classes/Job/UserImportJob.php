@@ -222,7 +222,7 @@ class UserImportJob extends ilCronJob
             $attachments = [];
             if ($report->hasErrors()) {
                 $tmp_filename = ilFileUtils::ilTempnam() . '.csv';
-                file_put_contents($tmp_filename, "\xEF\xBB\xBF" . $report->asText()); // Prefix with UTF-8 BOM for Excel compatibility
+                file_put_contents($tmp_filename, $report->asText());
 
                 $filename = ilFileUtils::getASCIIFilename(implode('_', [
                         $this->plugin->txt('report_export_name'),

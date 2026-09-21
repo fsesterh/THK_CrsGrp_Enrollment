@@ -86,7 +86,7 @@ class ilCrsGrpEnrollmentUIHookGUI extends ilUIHookPluginGUI
         ];
     }
 
-    public function getHTML($a_comp, $a_part, $a_par = []): array
+    public function getHTML(string $a_comp, string $a_part, array $a_par = []): array
     {
         $unmodified = ['mode' => ilUIHookPluginGUI::KEEP, 'html' => ''];
 
@@ -103,7 +103,7 @@ class ilCrsGrpEnrollmentUIHookGUI extends ilUIHookPluginGUI
         return $unmodified;
     }
 
-    public function modifyGUI($a_comp, $a_part, $a_par = []): void
+    public function modifyGUI(string $a_comp, string $a_part, array $a_par = []): void
     {
         parent::modifyGUI($a_comp, $a_part, $a_par);
 
