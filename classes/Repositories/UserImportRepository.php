@@ -68,11 +68,11 @@ class UserImportRepository
         $this->db->manipulateF(
             '
                 UPDATE ' . self::TABLE_NAME . ' SET
-                status = %s,
+                status = %s
                 WHERE id = %s
             ',
             ['integer', 'integer'],
-            [$userImport->getStatus(), $userImport->getStatus()]
+            [$userImport->getStatus(), (int) $userImport->getId()]
         );
     }
 
