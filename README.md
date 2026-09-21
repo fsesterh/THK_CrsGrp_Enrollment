@@ -10,7 +10,7 @@ in this document are to be interpreted as described in
 | Component | Version(s)                                                                                    | Link                      |
 |-----------|-----------------------------------------------------------------------------------------------|---------------------------|
 | PHP       | ![](https://img.shields.io/badge/8.1-blue.svg) ![](https://img.shields.io/badge/8.2-blue.svg) | [PHP](https://php.net)    |
-| ILIAS     | ![](https://img.shields.io/badge/9-orange.svg)                                                | [ILIAS](https://ilias.de) |
+| ILIAS     | ![](https://img.shields.io/badge/10-orange.svg)                                                | [ILIAS](https://ilias.de) |
 
 * Permissions: In order to import course or group memberships, the active user MUST have the permission to manage members for courses/groups in ILIAS.
 * SOAP administration MUST be enabled.
@@ -47,10 +47,10 @@ The CrsGrpEnrollment plugin will create a report file (CSV) which is send to the
 
 ## Installation
 
-1. Clone this repository to **Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/CrsGrpEnrollment**
+1. Clone this repository to **public/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/CrsGrpEnrollment**
 2. Install the Composer dependencies
    ```bash
-   cd Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/CrsGrpEnrollment
+   cd public/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/CrsGrpEnrollment
    composer install --no-dev
    ```
    Developers **MUST** omit the `--no-dev` argument.
