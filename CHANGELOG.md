@@ -1,5 +1,9 @@
 # Change-Log
 
+## 10.0.0
+
+* Added support for ILIAS 10
+
 ## 9.0.2
 
 * Fixed: typo in UPDATE-query syntax
