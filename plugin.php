@@ -22,7 +22,7 @@ declare(strict_types=1);
  * @author Timo Müller <timomueller@databay.de>
  */
 $id = 'crs_grp_enrol';
-$version = '11.0.0';
+$version = '11.0.1';
 $ilias_min_version = '11';
 $ilias_max_version = '11.999';
 $responsible = 'Fabian Sesterhenn';

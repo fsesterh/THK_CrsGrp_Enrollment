@@ -20,7 +20,11 @@ declare(strict_types=1);
 
 namespace ILIAS\Plugin\CrsGrpEnrollment\Setup;
 
+use ilComponentActivatePluginsObjective;
+use ilComponentInstallPluginObjective;
+use ilComponentUpdatePluginObjective;
 use ilDatabaseUpdateStepsExecutedObjective;
+use ilPluginLanguageUpdatedObjective;
 use ILIAS\Refinery\Transformation;
 use ILIAS\Setup;
 use ILIAS\Setup\Agent;
@@ -54,6 +58,9 @@ class SetupAgent implements Agent
             $this->getPluginNamespace(),
             true,
             new ilDatabaseUpdateStepsExecutedObjective(new DBUpdateSteps()),
+            new ilComponentInstallPluginObjective(self::PLUGIN_NAME),
+            new ilComponentUpdatePluginObjective(self::PLUGIN_NAME),
+            new ilComponentActivatePluginsObjective(self::PLUGIN_NAME),
         );
     }
 
@@ -63,6 +70,8 @@ class SetupAgent implements Agent
             $this->getPluginNamespace(),
             true,
             new ilDatabaseUpdateStepsExecutedObjective(new DBUpdateSteps()),
+            new ilComponentUpdatePluginObjective(self::PLUGIN_NAME),
+            new ilPluginLanguageUpdatedObjective(self::PLUGIN_NAME),
         );
     }
 
